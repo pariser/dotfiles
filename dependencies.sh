@@ -78,5 +78,30 @@ echo '************************************************************'
 
 echo '************************************************************'
 
+if [[ -d $LOCALPATH/dependencies/yasnippet ]] ; then
+  echo "Alread found yasnippet subversion repository; running svn update"
+  pushd $LOCALPATH/dependencies/yasnippet > /dev/null
+  svn update
+  popd > /dev/null
+else
+  echo "Checking out newest verison of yasnippet from Google Code"
+  svn checkout http://yasnippet.googlecode.com/svn/trunk/ $LOCALPATH/dependencies/yasnippet
+fi
+
+if [[ -f $LOCALPATH/emacs.d/site-lisp/yasnippet ]] ; then
+  echo "yasnippet has been deployed; skipping"
+elif ! [[ -L $LOCALPATH/emacs.d/site-lisp/yasnippet ]] ; then
+  echo "Linking yasnippet"
+  ln -s $LOCALPATH/dependencies/yasnippet $LOCALPATH/emacs.d/site-lisp/yasnippet
+fi
+
+echo '************************************************************'
+
+echo '************************************************************'
+
+echo '************************************************************'
+
+echo '************************************************************'
+
 exit 0
 

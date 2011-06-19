@@ -10,7 +10,7 @@
 (add-to-list 'load-path "/users/pariser/.emacs.d/site-lisp/mmm-mode")
 (add-to-list 'load-path "/users/pariser/.emacs.d/site-lisp/git")
 (add-to-list 'load-path "/users/pariser/.emacs.d/site-lisp/autocomplete")
-(add-to-list 'load-path "/users/pariser/.emacs.d/site-lisp/yasnippet-0.5.9")
+(add-to-list 'load-path "/users/pariser/.emacs.d/site-lisp/yasnippet")
 
 ;;************************************************************
 ;; Emacs as server
