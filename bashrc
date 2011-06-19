@@ -6,6 +6,13 @@ export PATH=~/bin:$PATH
 export PYTHONPATH=~/lib:$PYTHONPATH
 
 ########################################################
+# Syntax highlighting in less
+########################################################
+
+# export LESSOPEN="| $(brew --prefix source-highlight)/bin/src-hilite-lesspipe.sh %s"
+# export LESS=' -R '
+
+########################################################
 # Terminal Prompt
 ########################################################
 
@@ -28,7 +35,7 @@ store_exit_code() {
 }
 
 exit_code() {
-    [ "$EXIT_CODE" = "0" ] && return
+    [[ "$EXIT_CODE" = "0" ]] && return
     echo -n "$EXIT_CODE "
 }
 
@@ -41,7 +48,7 @@ export PS1="\[\033[1;34m\][\$(date +%H:%M)] \[\033[1;36m\]\u@\h \w \[\033[1;32m\
 ########################################################
 
 _complete_git() {
-  if [ -d .git ]; then
+  if [[ -d .git ]]; then
     branches=`git branch -a | cut -c 3-`
     tags=`git tag`
     cur="${COMP_WORDS[COMP_CWORD]}"
@@ -55,7 +62,7 @@ if [ -f /opt/local/etc/bash_completion ]; then
   . /opt/local/etc/bash_completion
 fi
 
-if [ -f ~/bin/autocomplete_ssh_config.py ]; then
+if [[ -f ~/bin/autocomplete_ssh_config.py ]]; then
   complete -W "$(~/bin/autocomplete_ssh_config.py)" ssh
 fi 
 
