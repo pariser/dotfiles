@@ -1,0 +1,52 @@
+
+escape ""
+
+# ------------------------------------------------------------
+# Color settings & Windows PuTTY support
+
+# allow bold colors - necessary for some reason
+attrcolor b ".I"
+
+# tell screen how to set colors. AB = background, AF=foreground
+termcapinfo xterm 'Co#256:AB=\E[48;5;%dm:AF=\E[38;5;%dm'
+
+# Another screen 256 color attempt
+termcap  xterm hs@:cs=\E[%i%d;%dr:im=\E[4h:ei=\E[4l
+terminfo xterm hs@:cs=\E[%i%p1%d;%p2%dr:im=\E[4h:ei=\E[4l
+
+# erase background with current bg color
+defbce "on" 
+
+# make scrollbar work with screen
+termcapinfo xterm ti@:te@ 
+
+# ------------------------------------------------------------
+# Look & Feel -- caption
+
+altscreen on 
+caption always
+caption string "%H %= %-w%L>%{= BW}%n*%t%{-}%52<%+w %L="
+
+# ------------------------------------------------------------
+
+# Turn off start message:
+startup_message off
+
+# detach on hangup
+autodetach on
+
+logfile $HOME/lib/screen-logs/%Y%m%d-%n.log
+
+# ------------------------------------------------------------
+
+bindkey "^[[5;2~" eval "copy" "stuff ^u"
+bindkey -m "^[[5;2~" stuff ^u
+bindkey -m "^[[6;2~" stuff ^d
+
+# ------------------------------------------------------------
+# Default screens
+
+screen -t Shell 0 bash
+screen -t Emacs 1 emacs -nw
+select 0
+

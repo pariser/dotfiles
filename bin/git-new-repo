@@ -1,0 +1,94 @@
+#!/usr/bin/python
+
+import sys
+import re
+import os
+import subprocess
+import pprint
+
+def usage(exit=None):
+    if exit == 0:
+        print """
+    Creates a git repository rooted from the current working directory and
+    a remote origin repository, adds all files currently in the given directory
+    to git, and pushes to the remote repository in one large commit.
+    """
+
+    print """
+    USAGE: git-init-repo [--help] [[user@]gitserver[:remote_repo_name.git]]
+
+    If not specified, remote repository name will be assigned to the current
+    directory's name, i.e. if run in ~/dev/myrepository, this program will
+    create a bare repository on gitserver at path myrepository.git
+    """
+    if exit is not None:
+        sys.exit(exit)
+
+def main():
+
+    # Look if the user requested help
+
+    if re.search("--help", ' '.join(sys.argv[1:])):
+        usage(0)
+
+    # Get the repository server information
+
+    try:
+        user, server, remote_repo = \
+              re.search('^([^@]+)?@?([^:]+):?([^\.]\.git)?', sys.argv[1]).groups()
+    except:
+        print "Cannot continue without Git repository server information!"
+        usage(1)
+
+    # If the remote repository location is not specified, name it according to
+    # the current working directory's location
+
+    if not remote_repo:
+        try:
+            remote_repo = re.search('/([^/]+)$', os.getcwd()).group(1)
+        except:
+            print "Cannot read current directory's name"
+            usage(1)
+
+    userathost = "%s@%s" % (user, server) if user else server
+    remote_repo += ".git"
+    remote_init_cmd = "ssh %s 'mkdir -p %s && cd %s && git --bare init'" \
+                      % (userathost, remote_repo, remote_repo)
+    remote_origin_cmd = "git remote add origin %s:%s" \
+                        % (userathost, remote_repo)
+
+    # Run the following commands
+
+    for command, message_if_failed, show_output in [
+        ("ssh -V"                                          , "Could not find ssh"                           , False),
+        ("git --version"                                   , "Could not find git"                           , False),
+        ("git branch 2>&1 | grep fatal"                    , "Already in git repository"                    , False),
+        (remote_init_cmd                                   , "Could not create remote repository"           , False),
+        ("git init"                                        , "Could not create local repository"            , False),
+        (remote_origin_cmd                                 , "Could not link to remote origin"              , False),
+        ("git config branch.master.remote origin"          , "Could not set remote branch to origin"        , False),
+        ("git config branch.master.merge refs/heads/master", "Could not set merge refs to master"           , False),
+        # ("git add ."                                       , "Could not add local files to local repository", True ),
+        # ("git commit -am 'First commit.'"                  , "Could not commit to local repository"         , True ),
+        # ("git push origin master"                          , "Could not push to remote directory"           , True ),
+        ]:
+        try:
+            print "Running command: [%s]" % command
+            if show_output:
+                subprocess.check_call(command, shell=True)
+            else:
+                subprocess.check_call(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        except:
+            print error
+            usage(1)
+
+    print """
+    To make your first commit, run the following commands:
+
+    > git add .
+    > git commit -am 'First commit!'
+    > git push origin master
+    """
+
+if __name__ == "__main__":
+    main()

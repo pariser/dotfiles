@@ -1,0 +1,15 @@
+[user]
+	name = Andrew Pariser
+	email = pariser@gmail.com
+
+[core]
+	excludesfile = /Users/pariser/.gitignore
+
+[color]
+	diff = auto
+	status = auto
+	branch = auto
+
+[alias]
+	svn-diff = !git-svn-diff
+
