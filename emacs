@@ -8,7 +8,7 @@
 ;;        (normal-top-level-add-subdirs-to-load-path))
 
 (add-to-list 'load-path "/users/pariser/.emacs.d/site-lisp/mmm-mode")
-(add-to-list 'load-path "/users/pariser/.emacs.d/site-lisp/git")
+(add-to-list 'load-path "/users/pariser/.emacs.d/site-lisp/egg")
 (add-to-list 'load-path "/users/pariser/.emacs.d/site-lisp/auto-complete")
 (add-to-list 'load-path "/users/pariser/.emacs.d/site-lisp/yasnippet")
 
@@ -46,10 +46,10 @@
 (require 'revbufs)
 
 ;;************************************************************
-;; Use git.el
+;; Use Emacs Got Git (egg)
 ;;************************************************************
 
-(require 'git)
+(require 'egg)
 
 ;;************************************************************
 ;; Ensure that buffers have unique names
@@ -132,12 +132,14 @@
 ;;************************************************************
 
 (require 'auto-complete-config)
-(add-to-list 'ac-dictionary-directories "~/.emacs.d/site-lisp/autocomplete/ac-dict")
+(add-to-list 'ac-dictionary-directories "~/.emacs.d/site-lisp/auto-complete/ac-dict")
 (ac-config-default)
 
 ; (require 'auto-complete)
 
 (require 'yasnippet)
+(yas/initialize)
+(yas/load-directory "~/.emacs.d/site-lisp/yasnippet/snippets")
 
 ;;************************************************************
 ;; configure Python editing

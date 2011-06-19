@@ -97,18 +97,26 @@ elif ! [[ -L $LOCALPATH/emacs.d/site-lisp/yasnippet ]] ; then
   ln -s $LOCALPATH/dependencies/yasnippet $LOCALPATH/emacs.d/site-lisp/yasnippet
 fi
 
-echo '************************************************************'
-
-pushd $LOCALPATH/dependencies/auto-complete > /dev/null
-$EMACS -Q -L . -batch -f batch-byte-compile *.el
+pushd $LOCALPATH/dependencies/yasnippet > /dev/null
+$EMACS -Q -L . -batch -f batch-byte-compile yasnippet.el dropdown-list.el
 popd > /dev/null
 
-if [[ -f $LOCALPATH/emacs.d/site-lisp/auto-complete ]] ; then
-  echo "auto-complete has been deployed; skipping"
-elif ! [[ -L $LOCALPATH/emacs.d/site-lisp/auto-complete ]] ; then
-  echo "Linking auto-complete"
-  ln -s $LOCALPATH/dependencies/auto-complete $LOCALPATH/emacs.d/site-lisp/auto-complete
-fi
+echo '************************************************************'
+
+for EMACSLIB in auto-complete egg ; do
+  echo "Installing emacs library $EMACSLIB"
+
+  pushd $LOCALPATH/dependencies/$EMACSLIB > /dev/null
+  $EMACS -Q -L . -batch -f batch-byte-compile *.el
+  popd > /dev/null
+
+  if [[ -f $LOCALPATH/emacs.d/site-lisp/$EMACSLIB ]] ; then
+    echo "$EMACSLIB has been deployed; skipping"
+  elif ! [[ -L $LOCALPATH/emacs.d/site-lisp/$EMACSLIB ]] ; then
+    echo "Linking $EMACSLIB"
+    ln -s $LOCALPATH/dependencies/$EMACSLIB $LOCALPATH/emacs.d/site-lisp/$EMACSLIB
+  fi
+done
  
 echo '************************************************************'
 

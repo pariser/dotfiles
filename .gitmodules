@@ -4,3 +4,6 @@
 [submodule "dependencies/auto-complete"]
 	path = dependencies/auto-complete
 	url = https://github.com/m2ym/auto-complete
+[submodule "dependencies/egg"]
+	path = dependencies/egg
+	url = https://github.com/bogolisk/egg.git
