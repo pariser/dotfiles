@@ -1,5 +1,7 @@
 #!/bin/bash
 
+EMACS="/Applications/Aquamacs.app/Contents/MacOS/Aquamacs"
+
 # Get the path of the deploy script
 LOCALPATH="$( cd "$( dirname "$0" )" && pwd )"
 
@@ -97,6 +99,17 @@ fi
 
 echo '************************************************************'
 
+pushd $LOCALPATH/dependencies/auto-complete > /dev/null
+$EMACS -Q -L . -batch -f batch-byte-compile *.el
+popd > /dev/null
+
+if [[ -f $LOCALPATH/emacs.d/site-lisp/auto-complete ]] ; then
+  echo "auto-complete has been deployed; skipping"
+elif ! [[ -L $LOCALPATH/emacs.d/site-lisp/auto-complete ]] ; then
+  echo "Linking auto-complete"
+  ln -s $LOCALPATH/dependencies/auto-complete $LOCALPATH/emacs.d/site-lisp/auto-complete
+fi
+ 
 echo '************************************************************'
 
 echo '************************************************************'

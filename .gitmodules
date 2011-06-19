@@ -1,3 +1,6 @@
 [submodule "dependencies/Pymacs"]
 	path = dependencies/Pymacs
 	url = https://github.com/pinard/Pymacs.git
+[submodule "dependencies/auto-complete"]
+	path = dependencies/auto-complete
+	url = https://github.com/m2ym/auto-complete
