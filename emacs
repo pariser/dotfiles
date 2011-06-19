@@ -1,6 +1,7 @@
 ;;************************************************************
 ;; add local plugins to load-path
 ;;************************************************************
+
 (add-to-list 'load-path "/Users/pariser/.emacs.d/site-lisp")
 
 ;; (progn (cd "/Users/pariser/.emacs.d/site-lisp")
@@ -14,6 +15,7 @@
 ;;************************************************************
 ;; Emacs as server
 ;;************************************************************
+
 (server-start)
 (remove-hook 'kill-buffer-query-functions 'server-kill-buffer-query-function)
 
@@ -119,6 +121,7 @@
 
 ; allows me to swap buffers with keystrokes (instead of M-x o, C-x b, etc.)
 (require 'buffer-move)
+
 (global-set-key (kbd "<C-S-up>")     'buf-move-up)
 (global-set-key (kbd "<C-S-down>")   'buf-move-down)
 (global-set-key (kbd "<C-S-left>")   'buf-move-left)
@@ -128,7 +131,6 @@
 ;; Load auto-complete, yasnippet, pymacs
 ;;************************************************************
 
-; (add-to-list 'load-path "~/.emacs.d/site-lisp/autocomplete")
 (require 'auto-complete-config)
 (add-to-list 'ac-dictionary-directories "~/.emacs.d/site-lisp/autocomplete/ac-dict")
 (ac-config-default)
@@ -143,11 +145,11 @@
 
 ;; Initialize Pymacs
 
-;; (autoload 'pymacs-apply "pymacs")
-;; (autoload 'pymacs-call "pymacs")
-;; (autoload 'pymacs-eval "pymacs" nil t)
-;; (autoload 'pymacs-exec "pymacs" nil t)
-;; (autoload 'pymacs-load "pymacs" nil t)
+(autoload 'pymacs-apply "pymacs")
+(autoload 'pymacs-call "pymacs")
+(autoload 'pymacs-eval "pymacs" nil t)
+(autoload 'pymacs-exec "pymacs" nil t)
+(autoload 'pymacs-load "pymacs" nil t)
 
 ;; (autoload 'python-mode "python-mode" "Python Mode." t)
 ;; (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
@@ -314,3 +316,4 @@ by using nxml's indentation rules."
 ;;************************************************************
 
 (setq-default fill-column 90)
+
