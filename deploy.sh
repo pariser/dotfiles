@@ -4,7 +4,7 @@
 LOCALPATH="$( cd "$( dirname "$0" )" && pwd )"
 
 # Link the dotfiles that belong in ~/
-for FILE in profile bashrc gitconfig gitignore screenrc emacs emacs.d; do
+for FILE in profile bashrc gitconfig gitignore screenrc emacs emacs.d vimrc; do
   if [[ -f ~/.$FILE ]] || [[ -d ~/.$FILE ]] && ! [[ -L ~/.$FILE ]] ; then
     echo "Not linking file $LOCALPATH/$FILE -- ~/.$FILE already exists"
   elif [[ -L ~/.$FILE ]] ; then
