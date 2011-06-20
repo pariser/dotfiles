@@ -4,13 +4,11 @@
 
 (add-to-list 'load-path "/Users/pariser/.emacs.d/site-lisp")
 
-;; (progn (cd "/Users/pariser/.emacs.d/site-lisp")
-;;        (normal-top-level-add-subdirs-to-load-path))
-
 (add-to-list 'load-path "/users/pariser/.emacs.d/site-lisp/mmm-mode")
 (add-to-list 'load-path "/users/pariser/.emacs.d/site-lisp/egg")
 (add-to-list 'load-path "/users/pariser/.emacs.d/site-lisp/auto-complete")
 (add-to-list 'load-path "/users/pariser/.emacs.d/site-lisp/yasnippet")
+(add-to-list 'load-path "/users/pariser/.emacs.d/site-lisp/pycomplete")
 
 ;;************************************************************
 ;; Emacs as server
@@ -30,7 +28,6 @@
     (select-window (active-minibuffer-window))))
 
 (global-set-key "\C-xp" 'switch-to-minibuffer-window)
-
 
 ;;************************************************************
 ;; Allow downcase-region but disable its keyboard shortcut
@@ -128,21 +125,23 @@
 (global-set-key (kbd "<C-S-right>")  'buf-move-right)
 
 ;;************************************************************
-;; Load auto-complete, yasnippet, pymacs
+;; Load auto-complete
 ;;************************************************************
 
 (require 'auto-complete-config)
 (add-to-list 'ac-dictionary-directories "~/.emacs.d/site-lisp/auto-complete/ac-dict")
 (ac-config-default)
 
-; (require 'auto-complete)
+;;************************************************************
+;; Load yasnippets for text expansion
+;;************************************************************
 
 (require 'yasnippet)
 (yas/initialize)
 (yas/load-directory "~/.emacs.d/site-lisp/yasnippet/snippets")
 
 ;;************************************************************
-;; configure Python editing
+;; configure Python editing via Pymacs and pycomplete
 ;;************************************************************
 
 ;; Initialize Pymacs
@@ -157,11 +156,11 @@
 ;; (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
 ;; (add-to-list 'interpreter-mode-alist '("python" . python-mode))
 
-;;************************************************************
-;; python auto-completion
-;;************************************************************
-
 (require 'pycomplete)
+
+;;************************************************************
+;; python auto-completion via Rope
+;;************************************************************
 
 ;; Initialize Rope
 

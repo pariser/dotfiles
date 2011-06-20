@@ -103,7 +103,7 @@ popd > /dev/null
 
 echo '************************************************************'
 
-for EMACSLIB in auto-complete egg ; do
+for EMACSLIB in auto-complete egg pycomplete ; do
   echo "Installing emacs library $EMACSLIB"
 
   pushd $LOCALPATH/dependencies/$EMACSLIB > /dev/null
@@ -119,6 +119,17 @@ for EMACSLIB in auto-complete egg ; do
 done
  
 echo '************************************************************'
+
+PYCOMPLETE=`echo 'import pycomplete' | python > /dev/null 2>&1`
+if [[ $? == 0 ]] ; then
+  echo "pycomplete already installed to python; skipping."
+elif [[ -f ~/lib/pycomplete.py ]] ; then
+  echo "pycomplete found in ~/lib but not found by python. Check that ~/lib is in your PYTHONPATH"
+else
+  echo "Linking pycomplete.py"
+  ln -s $LOCALPATH/dependencies/pycomplete/pycomplete.py ~/lib/pycomplete.py
+fi
+
 
 echo '************************************************************'
 
