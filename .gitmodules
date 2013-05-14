@@ -34,3 +34,6 @@
 [submodule "dependencies/scss-mode"]
 	path = dependencies/scss-mode
 	url = git://github.com/antonj/scss-mode.git
+[submodule "dependencies/yasnippet"]
+	path = dependencies/yasnippet
+	url = https://github.com/capitaomorte/yasnippet.git

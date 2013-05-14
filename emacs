@@ -48,51 +48,51 @@
 ;;************************************************************
 
 (require 'haml-mode)
-(require 'sass-mode)
-(require 'scss-mode)
-(require 'yaml-mode)
+;; (require 'sass-mode)
+;; (require 'scss-mode)
+;; (require 'yaml-mode)
 
-(add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
-(add-hook
- 'yaml-mode-hook
- '(lambda ()
-    (define-key yaml-mode-map "\C-m" 'newline-and-indent)))
+;; (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
+;; (add-hook
+;;  'yaml-mode-hook
+;;  '(lambda ()
+;;     (define-key yaml-mode-map "\C-m" 'newline-and-indent)))
 
 ;;************************************************************
 ;; Use js-beautify.el
 ;;************************************************************
 
-(require 'js-beautify)
-(custom-set-variables
- '(js-beautify-path "~/dev/dotfiles/dependencies/js-beautify/python/js-beautify"))
-(global-set-key "\C-\M-T" 'js-beautify)
+;; (require 'js-beautify)
+;; (custom-set-variables
+;;  '(js-beautify-path "~/dev/dotfiles/dependencies/js-beautify/python/js-beautify"))
+;; (global-set-key "\C-\M-T" 'js-beautify)
 
 ;;************************************************************
 ;; Use Emacs Got Git (egg)
 ;;************************************************************
 
-(require 'egg)
+;; (require 'egg)
 
 ;;************************************************************
 ;; Ensure that buffers have unique names
 ;;************************************************************
 
-(require 'uniquify)
-(setq uniquify-buffer-name-style (quote forward))
+;; (require 'uniquify)
+;; (setq uniquify-buffer-name-style (quote forward))
 
 ;;************************************************************
 ;; Get some Textmate features in emacs!
 ;;************************************************************
 
-(require 'textmate)
-(textmate-mode)
+;; (require 'textmate)
+;; (textmate-mode)
 
 ;;************************************************************
 ;; Get multiple-major-mode working
 ;;************************************************************
 
-(require 'mmm-auto)
-(setq mmm-global-mode 'maybe)
+;; (require 'mmm-auto)
+;; (setq mmm-global-mode 'maybe)
 
 ;;************************************************************
 ;; Remove tabs/trailing whitespace from buffer on save
@@ -170,17 +170,19 @@
 ;; Load auto-complete
 ;;************************************************************
 
-(require 'auto-complete-config)
-(add-to-list 'ac-dictionary-directories "~/.emacs.d/site-lisp/auto-complete/ac-dict")
-(ac-config-default)
+;; (require 'auto-complete-config)
+;; (add-to-list 'ac-dictionary-directories "~/.emacs.d/site-lisp/auto-complete/ac-dict")
+;; (ac-config-default)
 
 ;;************************************************************
 ;; Load yasnippets for text expansion
 ;;************************************************************
 
 (require 'yasnippet)
-(yas/initialize)
-(yas/load-directory "~/.emacs.d/site-lisp/yasnippet/snippets")
+(yas-global-mode 1)
+
+;; (yas/initialize)
+;; (yas/load-directory "~/.emacs.d/site-lisp/yasnippet/snippets")
 
 ;;************************************************************
 ;; configure Python editing via Pymacs and pycomplete
@@ -197,7 +199,7 @@
 (autoload 'pymacs-load "pymacs" nil t)
 
 ; python tag completion from open buffers
-(require 'pycomplete)
+;; (require 'pycomplete)
 
 ;;************************************************************
 ;; python flymake syntax checking
@@ -278,9 +280,9 @@
 ;; configure MMM mode
 ;;************************************************************
 
-(load "~/.emacs.d/site-lisp/mmm-mako.elc")
-(add-to-list 'auto-mode-alist '("\\.mako\\'" . nxhtml-mumamo-mode))
-(mmm-add-mode-ext-class 'nxhtml-mumamo-mode "\\.mako\\'" 'mako)
+;; (load "~/.emacs.d/site-lisp/mmm-mako.elc")
+;; (add-to-list 'auto-mode-alist '("\\.mako\\'" . nxhtml-mumamo-mode))
+;; (mmm-add-mode-ext-class 'nxhtml-mumamo-mode "\\.mako\\'" 'mako)
 
 ;;************************************************************
 ;; helper functions

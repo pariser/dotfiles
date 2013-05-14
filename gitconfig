@@ -1,16 +1,19 @@
 [user]
-	name = Andrew Pariser
-	email = pariser@gmail.com
+    name = Andrew Pariesr
+    email = pariser@gmail.com
 
 [core]
-	excludesfile = /Users/pariser/.gitignore
+    editor = vim
+    excludesfile = /Users/pariser/.gitignore
 
 [color]
-	diff = auto
-	status = auto
-	branch = auto
+    diff = auto
+    status = auto
+    branch = auto
+
+[pull]
+    rebase = true
 
 [alias]
-	svn-diff = !git-svn-diff
-	permission-reset = "!git-diff -p | grep -E '^(diff|old mode|new mode)' | sed -e 's/^old/NEW/;s/^new/old/;s/^NEW/new/' | git apply"
-
+    permission-reset = "!git-diff -p | grep -E '^(diff|old mode|new mode)' | sed -e 's/^old/NEW/;s/^new/old/;s/^NEW/new/' | git apply"
+    add-branch-note = "!git config branch.$(git symbolic-ref HEAD|sed \"s/refs\\/heads\\///\").note $( if [ $# -gt 0 ]; then $1; fi)"
