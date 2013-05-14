@@ -1,3 +1,9 @@
+;; -*- mode: Emacs-Lisp; -*-
+
+; stop the startup messages!
+(setq inhibit-startup-echo-area-message t)
+(setq inhibit-startup-message t)
+
 ;;************************************************************
 ;; add local plugins to load-path
 ;;************************************************************
@@ -9,6 +15,8 @@
 (add-to-list 'load-path "/users/pariser/.emacs.d/site-lisp/auto-complete")
 (add-to-list 'load-path "/users/pariser/.emacs.d/site-lisp/yasnippet")
 (add-to-list 'load-path "/users/pariser/.emacs.d/site-lisp/pycomplete")
+(add-to-list 'load-path "/users/pariser/.emacs.d/site-lisp/textmate")
+(add-to-list 'load-path "/users/pariser/.emacs.d/site-lisp/rinari")
 
 ;;************************************************************
 ;; Emacs as server
@@ -30,17 +38,34 @@
 (global-set-key "\C-xp" 'switch-to-minibuffer-window)
 
 ;;************************************************************
-;; Allow downcase-region but disable its keyboard shortcut
-;;************************************************************
-
-(put 'downcase-region 'disabled nil)
-(global-unset-key "\C-x\C-l")
-
-;;************************************************************
 ;; Use revbufs.el
 ;;************************************************************
 
 (require 'revbufs)
+
+;;************************************************************
+;; Use haml-mode.el, sass-mode.el, scss-mode.el, yaml-mode.el
+;;************************************************************
+
+(require 'haml-mode)
+(require 'sass-mode)
+(require 'scss-mode)
+(require 'yaml-mode)
+
+(add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
+(add-hook
+ 'yaml-mode-hook
+ '(lambda ()
+    (define-key yaml-mode-map "\C-m" 'newline-and-indent)))
+
+;;************************************************************
+;; Use js-beautify.el
+;;************************************************************
+
+(require 'js-beautify)
+(custom-set-variables
+ '(js-beautify-path "~/dev/dotfiles/dependencies/js-beautify/python/js-beautify"))
+(global-set-key "\C-\M-T" 'js-beautify)
 
 ;;************************************************************
 ;; Use Emacs Got Git (egg)
@@ -53,6 +78,21 @@
 ;;************************************************************
 
 (require 'uniquify)
+(setq uniquify-buffer-name-style (quote forward))
+
+;;************************************************************
+;; Get some Textmate features in emacs!
+;;************************************************************
+
+(require 'textmate)
+(textmate-mode)
+
+;;************************************************************
+;; Get multiple-major-mode working
+;;************************************************************
+
+(require 'mmm-auto)
+(setq mmm-global-mode 'maybe)
 
 ;;************************************************************
 ;; Remove tabs/trailing whitespace from buffer on save
@@ -62,10 +102,6 @@
   "Untabify current buffer"
   (interactive)
   (untabify (point-min) (point-max)))
-
-(defun progmodes-hooks ()
-  "Hooks for programming modes"
-  (add-hook 'before-save-hook 'progmodes-write-hooks))
 
 (defun delete-trailing-whitespace-except-current-line ()
   (interactive)
@@ -88,35 +124,41 @@
     (untabify-buffer)
     (delete-trailing-whitespace-except-current-line)))
 
+(defun progmodes-hooks ()
+  "Hooks for programming modes"
+  (add-hook 'before-save-hook 'progmodes-write-hooks))
+
 (add-hook 'php-mode-hook    'progmodes-hooks)
 (add-hook 'python-mode-hook 'progmodes-hooks)
 (add-hook 'js-mode-hook     'progmodes-hooks)
 (add-hook 'nxhtml-mode-hook 'progmodes-hooks)
+(add-hook 'haml-mode-hook   'progmodes-hooks)
+(add-hook 'ruby-mode-hook   'progmodes-hooks)
 
 ;;************************************************************
 ;; to save emacs sessions
 ;;************************************************************
 
-; for saving emacs sessions
-(require 'desktop)
-(desktop-save-mode 1)
-(add-hook 'auto-save-hook (lambda () (desktop-save-in-desktop-dir)))
+;; ; for saving emacs sessions
+;; (require 'desktop)
+;; (desktop-save-mode 1)
+;; (add-hook 'auto-save-hook (lambda () (desktop-save-in-desktop-dir)))
 
-(setq desktop-buffers-not-to-save
-      (concat "\\("
-              "^nn\\.a[0-9]+\\|\\.log\\|(ftp)\\|^tags\\|^TAGS"
-              "\\|\\.emacs.*\\|\\.diary\\|\\.newsrc-dribble\\|\\.bbdb"
-              "\\)$"))
-(add-to-list 'desktop-modes-not-to-save 'dired-mode)
-(add-to-list 'desktop-modes-not-to-save 'Info-mode)
-(add-to-list 'desktop-modes-not-to-save 'info-lookup-mode)
-(add-to-list 'desktop-modes-not-to-save 'fundamental-mode)
+;; (setq desktop-buffers-not-to-save
+;;       (concat "\\("
+;;               "^nn\\.a[0-9]+\\|\\.log\\|(ftp)\\|^tags\\|^TAGS"
+;;               "\\|\\.emacs.*\\|\\.diary\\|\\.newsrc-dribble\\|\\.bbdb"
+;;               "\\)$"))
+;; (add-to-list 'desktop-modes-not-to-save 'dired-mode)
+;; (add-to-list 'desktop-modes-not-to-save 'Info-mode)
+;; (add-to-list 'desktop-modes-not-to-save 'info-lookup-mode)
+;; (add-to-list 'desktop-modes-not-to-save 'fundamental-mode)
 
 ;;************************************************************
 ;; to move buffer locations
 ;;************************************************************
 
-; allows me to swap buffers with keystrokes (instead of M-x o, C-x b, etc.)
+; move buffers with keystrokes (instead of M-x o, C-x b, etc.)
 (require 'buffer-move)
 
 (global-set-key (kbd "<C-S-up>")     'buf-move-up)
@@ -144,127 +186,111 @@
 ;; configure Python editing via Pymacs and pycomplete
 ;;************************************************************
 
-;; Initialize Pymacs
+; fix for pycomplete, now that python2 and python3 have their own mode maps
+(defvaralias 'python-mode-map 'python2-mode-map)
 
+; initialize Pymacs
 (autoload 'pymacs-apply "pymacs")
 (autoload 'pymacs-call "pymacs")
 (autoload 'pymacs-eval "pymacs" nil t)
 (autoload 'pymacs-exec "pymacs" nil t)
 (autoload 'pymacs-load "pymacs" nil t)
 
-;; (autoload 'python-mode "python-mode" "Python Mode." t)
-;; (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
-;; (add-to-list 'interpreter-mode-alist '("python" . python-mode))
-
+; python tag completion from open buffers
 (require 'pycomplete)
 
 ;;************************************************************
-;; python auto-completion via Rope
+;; python flymake syntax checking
+;;************************************************************
+;; Courtesy http://www.plope.com/Members/chrism/flymake-mode
+
+(when (load "flymake" t)
+  (defun flymake-pyflakes-init ()
+    (let* ((temp-file (flymake-init-create-temp-buffer-copy
+                       'flymake-create-temp-inplace))
+           (local-file (file-relative-name
+                        temp-file
+                        (file-name-directory buffer-file-name))))
+      (list "pyflakes" (list local-file))))
+  (add-to-list 'flymake-allowed-file-name-masks
+               '("\\.py\\'" flymake-pyflakes-init)))
+
+(add-hook 'find-file-hook 'flymake-find-file-hook)
+
+;; don't run flymake for html documents
+(delete '("\\.html?\\'" flymake-xml-init) flymake-allowed-file-name-masks)
+
+;;************************************************************
+;; ruby flymake syntax checking
 ;;************************************************************
 
-;; Initialize Rope
+;; ;; Invoke ruby with '-c' to get syntax checking
+;; (defun flymake-ruby-init ()
+;;   (let* ((temp-file   (flymake-init-create-temp-buffer-copy
+;;                        'flymake-create-temp-inplace))
+;;          (local-file  (file-relative-name
+;;                        temp-file
+;;                        (file-name-directory buffer-file-name))))
+;;     (list "ruby" (list "-c" local-file))))
 
-;; (pymacs-load "ropemacs" "rope-")
-;; (setq ropemacs-enable-autoimport t)
+;; (push '(".+\\.rb$" flymake-ruby-init) flymake-allowed-file-name-masks)
+;; (push '("Rakefile$" flymake-ruby-init) flymake-allowed-file-name-masks)
 
-;; ;; Initialize Yasnippet
-;; ;Don't map TAB to yasnippet
-;; ;In fact, set it to something we'll never use because
-;; ;we'll only ever trigger it indirectly.
+;; (push '("^\\(.*\\):\\([0-9]+\\): \\(.*\\)$" 1 2 nil 3) flymake-err-line-patterns)
 
-;; (setq yas/trigger-key (kbd "C-c <kp-multiply>"))
-;; (yas/initialize)
-;; (yas/load-directory "~/.emacs.d/snippets")
-
-;; ;;************************************************************
-;; ;; Code lifted from
-;; ;; http://www.enigmacurry.com/2009/01/21/autocompleteel-python-code-completion-in-emacs/
-;; ;; xxxSTART-AutoComplete
-
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ;;; Auto-completion
-;; ;;;  Integrates:
-;; ;;;   1) Rope
-;; ;;;   2) Yasnippet
-;; ;;;   all with AutoComplete.el
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; (defun prefix-list-elements (list prefix)
-;;   (let (value)
-;;     (nreverse
-;;      (dolist (element list value)
-;;       (setq value (cons (format "%s%s" prefix element) value))))))
-;; (defvar ac-source-rope
-;;   '((candidates
-;;      . (lambda ()
-;;          (prefix-list-elements (rope-completions) ac-target))))
-;;   "Source for Rope")
-;; (defun ac-python-find ()
-;;   "Python `ac-find-function'."
-;;   (require 'thingatpt)
-;;   (let ((symbol (car-safe (bounds-of-thing-at-point 'symbol))))
-;;     (if (null symbol)
-;;         (if (string= "." (buffer-substring (- (point) 1) (point)))
-;;             (point)
-;;           nil)
-;;       symbol)))
-;; (defun ac-python-candidate ()
-;;   "Python `ac-candidates-function'"
-;;   (let (candidates)
-;;     (dolist (source ac-sources)
-;;       (if (symbolp source)
-;;           (setq source (symbol-value source)))
-;;       (let* ((ac-limit (or (cdr-safe (assq 'limit source)) ac-limit))
-;;              (requires (cdr-safe (assq 'requires source)))
-;;              cand)
-;;         (if (or (null requires)
-;;                 (>= (length ac-target) requires))
-;;             (setq cand
-;;                   (delq nil
-;;                         (mapcar (lambda (candidate)
-;;                                   (propertize candidate 'source source))
-;;                                 (funcall (cdr (assq 'candidates source)))))))
-;;         (if (and (> ac-limit 1)
-;;                  (> (length cand) ac-limit))
-;;             (setcdr (nthcdr (1- ac-limit) cand) nil))
-;;         (setq candidates (append candidates cand))))
-;;     (delete-dups candidates)))
-;; (add-hook 'python-mode-hook
-;;           (lambda ()
-;;                  (auto-complete-mode 1)
-;;                  (set (make-local-variable 'ac-sources)
-;;                       (append ac-sources '(ac-source-rope) '(ac-source-yasnippet)))
-;;                  (set (make-local-variable 'ac-find-function) 'ac-python-find)
-;;                  (set (make-local-variable 'ac-candidate-function) 'ac-python-candidate)
-;;                  (set (make-local-variable 'ac-auto-start) nil)))
-
-;; ;;Ryan's python specific tab completion
-;; (defun ryan-python-tab ()
-;;   ; Try the following:
-;;   ; 1) Do a yasnippet expansion
-;;   ; 2) Do a Rope code completion
-;;   ; 3) Do an indent
-;;   (interactive)
-;;   (if (eql (ac-start) 0)
-;;       (indent-for-tab-command)))
-
-;; (defadvice ac-start (before advice-turn-on-auto-start activate)
-;;   (set (make-local-variable 'ac-auto-start) t))
-;; (defadvice ac-cleanup (after advice-turn-off-auto-start activate)
-;;   (set (make-local-variable 'ac-auto-start) nil))
-
-;; (define-key python-mode-map "\t" 'ryan-python-tab)
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ;;; End Auto Completion
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; ;; xxxFINISH-AutoComplete
-;; ;;************************************************************
+;; (add-hook 'ruby-mode-hook
+;;           '(lambda ()
+;;              ;; Don't want flymake mode for ruby regions in rhtml files and also on read only files
+;;              (if (and (not (null buffer-file-name)) (file-writable-p buffer-file-name))
+;;                  (flymake-mode))
+;;              ))
 
 ;;************************************************************
 ;; configure HTML editing
 ;;************************************************************
 
 (load "~/.emacs.d/site-lisp/nxhtml/autostart.el")
+(add-to-list 'auto-mode-alist '("\\.html$'" . nxhtml-mumamo-mode))
+(add-to-list 'magic-mode-alist '("\\(?:<\\?xml\\s +[^>]*>\\)?\\s *<\\(?:!--\\(?:[^-]\\|-[^-]\\)*-->\\s *<\\)*\\(?:!DOCTYPE\\s +[^>]*>\\s *<\\s *\\(?:!--\\(?:[^-]\\|-[^-]\\)*-->\\s *<\\)*\\)?[Hh][Tt][Mm][Ll]" . nxhtml-mumamo-mode))
+
+(delete '("\\.html\\'" . html-mumamo-mode) auto-mode-alist)
+(delete '("\\.html\\'" . nxhtml-mumamo-mode) auto-mode-alist)
+(delete '("\\.htm\\'" . nxhtml-mumamo-mode) auto-mode-alist)
+(delete '("\\.shtml$" . html-helper-mode) auto-mode-alist)
+(delete '("\\.html$" . html-helper-mode) auto-mode-alist)
+(delete '("\\.s?html?\\(\\.[a-zA-Z_]+\\)?\\'" . nxhtml-mumamo-mode) auto-mode-alist)
+(delete '("\\.s?html?\\(\\.[a-zA-Z_]+\\)?\\'" . html-mumamo-mode) auto-mode-alist)
+(delete '("\\(?:<\\?xml\\s +[^>]*>\\)?\\s *<\\(?:!--\\(?:[^-]\\|-[^-]\\)*-->\\s *<\\)*\\(?:!DOCTYPE\\s +[^>]*>\\s *<\\s *\\(?:!--\\(?:[^-]\\|-[^-]\\)*-->\\s *<\\)*\\)?[Hh][Tt][Mm][Ll]" . nxhtml-mumamo-mode) magic-mode-alist)
+(delete '("\\(?:<\\?xml\\s +[^>]*>\\)?\\s *<\\(?:!--\\(?:[^-]\\|-[^-]\\)*-->\\s *<\\)*\\(?:!DOCTYPE\\s +[^>]*>\\s *<\\s *\\(?:!--\\(?:[^-]\\|-[^-]\\)*-->\\s *<\\)*\\)?[Hh][Tt][Mm][Ll]" . html-helper-mode) magic-mode-alist)
+
+;; Mumamo is making emacs 23.3 freak out:
+(when (and (equal emacs-major-version 23)
+           (equal emacs-minor-version 3))
+  (eval-after-load "bytecomp"
+    '(add-to-list 'byte-compile-not-obsolete-vars
+                  'font-lock-beginning-of-syntax-function))
+  ;; tramp-compat.el clobbers this variable!
+  (eval-after-load "tramp-compat"
+    '(add-to-list 'byte-compile-not-obsolete-vars
+                  'font-lock-beginning-of-syntax-function)))
+
+;;************************************************************
+;; configure MMM mode
+;;************************************************************
+
+(load "~/.emacs.d/site-lisp/mmm-mako.elc")
+(add-to-list 'auto-mode-alist '("\\.mako\\'" . nxhtml-mumamo-mode))
+(mmm-add-mode-ext-class 'nxhtml-mumamo-mode "\\.mako\\'" 'mako)
+
+;;************************************************************
+;; helper functions
+;;************************************************************
+
+(defun buffer-mode (buffer-or-string)
+  "Returns the major mode associated with a buffer."
+  (save-excursion
+     (set-buffer buffer-or-string)
+     major-mode))
 
 (defun ap-pretty-print-xml-region (begin end)
   "Pretty format XML markup in region. You need to have nxml-mode
@@ -280,10 +306,6 @@ by using nxml's indentation rules."
         (backward-char) (insert "\n"))
       (indent-region begin end))
     (message "Ah, much better!"))
-
-;;************************************************************
-;; helper functions
-;;************************************************************
 
 (defun ap-toggle-identifier-naming-style ()
   "Toggles the symbol at point between C-style naming,
@@ -316,5 +338,45 @@ by using nxml's indentation rules."
 ;; variable customizations
 ;;************************************************************
 
+; Allow downcase-region but disable its keyboard shortcut
+(put 'downcase-region 'disabled nil)
+(global-unset-key "\C-x\C-l")
+
+; fill-column width set to 90 characters
 (setq-default fill-column 90)
 
+; never use tabs
+(setq-default indent-tabs-mode nil)
+
+; tab indent level set to 4 spaces
+(setq-default py-indent-offset 4)
+(setq-default python-indent 4)
+
+; don't compile scss at save
+(setq-default scss-sass-options '("--cache-location" "/tmp/.sass-cache"))
+(setq-default scss-compile-at-save nil)
+(setq-default scss-sass-command "/usr/bin/sass")
+
+; tab indent level set to 2 spaces for javascript
+(setq-default js-indent-level 2)
+
+; turn off the toolbar
+(tool-bar-mode 0)
+
+; no seriously, I really want haml to load instead of nxhtml mode
+(setq auto-mode-alist
+ (cons '("\\.haml$" . haml-mode) auto-mode-alist))
+
+;; (require 'ido)
+;; (ido-mode t)
+
+;; (add-to-list 'load-path "/users/pariser/.emacs.d/site-lisp/rinari")
+;; (require 'rinari)
+
+;; (add-to-list 'load-path "~/path/to/your/elisp/nxml-directory/util")
+
+;; (add-to-list 'load-path "~/.emacs.d/site-lisp/nxhtml/util")
+;; (require 'mumamo-fun)
+;; (setq mumamo-chunk-coloring 'submode-colored)
+;; (add-to-list 'auto-mode-alist '("\\.rhtml\\'" . eruby-html-mumamo))
+;; (add-to-list 'auto-mode-alist '("\\.html\\.erb\\'" . eruby-html-mumamo))

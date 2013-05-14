@@ -7,3 +7,30 @@
 [submodule "dependencies/egg"]
 	path = dependencies/egg
 	url = https://github.com/bogolisk/egg.git
+[submodule "dependencies/full-ack"]
+	path = dependencies/full-ack
+	url = https://github.com/nschum/full-ack.git
+[submodule "dependencies/textmate"]
+	path = dependencies/textmate
+	url = https://github.com/defunkt/textmate.el.git
+[submodule "dependencies/js-beautify"]
+	path = dependencies/js-beautify
+	url = https://github.com/einars/js-beautify
+[submodule "dependencies/js-beautify.el"]
+	path = dependencies/js-beautify.el
+	url = git://gist.github.com/712405.git
+[submodule "dependencies/haml-mode"]
+	path = dependencies/haml-mode
+	url = git://github.com/nex3/haml-mode.git
+[submodule "dependencies/rinari"]
+	path = dependencies/rinari
+	url = https://github.com/eschulte/rinari.git
+[submodule "dependencies/sass-mode"]
+	path = dependencies/sass-mode
+	url = https://github.com/nex3/sass-mode.git
+[submodule "dependencies/yaml-mode"]
+	path = dependencies/yaml-mode
+	url = https://github.com/yoshiki/yaml-mode.git
+[submodule "dependencies/scss-mode"]
+	path = dependencies/scss-mode
+	url = git://github.com/antonj/scss-mode.git

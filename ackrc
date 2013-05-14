@@ -1,0 +1,7 @@
+--noheading
+--break
+--type-set=haml=.haml
+--type-set=groovy=.groovy
+--type-set=scss=.scss
+--type-set=sass=.sass
+
