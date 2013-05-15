@@ -49,14 +49,14 @@
 
 (require 'haml-mode)
 ;; (require 'sass-mode)
-;; (require 'scss-mode)
-;; (require 'yaml-mode)
+(require 'scss-mode)
+(require 'yaml-mode)
 
-;; (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
-;; (add-hook
-;;  'yaml-mode-hook
-;;  '(lambda ()
-;;     (define-key yaml-mode-map "\C-m" 'newline-and-indent)))
+(add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
+(add-hook
+ 'yaml-mode-hook
+ '(lambda ()
+    (define-key yaml-mode-map "\C-m" 'newline-and-indent)))
 
 ;;************************************************************
 ;; Use js-beautify.el
@@ -84,8 +84,8 @@
 ;; Get some Textmate features in emacs!
 ;;************************************************************
 
-;; (require 'textmate)
-;; (textmate-mode)
+(require 'textmate)
+(textmate-mode)
 
 ;;************************************************************
 ;; Get multiple-major-mode working
@@ -355,6 +355,7 @@ by using nxml's indentation rules."
 (setq-default python-indent 4)
 
 ; don't compile scss at save
+(setq-default scss-sass-command "/Users/pariser/.rvm/gems/ruby-1.9.3-p392/bin/sass")
 (setq-default scss-sass-options '("--cache-location" "/tmp/.sass-cache"))
 (setq-default scss-compile-at-save nil)
 (setq-default scss-sass-command "/usr/bin/sass")
