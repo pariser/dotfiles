@@ -4,6 +4,8 @@ EMACS="/Applications/Aquamacs.app/Contents/MacOS/Aquamacs"
 
 # Get the path of the deploy script
 LOCALPATH="$( cd "$( dirname "$0" )" && pwd )"
+BUILDPATH=$LOCALPATH/build
+SITELISPPATH=$LOCALPATH/emacs.d/site-lisp
 
 echo '************************************************************'
 
@@ -50,18 +52,16 @@ else
   popd > /dev/null
 fi
 
-# Compile pymacs
-pushd $LOCALPATH/dependencies/Pymacs > /dev/null
-$EMACS -Q -L . -batch -f batch-byte-compile pymacs.el
-popd > /dev/null
+FILES="pymacs.el"
+OUTFILES="pymacs.elc"
+DIRECTORY=$LOCALPATH/dependencies/Pymacs
 
-if [[ -f $LOCALPATH/emacs.d/site-lisp/pymacs.el ]]; then
-  echo "Pymacs emacs lisp file already deployed; skipping"
-else
-  echo "Linking Pymacs emacs lisp file"
-  ln -s $LOCALPATH/dependencies/Pymacs/pymacs.el $LOCALPATH/emacs.d/site-lisp/pymacs.el
-  ln -s $LOCALPATH/dependencies/Pymacs/pymacs.elc $LOCALPATH/emacs.d/site-lisp/pymacs.elc
-fi
+(pushd $DIRECTORY > /dev/null) &&
+ ($EMACS -Q -L . -batch -f batch-byte-compile $FILES) &&
+ (mv $OUTFILES $LOCALPATH/build/) &&
+ (rm $LOCALPATH/emacs.d/site-lisp/$OUTFILES) &&
+ (ln -s $LOCALPATH/build/$OUTFILES $LOCALPATH/emacs.d/site-lisp/$OUTFILES) &&
+ (popd > /dev/null)
 
 echo '************************************************************'
 
@@ -89,29 +89,10 @@ done
 
 echo '************************************************************'
 
-# Install yasnippet for emacs
-if [[ -d $LOCALPATH/dependencies/yasnippet ]] ; then
-  echo "Alread found yasnippet subversion repository; running svn update"
-  pushd $LOCALPATH/dependencies/yasnippet > /dev/null
-  svn update
-  popd > /dev/null
-else
-  echo "Checking out newest verison of yasnippet from Google Code"
-  svn checkout http://yasnippet.googlecode.com/svn/trunk/ $LOCALPATH/dependencies/yasnippet
-fi
-
-# Compile yasnippet emacs lisp files
-pushd $LOCALPATH/dependencies/yasnippet > /dev/null
-$EMACS -Q -L . -batch -f batch-byte-compile yasnippet.el dropdown-list.el
-popd > /dev/null
-
-# Link yasnippet
-if [[ -f $LOCALPATH/emacs.d/site-lisp/yasnippet ]] ; then
-  echo "yasnippet has been deployed; skipping"
-elif ! [[ -L $LOCALPATH/emacs.d/site-lisp/yasnippet ]] ; then
-  echo "Linking yasnippet"
-  ln -s $LOCALPATH/dependencies/yasnippet $LOCALPATH/emacs.d/site-lisp/yasnippet
-fi
+pushd $LOCALPATH/dependencies/yasnippet
+$EMACS -Q -L . -batch -f batch-byte-compile yasnippet.el
+mv yasnippet.elc $BUILDPATH
+ln -s $BUILDPATH/yasnippet.elc $SITELISPPATH/yasnippet.elc
 
 echo '************************************************************'
 
@@ -196,35 +177,22 @@ fi
 
 echo '************************************************************'
 
-# Compile haml-mode
-pushd $LOCALPATH/dependencies/haml-mode > /dev/null
+# haml-mode
+pushd $LOCALPATH/dependencies/haml-mode
 $EMACS -Q -L . -batch -f batch-byte-compile haml-mode.el
-popd > /dev/null
-
-# Install haml-mode
-if [[ -f $LOCALPATH/emacs.d/site-lisp/haml-mode.el ]] ; then
-  echo "haml-mode.el has been deployed; skipping"
-elif ! [[ -L $LOCALPATH/emacs.d/site-lisp/haml-mode.el ]] ; then
-  echo "Linking haml-mode.el"
-  ln -s $LOCALPATH/dependencies/haml-mode/haml-mode.el $LOCALPATH/emacs.d/site-lisp/haml-mode.el
-  ln -s $LOCALPATH/dependencies/haml-mode/haml-mode.elc $LOCALPATH/emacs.d/site-lisp/haml-mode.elc
-fi
+mv haml-mode.elc $BUILDPATH
+rm $SITELISPPATH/haml-mode.elc
+ln -s $BUIDPATH/haml-mode.elc $SITELISPPATH/haml-mode.elc
+popd
 
 echo '************************************************************'
 
-# Compile yaml-mode
+# yaml-mode
 pushd $LOCALPATH/dependencies/yaml-mode > /dev/null
 $EMACS -Q -L . -batch -f batch-byte-compile yaml-mode.el
+mv yaml-mode.elc $BUILDPATH
+ln -s $BUILDPATH/yaml-mode.elc $SITELISPPATH/yaml-mode.elc
 popd > /dev/null
-
-# Install yaml-mode
-if [[ -f $LOCALPATH/emacs.d/site-lisp/yaml-mode.el ]] ; then
-  echo "yaml-mode.el has been deployed; skipping"
-elif ! [[ -L $LOCALPATH/emacs.d/site-lisp/yaml-mode.el ]] ; then
-  echo "Linking yaml-mode.el"
-  ln -s $LOCALPATH/dependencies/yaml-mode/yaml-mode.el $LOCALPATH/emacs.d/site-lisp/yaml-mode.el
-  ln -s $LOCALPATH/dependencies/yaml-mode/yaml-mode.elc $LOCALPATH/emacs.d/site-lisp/yaml-mode.elc
-fi
 
 echo '************************************************************'
 
@@ -245,37 +213,30 @@ fi
 echo '************************************************************'
 
 # # Compile scss-mode
+
+pushd $LOCALPATH/dependencies/scss-mode > /dev/null
+$EMACS -Q -L . -batch -f batch-byte-compile scss-mode.el
+mv scss-mode.elc $BUILDPATH
+ln -s $BUILDPATH/scss-mode.elc $SITELISPPATH/scss-mode.elc
+popd > /dev/null
+
 # pushd $LOCALPATH/dependencies/scss-mode > /dev/null
 # $EMACS -Q -L $LOCALPATH/dependencies/haml-mode -L . -batch -f batch-byte-compile scss-mode.el
 # popd > /dev/null
 
-# Install scss-mode
-if [[ -f $LOCALPATH/emacs.d/site-lisp/scss-mode.el ]] ; then
-  echo "scss-mode.el has been deployed; skipping"
-elif ! [[ -L $LOCALPATH/emacs.d/site-lisp/scss-mode.el ]] ; then
-  echo "Linking scss-mode.el"
-  ln -s $LOCALPATH/dependencies/scss-mode/scss-mode.el $LOCALPATH/emacs.d/site-lisp/scss-mode.el
-  # ln -s $LOCALPATH/dependencies/scss-mode/scss-mode.elc $LOCALPATH/emacs.d/site-lisp/scss-mode.elc
-fi
+# # Install scss-mode
+# if [[ -f $LOCALPATH/emacs.d/site-lisp/scss-mode.el ]] ; then
+#   echo "scss-mode.el has been deployed; skipping"
+# elif ! [[ -L $LOCALPATH/emacs.d/site-lisp/scss-mode.el ]] ; then
+#   echo "Linking scss-mode.el"
+#   ln -s $LOCALPATH/dependencies/scss-mode/scss-mode.el $LOCALPATH/emacs.d/site-lisp/scss-mode.el
+#   # ln -s $LOCALPATH/dependencies/scss-mode/scss-mode.elc $LOCALPATH/emacs.d/site-lisp/scss-mode.elc
+# fi
 
 echo '************************************************************'
 
-# Compile rinari
-pushd $LOCALPATH/dependencies/rinari > /dev/null
-$EMACS -Q -L . -batch -f batch-byte-compile rinari.el rinari-merb.el
-popd > /dev/null
-
-# Install rinari.el
-if [[ -f $LOCALPATH/emacs.d/site-lisp/rinari.el ]] ; then
-  echo "rinari.el has been deployed; skipping"
-elif ! [[ -L $LOCALPATH/emacs.d/site-lisp/rinari.el ]] ; then
-  echo "Linking rinari.el"
-  ln -s $LOCALPATH/dependencies/rinari/rinari.el $LOCALPATH/emacs.d/site-lisp/rinari.el
-  ln -s $LOCALPATH/dependencies/rinari/rinari.elc $LOCALPATH/emacs.d/site-lisp/rinari.elc
-  ln -s $LOCALPATH/dependencies/rinari/rinari-merb.el $LOCALPATH/emacs.d/site-lisp/rinari-merb.el
-  ln -s $LOCALPATH/dependencies/rinari/rinari-merb.elc $LOCALPATH/emacs.d/site-lisp/rinari-merb.elc
-  ln -s $LOCALPATH/dependencies/rinari/util/ruby-compilation.el $LOCALPATH/emacs.d/site-lisp/ruby-compilation.el
-fi
+# Rinari, no compilation required
+ln -s $LOCALPATH/dependencies/rinari $SITELISPPATH/rinari
 
 echo '************************************************************'
 
