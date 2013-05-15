@@ -18,7 +18,7 @@
 	url = https://github.com/einars/js-beautify
 [submodule "dependencies/js-beautify.el"]
 	path = dependencies/js-beautify.el
-	url = git://gist.github.com/712405.git
+	url = https://gist.github.com/712405.git
 [submodule "dependencies/haml-mode"]
 	path = dependencies/haml-mode
 	url = git://github.com/nex3/haml-mode.git
