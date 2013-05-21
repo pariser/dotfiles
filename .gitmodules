@@ -3,7 +3,7 @@
 	url = https://github.com/pinard/Pymacs.git
 [submodule "dependencies/auto-complete"]
 	path = dependencies/auto-complete
-	url = https://github.com/m2ym/auto-complete
+	url = https://github.com/auto-complete/auto-complete.git
 [submodule "dependencies/egg"]
 	path = dependencies/egg
 	url = https://github.com/bogolisk/egg.git
@@ -37,3 +37,6 @@
 [submodule "dependencies/yasnippet"]
 	path = dependencies/yasnippet
 	url = https://github.com/capitaomorte/yasnippet.git
+[submodule "dependencies/mmm-mode"]
+	path = dependencies/mmm-mode
+	url = https://github.com/purcell/mmm-mode.git

@@ -12,7 +12,7 @@
 
 (add-to-list 'load-path "/users/pariser/.emacs.d/site-lisp/mmm-mode")
 (add-to-list 'load-path "/users/pariser/.emacs.d/site-lisp/egg")
-(add-to-list 'load-path "/users/pariser/.emacs.d/site-lisp/auto-complete")
+;; (add-to-list 'load-path "/users/pariser/.emacs.d/site-lisp/auto-complete")
 (add-to-list 'load-path "/users/pariser/.emacs.d/site-lisp/yasnippet")
 (add-to-list 'load-path "/users/pariser/.emacs.d/site-lisp/pycomplete")
 (add-to-list 'load-path "/users/pariser/.emacs.d/site-lisp/textmate")
@@ -169,6 +169,9 @@
 ;;************************************************************
 ;; Load auto-complete
 ;;************************************************************
+
+;; TO INSTALL:
+;; M-x load-file /path/to/auto-complete/etc/install.el
 
 ;; (require 'auto-complete-config)
 ;; (add-to-list 'ac-dictionary-directories "~/.emacs.d/site-lisp/auto-complete/ac-dict")

@@ -4,6 +4,7 @@ EMACS="/Applications/Aquamacs.app/Contents/MacOS/Aquamacs"
 
 # Get the path of the deploy script
 LOCALPATH="$( cd "$( dirname "$0" )" && pwd )"
+LOCALPATH=/Users/pariser/dev/dotfiles
 BUILDPATH=$LOCALPATH/build
 SITELISPPATH=$LOCALPATH/emacs.d/site-lisp
 
@@ -240,5 +241,19 @@ ln -s $LOCALPATH/dependencies/rinari $SITELISPPATH/rinari
 
 echo '************************************************************'
 
-exit 0
+# Auto-complete
+pushd $LOCALPATH/dependencies/auto-complete > /dev/null
+git submodule init
+git submodule update
 
+# Auto-complete dependency #2 (popup)
+pushd lib/popup/ > /dev/null
+$EMACS -Q -L . -batch -f batch-byte-compile popup.el
+mv popup.elc $BUILDPATH
+ln -s $BUILDPATH/popup.elc $SITELISPPATH/popup.elc
+popd > /dev/null
+
+
+echo '************************************************************'
+
+exit 0
