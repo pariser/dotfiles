@@ -40,3 +40,6 @@
 [submodule "dependencies/mmm-mode"]
 	path = dependencies/mmm-mode
 	url = https://github.com/purcell/mmm-mode.git
+[submodule "dependencies/html5-el"]
+	path = dependencies/html5-el
+	url = https://github.com/hober/html5-el.git
