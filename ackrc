@@ -4,4 +4,5 @@
 --type-set=groovy=.groovy
 --type-set=scss=.scss
 --type-set=sass=.sass
-
+--type-set=log=.log
+--nolog
