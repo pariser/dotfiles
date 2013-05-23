@@ -127,3 +127,13 @@ alias nt="nosetests --nocapture --nologcapture --tests"
 
 alias serve="python -m SimpleHTTPServer 8000"
 
+alias be="bundle exec"
+
+########################################################
+# Load non-version controlled (private) bashrc files
+########################################################
+
+for f in ~/.bash_ext_*; do
+  source $f
+done
+
