@@ -4,19 +4,23 @@
 (setq inhibit-startup-echo-area-message t)
 (setq inhibit-startup-message t)
 
+(setq custom-file "/Users/pariser/.emacs-custom.el")
+(load custom-file)
+
 ;;************************************************************
 ;; add local plugins to load-path
 ;;************************************************************
 
 (add-to-list 'load-path "/Users/pariser/.emacs.d/site-lisp")
 
-(add-to-list 'load-path "/users/pariser/.emacs.d/site-lisp/mmm-mode")
-(add-to-list 'load-path "/users/pariser/.emacs.d/site-lisp/egg")
-;; (add-to-list 'load-path "/users/pariser/.emacs.d/site-lisp/auto-complete")
-(add-to-list 'load-path "/users/pariser/.emacs.d/site-lisp/yasnippet")
-(add-to-list 'load-path "/users/pariser/.emacs.d/site-lisp/pycomplete")
-(add-to-list 'load-path "/users/pariser/.emacs.d/site-lisp/textmate")
-(add-to-list 'load-path "/users/pariser/.emacs.d/site-lisp/rinari")
+(add-to-list 'load-path "/Users/pariser/.emacs.d/site-lisp/mmm-mode")
+(add-to-list 'load-path "/Users/pariser/.emacs.d/site-lisp/egg")
+(add-to-list 'load-path "/Users/pariser/.emacs.d/site-lisp/auto-complete")
+(add-to-list 'load-path "/Users/pariser/.emacs.d/site-lisp/yasnippet")
+(add-to-list 'load-path "/Users/pariser/.emacs.d/site-lisp/pycomplete")
+(add-to-list 'load-path "/Users/pariser/.emacs.d/site-lisp/textmate")
+(add-to-list 'load-path "/Users/pariser/.emacs.d/site-lisp/rinari")
+(add-to-list 'load-path "/Users/pariser/.emacs.d/site-lisp/html5-el")
 
 ;;************************************************************
 ;; Emacs as server
@@ -173,9 +177,9 @@
 ;; TO INSTALL:
 ;; M-x load-file /path/to/auto-complete/etc/install.el
 
-;; (require 'auto-complete-config)
-;; (add-to-list 'ac-dictionary-directories "~/.emacs.d/site-lisp/auto-complete/ac-dict")
-;; (ac-config-default)
+(require 'auto-complete-config)
+(add-to-list 'ac-dictionary-directories "~/.emacs.d/site-lisp/auto-complete/ac-dict")
+(ac-config-default)
 
 ;;************************************************************
 ;; Load yasnippets for text expansion
@@ -288,6 +292,19 @@
 ;; (mmm-add-mode-ext-class 'nxhtml-mumamo-mode "\\.mako\\'" 'mako)
 
 ;;************************************************************
+;; configure HTML5-EL
+;;************************************************************
+
+(eval-after-load "rng-loc"
+  '(add-to-list 'rng-schema-locating-files "/Users/pariser/.emacs.d/site-lisp/html5-el/schemas.xml"))
+
+(require 'whattf-dt)
+
+;; (load "~/.emacs.d/site-lisp/mmm-mako.elc")
+;; (add-to-list 'auto-mode-alist '("\\.mako\\'" . nxhtml-mumamo-mode))
+;; (mmm-add-mode-ext-class 'nxhtml-mumamo-mode "\\.mako\\'" 'mako)
+
+;;************************************************************
 ;; helper functions
 ;;************************************************************
 
@@ -338,6 +355,12 @@ by using nxml's indentation rules."
         (replace-match (funcall func (match-string 1))
                        t nil))
       (widen))))
+
+(defun what-face (pos)
+  (interactive "d")
+  (let ((face (or (get-char-property (point) 'read-face-name)
+                  (get-char-property (point) 'face))))
+    (if face (message "Face: %s" face) (message "No face at %d" pos))))
 
 ;;************************************************************
 ;; variable customizations
