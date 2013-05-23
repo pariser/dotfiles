@@ -18,6 +18,3 @@
     permission-reset = "!git-diff -p | grep -E '^(diff|old mode|new mode)' | sed -e 's/^old/NEW/;s/^new/old/;s/^NEW/new/' | git apply"
     add-branch-note = "!git config branch.$(git symbolic-ref HEAD|sed \"s/refs\\/heads\\///\").note $( if [ $# -gt 0 ]; then $1; fi)"
 
-[push]
-    default = simple
-
