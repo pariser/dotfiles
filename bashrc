@@ -26,8 +26,43 @@ fi
 # Terminal Prompt
 ########################################################
 
+function git_out_of_sync() {
+    # return is one of:
+    # 0 = branch in sync
+    # 1 = branch modified
+    # 2 = untracked files
+
+    STATUS=0
+
+    git diff --no-ext-diff --quiet || STATUS=1
+
+    if [[ $STATUS -eq 0 ]]; then
+        STATUS=`git ls-files --exclude-standard --others | wc -l`
+        if [[ $STATUS -ne 0 ]]; then STATUS=2; fi
+    fi
+
+    return $STATUS
+}
+
+function git_sync_status_prompt() {
+    git status > /dev/null 2>&1 || return 0
+
+    git_out_of_sync
+    CODE=$?
+
+    if [[ "x$OSTYPE" == "xdarwin12" ]]; then
+        if [[ $CODE -eq 2 ]]; then
+            echo " ❔ "
+        elif [[ $CODE -eq 1 ]]; then
+            echo " ❌ "
+        else
+            echo " ✅ "
+        fi
+    fi
+}
+
 function parse_git_branch() {
-  git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(git::\1) /'
+  git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e "s/* \(.*\)/(git::\1$(git_sync_status_prompt)) /"
 }
 
 function parse_svn_url() {
