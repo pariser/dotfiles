@@ -57,6 +57,12 @@ FILES="pymacs.el"
 OUTFILES="pymacs.elc"
 DIRECTORY=$LOCALPATH/dependencies/Pymacs
 
+# Change a setting in ppppconfig file for Aquamacs compatibility
+(pushd $DIRECTORY > /dev/null &&
+ cp ppppconfig.py ppppconfig.py.bak &&
+ sed "s/^DEFADVICE_OK.*/DEFADVICE_OK = 'nil'/" ppppconfig.py.bak > ppppconfig.py &&
+ popd > /dev/null)
+
 (pushd $DIRECTORY > /dev/null) &&
  ($EMACS -Q -L . -batch -f batch-byte-compile $FILES) &&
  (mv $OUTFILES $LOCALPATH/build/) &&
