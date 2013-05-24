@@ -48,13 +48,17 @@
 (require 'revbufs)
 
 ;;************************************************************
+;; Rails!
 ;; Use haml-mode.el, sass-mode.el, scss-mode.el, yaml-mode.el
+;; Start ruby-mode when opening .rake files
 ;;************************************************************
 
 (require 'haml-mode)
 ;; (require 'sass-mode)
 (require 'scss-mode)
 (require 'yaml-mode)
+
+(setq auto-mode-alist (cons '("\\.rake\\'" . ruby-mode) auto-mode-alist))
 
 (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
 (add-hook
