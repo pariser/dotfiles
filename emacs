@@ -70,10 +70,10 @@
 ;; Use js-beautify.el
 ;;************************************************************
 
-;; (require 'js-beautify)
-;; (custom-set-variables
-;;  '(js-beautify-path "~/dev/dotfiles/dependencies/js-beautify/python/js-beautify"))
-;; (global-set-key "\C-\M-T" 'js-beautify)
+(require 'js-beautify)
+(custom-set-variables
+ '(js-beautify-path "/usr/local/bin/js-beautify"))
+(global-set-key "\C-\M-T" 'js-beautify)
 
 ;;************************************************************
 ;; Use Emacs Got Git (egg)

@@ -168,6 +168,8 @@ fi
 
 echo '************************************************************'
 
+sudo pip install jsbeautifier
+
 # Compile js-beautify.el
 pushd $LOCALPATH/dependencies/js-beautify.el > /dev/null
 $EMACS -Q -L . -batch -f batch-byte-compile js-beautify.el
