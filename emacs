@@ -76,6 +76,41 @@
 (global-set-key "\C-\M-T" 'js-beautify)
 
 ;;************************************************************
+;; Use flymake mode in javascript
+;;************************************************************
+
+;; commented for now -- because of the rails asset pipeline and
+;; rails "require" statements, none of the js files pass jslint
+;; because they reference variables in other files
+
+;; (when (load "flymake" t)
+;;   (defun flymake-jslint-init ()
+;;     (let* ((temp-file (flymake-init-create-temp-buffer-copy
+;;                        'flymake-create-temp-inplace))
+;;            (local-file (file-relative-name
+;;                         temp-file
+;;                         (file-name-directory buffer-file-name))))
+;;       (list "jslint" (list "--terse" local-file))))
+
+;;   (setq flymake-err-line-patterns
+;;         (cons '("^\\(.*\\)(\\([[:digit:]]+\\)):\\(.*\\)$"
+;;                 1 2 nil 3)
+;;               flymake-err-line-patterns))
+
+;;   (add-to-list 'flymake-allowed-file-name-masks
+;;                '("\\.js\\'" flymake-jslint-init)))
+
+;; (add-hook 'js2-mode-hook
+;;           (lambda ()
+;;             (flymake-mode t)
+;;             (define-key js2-mode-map "\C-c\C-n" 'flymake-goto-next-error)))
+
+;; (add-hook 'javascript-mode-hook
+;;           (lambda ()
+;;             (flymake-mode t)
+;;             (define-key javascript-mode-map "\C-c\C-n" 'flymake-goto-next-error)))
+
+;;************************************************************
 ;; Use Emacs Got Git (egg)
 ;;************************************************************
 
@@ -303,10 +338,6 @@
   '(add-to-list 'rng-schema-locating-files "/Users/pariser/.emacs.d/site-lisp/html5-el/schemas.xml"))
 
 (require 'whattf-dt)
-
-;; (load "~/.emacs.d/site-lisp/mmm-mako.elc")
-;; (add-to-list 'auto-mode-alist '("\\.mako\\'" . nxhtml-mumamo-mode))
-;; (mmm-add-mode-ext-class 'nxhtml-mumamo-mode "\\.mako\\'" 'mako)
 
 ;;************************************************************
 ;; helper functions

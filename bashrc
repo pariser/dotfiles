@@ -7,6 +7,10 @@
 export PATH=~/bin:/usr/local/lib/node_modules:$PATH
 export PYTHONPATH=~/lib:$PYTHONPATH
 
+if [[ -d /usr/local/share/npm/bin ]] ; then
+  export PATH=/usr/local/share/npm/bin:$PATH
+fi
+
 if [[ -d ~/.gem/ruby/2.8/bin ]] ; then
   export PATH=~/.gem/ruby/2.8/bin:$PATH
 fi

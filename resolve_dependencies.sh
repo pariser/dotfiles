@@ -21,6 +21,12 @@ fi
 
 echo '************************************************************'
 
+brew install node
+npm config set prefix /usr/local
+npm install -g jslint
+
+echo '************************************************************'
+
 # Install bash completion & rake completion
 brew install bash-completion
 ln -s $LOCALPATH/dependencies/rake-completion/rake $(brew --prefix)/etc/bash_completion.d/rake
