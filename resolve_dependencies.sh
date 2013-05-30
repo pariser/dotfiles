@@ -21,6 +21,13 @@ fi
 
 echo '************************************************************'
 
+# Install bash completion & rake completion
+brew install bash-completion
+ln -s $LOCALPATH/dependencies/rake-completion/rake $(brew --prefix)/etc/bash_completion.d/rake
+ln -s $LOCALPATH/dependencies/rake-completion/rake ~/lib/rake
+
+echo '************************************************************'
+
 # Install Homebrew formulae
 for FORMULA in source-highlight ; do
   BREWFILES=`brew list $FORMULA`
