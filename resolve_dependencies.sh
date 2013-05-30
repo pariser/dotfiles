@@ -180,6 +180,8 @@ sudo pip install jsbeautifier
 # Compile js-beautify.el
 pushd $LOCALPATH/dependencies/js-beautify.el > /dev/null
 $EMACS -Q -L . -batch -f batch-byte-compile js-beautify.el
+mv js-beautify.elc $BUILDPATH
+ln -s $BUILDPATH/js-beautify.elc $SITELISPPATH/js-beautify.elc
 popd > /dev/null
 
 # Install js-beautify.el
