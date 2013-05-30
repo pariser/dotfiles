@@ -16,6 +16,18 @@ if [[ -d $HOME/.rvm/bin ]] ; then
 fi
 
 ########################################################
+# Bash Completion
+########################################################
+
+if [ -f $(brew --prefix)/etc/bash_completion ]; then
+  source $(brew --prefix)/etc/bash_completion
+fi
+
+if [ -f ~/lib/rake ]; then
+  source ~/lib/rake
+fi
+
+########################################################
 # Syntax highlighting in less
 ########################################################
 
@@ -201,6 +213,10 @@ function gh() {
 function git_lineschanged() {
   git log --numstat --pretty="%H" $1 | awk 'NF==3 {plus+=$1; minus+=$2} END {printf("+%d, -%d\n", plus, minus)}'
 }
+
+# -- Git completion for "gco" alias
+
+__git_complete gco _git_checkout
 
 # -- Useful one-liners
 
