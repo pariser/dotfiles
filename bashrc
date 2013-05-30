@@ -23,22 +23,64 @@ fi
 # export LESS=' -R '
 
 ########################################################
+# Terminal Colors
+########################################################
+
+RESTORE='\033[0m'
+
+RED='\033[00;31m'
+GREEN='\033[00;32m'
+YELLOW='\033[00;33m'
+BLUE='\033[00;34m'
+PURPLE='\033[00;35m'
+CYAN='\033[00;36m'
+LIGHTGRAY='\033[00;37m'
+
+
+function test_colors(){
+    echo -e "${GREEN}Hello ${CYAN}THERE${RESTORE} Restored here ${LCYAN}HELLO again${RESTORE}"
+}
+
+########################################################
 # Terminal Prompt
 ########################################################
 
-function git_out_of_sync() {
+function git_commits_out_of_sync() {
+    git status > /dev/null 2>&1 || return 0
+
+    a=$(git rev-list --left-right $(git head)...$(git upstream) | grep '<' | wc -l | tr -d ' ')
+    b=$(git rev-list --left-right $(git head)...$(git upstream) | grep '>' | wc -l | tr -d ' ')
+    if [[ "$a" -gt 0 && "$b" -gt 0 ]]; then
+        echo -e " ${YELLOW}+${a}${RESTORE}/${PURPLE}${b}"
+    elif [[ "$a" -gt 0 ]]; then
+        echo -e " ${YELLOW}+${a}"
+    elif [[ "$b" -gt 0 ]]; then
+        echo -e " ${PURPLE}-${b}"
+    else
+        echo ""
+    fi
+}
+
+function git_files_out_of_sync() {
+    git status > /dev/null 2>&1 || return 0
+
     # return is one of:
     # 0 = branch in sync
     # 1 = branch modified
     # 2 = untracked files
+    # 3 = changes to be committed
 
     STATUS=0
 
     git diff --no-ext-diff --quiet || STATUS=1
 
-    if [[ $STATUS -eq 0 ]]; then
+    if [[ "$STATUS" -eq 0 ]]; then
         STATUS=`git ls-files --exclude-standard --others | wc -l`
-        if [[ $STATUS -ne 0 ]]; then STATUS=2; fi
+        if [[ "$STATUS" -ne 0 ]]; then STATUS=2; fi
+    fi
+
+    if [[ "$STATUS" -eq 0 ]]; then
+        git diff --cached --no-ext-diff --quiet || STATUS=3
     fi
 
     return $STATUS
@@ -47,22 +89,29 @@ function git_out_of_sync() {
 function git_sync_status_prompt() {
     git status > /dev/null 2>&1 || return 0
 
-    git_out_of_sync
+    git_files_out_of_sync
     CODE=$?
 
     if [[ "x$OSTYPE" == "xdarwin12" ]]; then
-        if [[ $CODE -eq 2 ]]; then
+        if [[ "$CODE" -eq 3 ]]; then
+            echo " 🔶 "
+        elif [[ "$CODE" -eq 2 ]]; then
             echo " ❔ "
-        elif [[ $CODE -eq 1 ]]; then
+        elif [[ "$CODE" -eq 1 ]]; then
             echo " ❌ "
-        else
+        elif [[ "$CODE" -eq 0 ]]; then
             echo " ✅ "
         fi
     fi
 }
 
-function parse_git_branch() {
-  git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e "s/* \(.*\)/(git::\1$(git_sync_status_prompt)) /"
+function git_branch_string() {
+    git status > /dev/null 2>&1 || return 0
+    branch=$(git rev-parse --abbrev-ref HEAD)
+    [[ ${#branch} -gt 20 ]] && branch="$(echo $branch | cut -c1-19)…"
+    status=$(git_sync_status_prompt)
+    commits=$(git_commits_out_of_sync)
+    echo -e "${GREEN}(git::${branch}${status}${commits}${GREEN})${RESTORE} "
 }
 
 function parse_svn_url() {
@@ -86,7 +135,7 @@ function exit_code() {
 
 PROMPT_COMMAND=store_exit_code
 
-export PS1="\[\033[1;34m\][\$(date +%H:%M)] \[\033[1;36m\]\u@\h \w \[\033[1;32m\]\$(parse_git_branch)\$(parse_svn_branch)\[\033[1;31m\]\$(exit_code)\[\033[1;36m\]$\[\033[0m\] "
+export PS1="\[\033[1;34m\][\$(date +%H:%M)] \[\033[1;36m\]\u@\h \w \$(git_branch_string)\$(parse_svn_branch)\[\033[1;31m\]\$(exit_code)\[\033[1;36m\]$\[\033[0m\] "
 
 function gethost() {
   cat ~/.ssh/config | grep -A1 -E "$1\$" | grep HostName | awk '{print $2}'
