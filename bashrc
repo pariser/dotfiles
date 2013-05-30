@@ -48,8 +48,14 @@ function test_colors(){
 function git_commits_out_of_sync() {
     git status > /dev/null 2>&1 || return 0
 
-    a=$(git rev-list --left-right $(git head)...$(git upstream) | grep '<' | wc -l | tr -d ' ')
-    b=$(git rev-list --left-right $(git head)...$(git upstream) | grep '>' | wc -l | tr -d ' ')
+    upstream=$(git upstream)
+    has_upstream=$?
+    if [[ "$has_upstream" -ne 0 ]]; then
+        return 0
+    fi
+
+    a=$(git rev-list --left-right $(git head)...${upstream} | grep '<' | wc -l | tr -d ' ')
+    b=$(git rev-list --left-right $(git head)...${upstream} | grep '>' | wc -l | tr -d ' ')
     if [[ "$a" -gt 0 && "$b" -gt 0 ]]; then
         echo -e " ${YELLOW}+${a}${RESTORE}/${PURPLE}${b}"
     elif [[ "$a" -gt 0 ]]; then
