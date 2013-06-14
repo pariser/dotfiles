@@ -120,8 +120,8 @@
 ;; Ensure that buffers have unique names
 ;;************************************************************
 
-;; (require 'uniquify)
-;; (setq uniquify-buffer-name-style (quote forward))
+(require 'uniquify)
+(setq uniquify-buffer-name-style (quote forward))
 
 ;;************************************************************
 ;; Get some Textmate features in emacs!
