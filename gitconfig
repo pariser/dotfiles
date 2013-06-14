@@ -2,6 +2,9 @@
     name = Andrew Pariesr
     email = pariser@gmail.com
 
+[github]
+    user = pariser
+
 [core]
     editor = vim
     excludesfile = /Users/pariser/.gitignore
