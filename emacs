@@ -397,6 +397,30 @@ by using nxml's indentation rules."
                   (get-char-property (point) 'face))))
     (if face (message "Face: %s" face) (message "No face at %d" pos))))
 
+(defun increment-number-at-point (&optional arg)
+  "Increment the number at point by 'arg'."
+  (interactive "p*")
+  (save-excursion
+    (save-match-data
+      (let (inc-by field-width answer)
+        (setq inc-by (if arg arg 1))
+        (skip-chars-backward "0123456789")
+        (when (re-search-forward "[0-9]+" nil t)
+          (setq field-width (- (match-end 0) (match-beginning 0)))
+          (setq answer (+ (string-to-number (match-string 0) 10) inc-by))
+          (when (< answer 0)
+            (setq answer (+ (expt 10 field-width) answer)))
+          (replace-match (format (concat "%0" (int-to-string field-width) "d")
+                                 answer)))))))
+
+(defun decrement-number-at-point (&optional arg)
+  "Decrement the number at point by 'arg'."
+  (interactive "p*")
+  (increment-number-at-point (if arg (- arg) -1)))
+
+(global-set-key (kbd "C-c +") 'increment-number-at-point)
+(global-set-key (kbd "C-c -") 'decrement-number-at-point)
+
 ;;************************************************************
 ;; variable customizations
 ;;************************************************************
@@ -421,8 +445,9 @@ by using nxml's indentation rules."
 (setq-default scss-compile-at-save nil)
 (setq-default scss-sass-command "/usr/bin/sass")
 
-; tab indent level set to 2 spaces for javascript
+; tab indent level set to 2 spaces for javascript / css (scss)
 (setq-default js-indent-level 2)
+(setq-default css-indent-offset 2)
 
 ; turn off the toolbar
 (tool-bar-mode 0)
@@ -430,6 +455,10 @@ by using nxml's indentation rules."
 ; no seriously, I really want haml to load instead of nxhtml mode
 (setq auto-mode-alist
  (cons '("\\.haml$" . haml-mode) auto-mode-alist))
+
+
+
+
 
 ;; (require 'ido)
 ;; (ido-mode t)
