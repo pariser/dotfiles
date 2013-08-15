@@ -48,6 +48,28 @@
 (require 'revbufs)
 
 ;;************************************************************
+;; Load auto-complete
+;;************************************************************
+
+;; TO INSTALL:
+;; M-x load-file /path/to/auto-complete/etc/install.el
+
+(require 'auto-complete-config)
+(add-to-list 'ac-dictionary-directories "~/.emacs.d/site-lisp/auto-complete/ac-dict")
+(ac-config-default)
+
+;;************************************************************
+;; Load yasnippets for text expansion
+;;************************************************************
+
+(require 'yasnippet)
+(yas-global-mode 1)
+(setq yas-snippet-dirs (quote ("~/.emacs.d/snippets")))
+
+;; (yas/initialize)
+;; (yas/load-directory "~/.emacs.d/site-lisp/yasnippet/snippets")
+
+;;************************************************************
 ;; Rails!
 ;; Use haml-mode.el, sass-mode.el, scss-mode.el, yaml-mode.el
 ;; Start ruby-mode when opening .rake files
@@ -58,6 +80,9 @@
 (require 'scss-mode)
 (require 'yaml-mode)
 
+(setq rspec-snippets-dir "/Users/pariser/.emacs.d/snippets")
+(require 'rspec-mode)
+
 (setq auto-mode-alist (cons '("\\.rake\\'" . ruby-mode) auto-mode-alist))
 
 (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
@@ -65,6 +90,7 @@
  'yaml-mode-hook
  '(lambda ()
     (define-key yaml-mode-map "\C-m" 'newline-and-indent)))
+
 
 ;;************************************************************
 ;; Use js-beautify.el
@@ -208,27 +234,6 @@
 (global-set-key (kbd "<C-S-down>")   'buf-move-down)
 (global-set-key (kbd "<C-S-left>")   'buf-move-left)
 (global-set-key (kbd "<C-S-right>")  'buf-move-right)
-
-;;************************************************************
-;; Load auto-complete
-;;************************************************************
-
-;; TO INSTALL:
-;; M-x load-file /path/to/auto-complete/etc/install.el
-
-(require 'auto-complete-config)
-(add-to-list 'ac-dictionary-directories "~/.emacs.d/site-lisp/auto-complete/ac-dict")
-(ac-config-default)
-
-;;************************************************************
-;; Load yasnippets for text expansion
-;;************************************************************
-
-(require 'yasnippet)
-(yas-global-mode 1)
-
-;; (yas/initialize)
-;; (yas/load-directory "~/.emacs.d/site-lisp/yasnippet/snippets")
 
 ;;************************************************************
 ;; configure Python editing via Pymacs and pycomplete
