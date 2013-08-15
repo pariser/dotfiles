@@ -49,3 +49,6 @@
 [submodule "dependencies/rspec-mode"]
 	path = dependencies/rspec-mode
 	url = https://github.com/pezra/rspec-mode.git
+[submodule "dependencies/ack-and-a-half"]
+	path = dependencies/ack-and-a-half
+	url = https://github.com/jhelwig/ack-and-a-half.git

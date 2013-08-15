@@ -70,6 +70,16 @@
 ;; (yas/load-directory "~/.emacs.d/site-lisp/yasnippet/snippets")
 
 ;;************************************************************
+;; Load ack-and-a-half
+;;************************************************************
+
+(require 'ack-and-a-half)
+(defalias 'ack 'ack-and-a-half)
+(defalias 'ack-same 'ack-and-a-half-same)
+(defalias 'ack-find-file 'ack-and-a-half-find-file)
+(defalias 'ack-find-file-same 'ack-and-a-half-find-file-same)
+
+;;************************************************************
 ;; Rails!
 ;; Use haml-mode.el, sass-mode.el, scss-mode.el, yaml-mode.el
 ;; Start ruby-mode when opening .rake files
@@ -461,9 +471,16 @@ by using nxml's indentation rules."
 (setq auto-mode-alist
  (cons '("\\.haml$" . haml-mode) auto-mode-alist))
 
+; force emacs to split to side-by-side instead of top-and-bottom windows
+(setq split-height-threshold nil)
+(setq split-width-threshold 0)
 
-
-
+; always enable "winner-mode", which allows me to toggle through window
+; configurations with `C-c left` and `C-c right`. In this way, if a command
+; opens up a window, say, as a result of "ack", when I'm done with that
+; window I can reset to the previous window configuration
+(when (fboundp 'winner-mode)
+  (winner-mode 1))
 
 ;; (require 'ido)
 ;; (ido-mode t)

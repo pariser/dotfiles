@@ -240,6 +240,7 @@ alias serve="python -m SimpleHTTPServer 8000"
 alias be="bundle exec"
 
 alias aquamacs="/Applications/Aquamacs.app/Contents/MacOS/Aquamacs"
+alias aquamacs_byte_compile="aquamacs -Q -L . -batch -f batch-byte-compile"
 
 ########################################################
 # Load non-version controlled (private) bashrc files
