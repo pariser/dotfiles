@@ -309,6 +309,18 @@
 ;;              ))
 
 ;;************************************************************
+;; configure simplistic code folding via 'yafolding
+;;************************************************************
+
+(require 'yafolding)
+
+; fold-at-point with C-'
+(define-key global-map (kbd "C-'") 'yafolding)
+
+; fold-all-at-level with C-c C-f
+(define-key global-map (kbd "C-c C-f") 'yafolding-toggle-all-by-current-level)
+
+;;************************************************************
 ;; configure HTML editing
 ;;************************************************************
 

@@ -52,3 +52,6 @@
 [submodule "dependencies/ack-and-a-half"]
 	path = dependencies/ack-and-a-half
 	url = https://github.com/jhelwig/ack-and-a-half.git
+[submodule "dependencies/yafolding"]
+	path = dependencies/yafolding
+	url = https://github.com/zenozeng/yafolding.el.git

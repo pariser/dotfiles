@@ -7,6 +7,7 @@ LOCALPATH="$( cd "$( dirname "$0" )" && pwd )"
 LOCALPATH=/Users/pariser/dev/dotfiles
 BUILDPATH=$LOCALPATH/build
 SITELISPPATH=$LOCALPATH/emacs.d/site-lisp
+DEPPATH=$LOCALPATH/dependencies
 
 echo '************************************************************'
 
@@ -31,6 +32,18 @@ echo '************************************************************'
 brew install bash-completion
 ln -s $LOCALPATH/dependencies/rake-completion/rake $(brew --prefix)/etc/bash_completion.d/rake
 ln -s $LOCALPATH/dependencies/rake-completion/rake ~/lib/rake
+
+echo '************************************************************'
+
+FILES="yafolding.el"
+OUTFILES="yafolding.elc"
+
+(pushd $DEPPATH/yafolding > /dev/null) &&
+ ($EMACS -Q -L . -batch -f batch-byte-compile $FILES) &&
+ (mv $OUTFILES $LOCALPATH/build/) &&
+ (rm $LOCALPATH/emacs.d/site-lisp/$OUTFILES) &&
+ (ln -s $LOCALPATH/build/$OUTFILES $LOCALPATH/emacs.d/site-lisp/$OUTFILES) &&
+ (popd > /dev/null)
 
 echo '************************************************************'
 
