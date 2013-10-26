@@ -437,6 +437,39 @@ by using nxml's indentation rules."
 (global-set-key (kbd "C-c -") 'decrement-number-at-point)
 
 ;;************************************************************
+;; midnight mode -- clear stale buffers
+;;************************************************************
+
+; cf: http://www.emacswiki.org/emacs/KillingBuffers#toc12
+
+(require 'midnight)
+
+; clear "disabled" (read-only) buffers every 15 minutes
+(setq clean-buffer-list-delay-special 900)
+
+; clean buffer list, timer, regular expression
+(defvar clean-buffer-list-timer nil
+  "Stores clean-buffer-list timer if there is one. You can disable clean-buffer-list by (cancel-timer clean-buffer-list-timer).")
+(setq clean-buffer-list-timer (run-at-time t 7200 'clean-buffer-list))
+(setq clean-buffer-list-kill-regexps '("^.*$"))
+
+; buffers not to kill
+(defvar clean-buffer-list-kill-never-buffer-names-init
+  clean-buffer-list-kill-never-buffer-names
+  "Init value for clean-buffer-list-kill-never-buffer-names")
+(setq clean-buffer-list-kill-never-buffer-names
+      (append
+       '("*Messages*" "*cmd*" "*scratch*" "*w3m*" "*w3m-cache*" "*Inferior Octave*")
+       clean-buffer-list-kill-never-buffer-names-init))
+(defvar clean-buffer-list-kill-never-regexps-init
+  clean-buffer-list-kill-never-regexps
+  "Init value for clean-buffer-list-kill-never-regexps")
+(setq clean-buffer-list-kill-never-regexps
+      (append '("^\\*EMMS Playlist\\*.*$")
+              clean-buffer-list-kill-never-regexps-init))
+
+
+;;************************************************************
 ;; variable customizations
 ;;************************************************************
 
