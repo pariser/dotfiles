@@ -6,3 +6,4 @@
 --type-set=sass=.sass
 --type-set=log=.log
 --nolog
+--ignore-dir=tmp
