@@ -13,21 +13,20 @@
 
 (add-to-list 'load-path "/Users/pariser/.emacs.d/site-lisp")
 
-(add-to-list 'load-path "/Users/pariser/.emacs.d/site-lisp/mmm-mode")
-(add-to-list 'load-path "/Users/pariser/.emacs.d/site-lisp/egg")
-(add-to-list 'load-path "/Users/pariser/.emacs.d/site-lisp/auto-complete")
-(add-to-list 'load-path "/Users/pariser/.emacs.d/site-lisp/yasnippet")
-(add-to-list 'load-path "/Users/pariser/.emacs.d/site-lisp/pycomplete")
-(add-to-list 'load-path "/Users/pariser/.emacs.d/site-lisp/textmate")
-(add-to-list 'load-path "/Users/pariser/.emacs.d/site-lisp/rinari")
-(add-to-list 'load-path "/Users/pariser/.emacs.d/site-lisp/html5-el")
-
 ;;************************************************************
 ;; Emacs as server
 ;;************************************************************
 
 (server-start)
 (remove-hook 'kill-buffer-query-functions 'server-kill-buffer-query-function)
+
+;;************************************************************
+;; Package archives
+;;************************************************************
+
+(setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
+                         ("marmalade" . "http://marmalade-repo.org/packages/")
+                         ("melpa" . "http://melpa.milkbox.net/packages/")))
 
 ;;************************************************************
 ;; Easy way to switch to minibuffer
@@ -54,6 +53,8 @@
 ;; TO INSTALL:
 ;; M-x load-file /path/to/auto-complete/etc/install.el
 
+(add-to-list 'load-path "/Users/pariser/.emacs.d/site-lisp/auto-complete")
+
 (require 'auto-complete-config)
 (add-to-list 'ac-dictionary-directories "~/.emacs.d/site-lisp/auto-complete/ac-dict")
 (ac-config-default)
@@ -61,6 +62,8 @@
 ;;************************************************************
 ;; Load yasnippets for text expansion
 ;;************************************************************
+
+(add-to-list 'load-path "/Users/pariser/.emacs.d/site-lisp/yasnippet")
 
 (require 'yasnippet)
 (yas-global-mode 1)
@@ -93,7 +96,8 @@
 (setq rspec-snippets-dir "/Users/pariser/.emacs.d/snippets")
 (require 'rspec-mode)
 
-(setq auto-mode-alist (cons '("\\.rake\\'" . ruby-mode) auto-mode-alist))
+(add-to-list 'auto-mode-alist '("\\.rake\\'" . ruby-mode))
+;; (setq auto-mode-alist (cons '("\\.rake\\'" . ruby-mode) auto-mode-alist))
 
 (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
 (add-hook
@@ -108,7 +112,8 @@
 
 (require 'js-beautify)
 (custom-set-variables
- '(js-beautify-path "/usr/local/bin/js-beautify"))
+ '(js-beautify-path "/usr/local/bin/js-beautify")
+ '(js-beautify-args "--indent-size=2 --jslint-happy --brace-style=end-expand --keep-array-indentation"))
 (global-set-key "\C-\M-T" 'js-beautify)
 
 ;;************************************************************
@@ -150,6 +155,8 @@
 ;; Use Emacs Got Git (egg)
 ;;************************************************************
 
+;; (add-to-list 'load-path "/Users/pariser/.emacs.d/site-lisp/egg")
+
 ;; (require 'egg)
 
 ;;************************************************************
@@ -163,12 +170,16 @@
 ;; Get some Textmate features in emacs!
 ;;************************************************************
 
+(add-to-list 'load-path "/Users/pariser/.emacs.d/site-lisp/textmate")
+
 (require 'textmate)
 (textmate-mode)
 
 ;;************************************************************
 ;; Get multiple-major-mode working
 ;;************************************************************
+
+;; (add-to-list 'load-path "/Users/pariser/.emacs.d/site-lisp/mmm-mode")
 
 ;; (require 'mmm-auto)
 ;; (setq mmm-global-mode 'maybe)
@@ -215,10 +226,9 @@
 (add-hook 'ruby-mode-hook   'progmodes-hooks)
 
 ;;************************************************************
-;; to save emacs sessions
+;; desktop - to save emacs sessions
 ;;************************************************************
 
-;; ; for saving emacs sessions
 ;; (require 'desktop)
 ;; (desktop-save-mode 1)
 ;; (add-hook 'auto-save-hook (lambda () (desktop-save-in-desktop-dir)))
@@ -236,8 +246,8 @@
 ;;************************************************************
 ;; to move buffer locations
 ;;************************************************************
+;; move buffers with keystrokes (instead of M-x o, C-x b, etc.)
 
-; move buffers with keystrokes (instead of M-x o, C-x b, etc.)
 (require 'buffer-move)
 
 (global-set-key (kbd "<C-S-up>")     'buf-move-up)
@@ -249,17 +259,21 @@
 ;; configure Python editing via Pymacs and pycomplete
 ;;************************************************************
 
-; fix for pycomplete, now that python2 and python3 have their own mode maps
-(defvaralias 'python-mode-map 'python2-mode-map)
+; pymacs: execute python in emacs
 
-; initialize Pymacs
 (autoload 'pymacs-apply "pymacs")
 (autoload 'pymacs-call "pymacs")
 (autoload 'pymacs-eval "pymacs" nil t)
 (autoload 'pymacs-exec "pymacs" nil t)
 (autoload 'pymacs-load "pymacs" nil t)
 
-; python tag completion from open buffers
+; pycomplete: python tag completion from open buffers
+
+;; (add-to-list 'load-path "/Users/pariser/.emacs.d/site-lisp/pycomplete")
+
+;; ;; fix for pycomplete, now that python2 and python3 have their own mode maps
+;; (defvaralias 'python-mode-map 'python2-mode-map)
+
 ;; (require 'pycomplete)
 
 ;;************************************************************
@@ -350,7 +364,7 @@
                   'font-lock-beginning-of-syntax-function)))
 
 ;;************************************************************
-;; configure MMM mode
+;; configure mumamomo mode
 ;;************************************************************
 
 ;; (load "~/.emacs.d/site-lisp/mmm-mako.elc")
@@ -360,6 +374,8 @@
 ;;************************************************************
 ;; configure HTML5-EL
 ;;************************************************************
+
+(add-to-list 'load-path "/Users/pariser/.emacs.d/site-lisp/html5-el")
 
 (eval-after-load "rng-loc"
   '(add-to-list 'rng-schema-locating-files "/Users/pariser/.emacs.d/site-lisp/html5-el/schemas.xml"))
@@ -540,3 +556,26 @@ by using nxml's indentation rules."
 ;; (setq mumamo-chunk-coloring 'submode-colored)
 ;; (add-to-list 'auto-mode-alist '("\\.rhtml\\'" . eruby-html-mumamo))
 ;; (add-to-list 'auto-mode-alist '("\\.html\\.erb\\'" . eruby-html-mumamo))
+
+
+
+
+
+(defun ap-haml-reindent-region-by (n)
+  "Add N spaces to the beginning of each line in the region.
+If N is negative, will remove the spaces instead.  Assumes all
+lines in the region have indentation >= that of the first line."
+  (interactive*)
+  (let* ((ci (current-indentation))
+         (indent-rx
+          (concat "^"
+                  (if indent-tabs-mode
+                      (concat (make-string (/ ci tab-width) ?\t)
+                              (make-string (mod ci tab-width) ?\t))
+                    (make-string ci ?\s)))))
+    (save-excursion
+      (while (re-search-forward indent-rx (mark) t)
+        (let ((ci (current-indentation)))
+          (delete-horizontal-space)
+          (beginning-of-line)
+          (indent-to (max 0 (+ ci n))))))))
