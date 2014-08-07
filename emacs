@@ -4,14 +4,18 @@
 (setq inhibit-startup-echo-area-message t)
 (setq inhibit-startup-message t)
 
-(setq custom-file "/Users/pariser/.emacs-custom.el")
+(defun home-path (subpath)
+  (concat (getenv "HOME") "/"
+          (replace-regexp-in-string "^/" "" subpath)))
+
+(setq custom-file (home-path ".emacs-custom.el"))
 (load custom-file)
 
 ;;************************************************************
 ;; add local plugins to load-path
 ;;************************************************************
 
-(add-to-list 'load-path "/Users/pariser/.emacs.d/site-lisp")
+(add-to-list 'load-path (home-path ".emacs.d/site-lisp"))
 
 ;;************************************************************
 ;; Emacs as server
@@ -68,7 +72,7 @@
 ;; TO INSTALL:
 ;; M-x load-file /path/to/auto-complete/etc/install.el
 
-(add-to-list 'load-path "/Users/pariser/.emacs.d/site-lisp/auto-complete")
+(add-to-list 'load-path (home-path ".emacs.d/site-lisp/auto-complete"))
 
 (require 'auto-complete-config)
 (add-to-list 'ac-dictionary-directories "~/.emacs.d/site-lisp/auto-complete/ac-dict")
@@ -78,7 +82,7 @@
 ;; Load yasnippets for text expansion
 ;;************************************************************
 
-(add-to-list 'load-path "/Users/pariser/.emacs.d/site-lisp/yasnippet")
+(add-to-list 'load-path (home-path ".emacs.d/site-lisp/yasnippet"))
 
 (require 'yasnippet)
 (yas-global-mode 1)
@@ -108,7 +112,7 @@
 (require 'scss-mode)
 (require 'yaml-mode)
 
-(setq rspec-snippets-dir "/Users/pariser/.emacs.d/snippets")
+(setq rspec-snippets-dir (home-path ".emacs.d/snippets"))
 (require 'rspec-mode)
 
 ;; (add-to-list 'auto-mode-alist '("\\.rake\\'" . ruby-mode))
@@ -170,7 +174,7 @@
 ;; Use Emacs Got Git (egg)
 ;;************************************************************
 
-;; (add-to-list 'load-path "/Users/pariser/.emacs.d/site-lisp/egg")
+;; (add-to-list 'load-path (home-path ".emacs.d/site-lisp/egg"))
 
 ;; (require 'egg)
 
@@ -190,7 +194,7 @@
   "(/|^)(\\.+[^/]+|vendor|fixtures|tmp|log|classes|build|node_modules)($|/)|(\\.xcodeproj|\\.nib|\\.framework|\\.app|\\.pbproj|\\.pbxproj|\\.xcode|\\.xcodeproj|\\.bundle|\\.pyc)(/|$)"
   "Regexp of files to exclude from `textmate-goto-file'.")
 
-(add-to-list 'load-path "/Users/pariser/.emacs.d/site-lisp/textmate")
+(add-to-list 'load-path (home-path ".emacs.d/site-lisp/textmate"))
 
 (require 'textmate)
 (textmate-mode)
@@ -199,7 +203,7 @@
 ;; Get multiple-major-mode working
 ;;************************************************************
 
-;; (add-to-list 'load-path "/Users/pariser/.emacs.d/site-lisp/mmm-mode")
+;; (add-to-list 'load-path (home-path ".emacs.d/site-lisp/mmm-mode"))
 
 ;; (require 'mmm-auto)
 ;; (setq mmm-global-mode 'maybe)
@@ -292,7 +296,7 @@
 
 ; pycomplete: python tag completion from open buffers
 
-;; (add-to-list 'load-path "/Users/pariser/.emacs.d/site-lisp/pycomplete")
+;; (add-to-list 'load-path (home-path ".emacs.d/site-lisp/pycomplete"))
 
 ;; ;; fix for pycomplete, now that python2 and python3 have their own mode maps
 ;; (defvaralias 'python-mode-map 'python2-mode-map)
@@ -398,10 +402,10 @@
 ;; configure HTML5-EL
 ;;************************************************************
 
-(add-to-list 'load-path "/Users/pariser/.emacs.d/site-lisp/html5-el")
+(add-to-list 'load-path (home-path ".emacs.d/site-lisp/html5-el"))
 
 (eval-after-load "rng-loc"
-  '(add-to-list 'rng-schema-locating-files "/Users/pariser/.emacs.d/site-lisp/html5-el/schemas.xml"))
+  '(add-to-list 'rng-schema-locating-files (home-path ".emacs.d/site-lisp/html5-el/schemas.xml")))
 
 (require 'whattf-dt)
 
@@ -587,10 +591,9 @@ lines in the region have indentation >= that of the first line."
 (setq-default python-indent 4)
 
 ; don't compile scss at save
-(setq-default scss-sass-command "/Users/pariser/.rvm/gems/ruby-1.9.3-p392/bin/sass")
+(setq-default scss-sass-command (home-path ".rvm/gems/ruby-1.9.3-p545@LearnUp/bin/sass"))
 (setq-default scss-sass-options '("--cache-location" "/tmp/.sass-cache"))
 (setq-default scss-compile-at-save nil)
-(setq-default scss-sass-command "/usr/bin/sass")
 
 ; tab indent level set to 2 spaces for javascript / css (scss)
 (setq-default js-indent-level 2)
