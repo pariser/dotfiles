@@ -23,3 +23,6 @@
     head = "!git rev-parse --abbrev-ref HEAD"
     upstream = "!git rev-parse --abbrev-ref --symbolic-full-name @{u} 2>/dev/null"
 
+[filter "media"]
+	clean = git-media-clean %f
+	smudge = git-media-smudge %f

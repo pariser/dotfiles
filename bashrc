@@ -239,6 +239,8 @@ alias serve="python -m SimpleHTTPServer 8000"
 
 alias be="bundle exec"
 
+alias mlt="tail -f /usr/local/var/log/mongodb/mongo.log"
+
 alias aquamacs="/Applications/Aquamacs.app/Contents/MacOS/Aquamacs"
 alias aquamacs_byte_compile="aquamacs -Q -L . -batch -f batch-byte-compile"
 
@@ -247,6 +249,10 @@ alias aquamacs_byte_compile="aquamacs -Q -L . -batch -f batch-byte-compile"
 ########################################################
 
 for f in ~/.bash_ext_*; do
-  source $f
+  if [[ ! ($f =~ \.swp$) ]]; then
+    source $f
+  fi
 done
 
+# added by travis gem
+[ -f $HOME/.travis/travis.sh ] && source $HOME/.travis/travis.sh

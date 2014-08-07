@@ -41,6 +41,21 @@
 (global-set-key "\C-xp" 'switch-to-minibuffer-window)
 
 ;;************************************************************
+;; What mode is current buffer running?
+;;************************************************************
+
+(defun buffer-mode (buffer-or-string)
+  "Returns the major mode associated with a buffer."
+  (interactive
+   (cond
+    ((equal current-prefix-arg nil)
+     (list (current-buffer)))
+    ((equal current-prefix-arg '(4))
+     (list (read-string "Buffer" nil nil nil)))))
+  (with-current-buffer buffer-or-string
+     (message "%s" major-mode)))
+
+;;************************************************************
 ;; Use revbufs.el
 ;;************************************************************
 
@@ -96,7 +111,7 @@
 (setq rspec-snippets-dir "/Users/pariser/.emacs.d/snippets")
 (require 'rspec-mode)
 
-(add-to-list 'auto-mode-alist '("\\.rake\\'" . ruby-mode))
+;; (add-to-list 'auto-mode-alist '("\\.rake\\'" . ruby-mode))
 ;; (setq auto-mode-alist (cons '("\\.rake\\'" . ruby-mode) auto-mode-alist))
 
 (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
@@ -170,6 +185,11 @@
 ;; Get some Textmate features in emacs!
 ;;************************************************************
 
+;; Add node_modules to excluded files
+(defvar *textmate-gf-exclude*
+  "(/|^)(\\.+[^/]+|vendor|fixtures|tmp|log|classes|build|node_modules)($|/)|(\\.xcodeproj|\\.nib|\\.framework|\\.app|\\.pbproj|\\.pbxproj|\\.xcode|\\.xcodeproj|\\.bundle|\\.pyc)(/|$)"
+  "Regexp of files to exclude from `textmate-goto-file'.")
+
 (add-to-list 'load-path "/Users/pariser/.emacs.d/site-lisp/textmate")
 
 (require 'textmate)
@@ -191,10 +211,12 @@
 (defun untabify-buffer ()
   "Untabify current buffer"
   (interactive)
+  (message "untabify-buffer")
   (untabify (point-min) (point-max)))
 
 (defun delete-trailing-whitespace-except-current-line ()
   (interactive)
+  (message "delete-trailing-whitespace-except-current-line")
   (let ((begin (line-beginning-position))
         (end (line-end-position)))
     (save-excursion
@@ -218,12 +240,13 @@
   "Hooks for programming modes"
   (add-hook 'before-save-hook 'progmodes-write-hooks))
 
-(add-hook 'php-mode-hook    'progmodes-hooks)
-(add-hook 'python-mode-hook 'progmodes-hooks)
-(add-hook 'js-mode-hook     'progmodes-hooks)
-(add-hook 'nxhtml-mode-hook 'progmodes-hooks)
-(add-hook 'haml-mode-hook   'progmodes-hooks)
-(add-hook 'ruby-mode-hook   'progmodes-hooks)
+(add-hook 'php-mode-hook      'progmodes-hooks)
+(add-hook 'python-mode-hook   'progmodes-hooks)
+(add-hook 'js-mode-hook       'progmodes-hooks)
+(add-hook 'nxhtml-mode-hook   'progmodes-hooks)
+(add-hook 'haml-mode-hook     'progmodes-hooks)
+(add-hook 'ruby-mode-hook     'progmodes-hooks)
+(add-hook 'enh-ruby-mode-hook 'progmodes-hooks)
 
 ;;************************************************************
 ;; desktop - to save emacs sessions
@@ -331,8 +354,8 @@
 ; fold-at-point with C-'
 (define-key global-map (kbd "C-'") 'yafolding)
 
-; fold-all-at-level with C-c C-f
-(define-key global-map (kbd "C-c C-f") 'yafolding-toggle-all-by-current-level)
+; fold-all-at-level with C-c C-'
+(define-key global-map (kbd "C-c C-'") 'yafolding-toggle-all-by-current-level)
 
 ;;************************************************************
 ;; configure HTML editing
@@ -440,6 +463,25 @@ by using nxml's indentation rules."
                   (get-char-property (point) 'face))))
     (if face (message "Face: %s" face) (message "No face at %d" pos))))
 
+(defun ap-haml-reindent-region-by (n)
+  "Add N spaces to the beginning of each line in the region.
+If N is negative, will remove the spaces instead.  Assumes all
+lines in the region have indentation >= that of the first line."
+  (interactive*)
+  (let* ((ci (current-indentation))
+         (indent-rx
+          (concat "^"
+                  (if indent-tabs-mode
+                      (concat (make-string (/ ci tab-width) ?\t)
+                              (make-string (mod ci tab-width) ?\t))
+                    (make-string ci ?\s)))))
+    (save-excursion
+      (while (re-search-forward indent-rx (mark) t)
+        (let ((ci (current-indentation)))
+          (delete-horizontal-space)
+          (beginning-of-line)
+          (indent-to (max 0 (+ ci n))))))))
+
 (defun increment-number-at-point (&optional arg)
   "Increment the number at point by 'arg'."
   (interactive "p*")
@@ -496,6 +538,35 @@ by using nxml's indentation rules."
       (append '("^\\*EMMS Playlist\\*.*$")
               clean-buffer-list-kill-never-regexps-init))
 
+;;************************************************************
+;; toggle camelcase/underscore of word at point
+;;************************************************************
+
+(defun split-name (s)
+  (split-string
+   (let ((case-fold-search nil))
+     (downcase
+      (replace-regexp-in-string "\\([a-z]\\)\\([A-Z]\\)" "\\1 \\2" s)))
+   "[^A-Za-z0-9]+"))
+
+(defun camelcase  (s) (mapconcat 'capitalize (split-name s) ""))
+(defun underscore (s) (mapconcat 'downcase   (split-name s) "_"))
+
+(defun camelscore (s)
+  (if (string-match-p "\\(?:[a-z]+_\\)+[a-z]+" s)
+      (camelcase s)
+      (underscore s)))
+
+(defun camelscore-word-at-point ()
+  (interactive)
+  (let* ((case-fold-search nil)
+         (beg (and (skip-chars-backward "[:alnum:]_") (point)))
+         (end (and (skip-chars-forward  "[:alnum:]_") (point)))
+         (txt (buffer-substring beg end))
+         (cml (camelscore txt)) )
+    (if cml (progn (delete-region beg end) (insert cml))) ))
+
+(global-set-key "\M-`" 'camelscore-word-at-point)
 
 ;;************************************************************
 ;; variable customizations
@@ -556,26 +627,3 @@ by using nxml's indentation rules."
 ;; (setq mumamo-chunk-coloring 'submode-colored)
 ;; (add-to-list 'auto-mode-alist '("\\.rhtml\\'" . eruby-html-mumamo))
 ;; (add-to-list 'auto-mode-alist '("\\.html\\.erb\\'" . eruby-html-mumamo))
-
-
-
-
-
-(defun ap-haml-reindent-region-by (n)
-  "Add N spaces to the beginning of each line in the region.
-If N is negative, will remove the spaces instead.  Assumes all
-lines in the region have indentation >= that of the first line."
-  (interactive*)
-  (let* ((ci (current-indentation))
-         (indent-rx
-          (concat "^"
-                  (if indent-tabs-mode
-                      (concat (make-string (/ ci tab-width) ?\t)
-                              (make-string (mod ci tab-width) ?\t))
-                    (make-string ci ?\s)))))
-    (save-excursion
-      (while (re-search-forward indent-rx (mark) t)
-        (let ((ci (current-indentation)))
-          (delete-horizontal-space)
-          (beginning-of-line)
-          (indent-to (max 0 (+ ci n))))))))

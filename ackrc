@@ -7,3 +7,4 @@
 --type-set=log=.log
 --nolog
 --ignore-dir=tmp
+--ignore-dir=node_modules
