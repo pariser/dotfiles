@@ -553,6 +553,9 @@
 ; fold-all-at-level with C-c C-'
 (define-key global-map (kbd "C-c C-'") 'yafolding-toggle-all-by-current-level)
 
+; unfold everything with C-c ESC
+(define-key global-map (kbd "C-c <C-S-return>") 'yafolding-show-all)
+
 ;;************************************************************
 ;; configure HTML editing
 ;;************************************************************
