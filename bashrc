@@ -1,6 +1,20 @@
 ## -*- mode: Shell-script; -*-
 
 ########################################################
+# History
+########################################################
+
+# See: http://unix.stackexchange.com/questions/1288/preserve-bash-history-in-multiple-terminal-windows#answer-48113
+
+export HISTCONTROL=ignoredups:erasedups  # no duplicate entries
+export HISTSIZE=100000                   # big big history
+export HISTFILESIZE=100000               # big big history
+shopt -s histappend                      # append to history, don't overwrite it
+
+# # Save and reload the history after each command finishes
+# export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
+
+########################################################
 # Path
 ########################################################
 
@@ -155,7 +169,7 @@ function exit_code() {
   echo -n "$EXIT_CODE "
 }
 
-PROMPT_COMMAND=store_exit_code
+PROMPT_COMMAND="store_exit_code; $PROMPT_COMMAND"
 
 export PS1="\[\033[1;34m\][\$(date +%H:%M)] \[\033[1;36m\]\u@\h \w \$(git_branch_string)\$(parse_svn_branch)\[\033[1;31m\]\$(exit_code)\[\033[1;36m\]$\[\033[0m\] "
 
