@@ -1,7 +1,0 @@
-Decide which emacs <-> git package to use
-Put mmm-mode, nxhtml, psgml under source control
-Find an emacs package that handles html5 well
-Merge dependencies.sh and deploy.sh
-Load newest versions of git submodules on running dependencies.sh
-Add vimrc with syntax highlighting (at the very least)
-
