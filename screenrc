@@ -46,8 +46,8 @@ bindkey -m "^[[6;2~" stuff ^d
 # ------------------------------------------------------------
 # Default screens
 
-# screen -t px_test 0 bash
-# screen -t px 1 node /Users/pariser/dev/vurve/snoopy/px.js -c /Users/pariser/dev/vurve/snoopy/config -e development
-# screen -t api 2 node /Users/pariser/dev/vurve/snoopy/api.js -c /Users/pariser/dev/vurve/snoopy/config -e development
+# screen -t WINDOW_0_NAME 0 WINDOW_0_COMMAND
+# screen -t WINDOW_1_NAME 1 WINDOW_1_COMMAND
+# screen -t WINDOW_2_NAME 2 WINDOW_2_COMMAND
 # select 0
 

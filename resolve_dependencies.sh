@@ -4,7 +4,7 @@ EMACS="/Applications/Aquamacs.app/Contents/MacOS/Aquamacs"
 
 # Get the path of the deploy script
 LOCALPATH="$( cd "$( dirname "$0" )" && pwd )"
-LOCALPATH=/Users/pariser/dev/dotfiles
+LOCALPATH=$HOME/dev/dotfiles
 BUILDPATH=$LOCALPATH/build
 SITELISPPATH=$LOCALPATH/emacs.d/site-lisp
 DEPPATH=$LOCALPATH/dependencies

@@ -1,12 +1,21 @@
 #!/usr/bin/python
 
-import re, sys
+import re
+import sys
+import os
 
 hosts = set()
 
 print_hosts = re.match('--no-hosts', ' '.join(sys.argv[1:])) is None
 
-for entry in open('/Users/pariser/.ssh/config', 'r').read().split('Host '):
+config_path = os.path.expanduser('~/.ssh/config')
+
+config = open(config_path, 'r').read()
+clean_config = '\n'.join([line for line in config.split('\n') if line and not line.startswith('#')])
+
+host_entries = clean_config.split('Host ')[1:]
+
+for entry in host_entries:
     host, user = None, None
     for line in ('Host ' + entry).split('\n'):
         match = re.search('\s*(\S+)\s+(\S+)', line)
@@ -21,4 +30,3 @@ for entry in open('/Users/pariser/.ssh/config', 'r').read().split('Host '):
 if print_hosts:
     for host in hosts:
         print host,
-
