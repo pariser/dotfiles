@@ -385,6 +385,22 @@
 ;; (setq mmm-global-mode 'maybe)
 
 ;;************************************************************
+;; popwin.el: a special pop-up window for certain buffers
+;;************************************************************
+
+(require 'popwin)
+(popwin-mode 1)
+
+; add keymap for popwin
+(global-set-key (kbd "C-z") popwin:keymap)
+
+; default window height is 30
+(setq-default popwin:popup-window-height 30)
+
+; set ack buffer to open in popwin, sticky!
+(push '("*Ack-and-a-half*" :stick t) popwin:special-display-config)
+
+;;************************************************************
 ;; Remove tabs/trailing whitespace from buffer on save
 ;;************************************************************
 
