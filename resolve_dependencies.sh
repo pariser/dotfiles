@@ -35,10 +35,54 @@ ln -s $LOCALPATH/dependencies/rake-completion/rake ~/lib/rake
 
 echo '************************************************************'
 
+function standard_emacs_install() {
+  FOLDER=$1
+  FILES=$2
+  OUTFILES=$3
+
+  echo "FOLDER=$FOLDER"
+  echo "FILES=$FILES"
+  echo "OUTFILES=$OUTFILES"
+
+  echo "pushd $FOLDER > /dev/null"
+  pushd $FOLDER > /dev/null
+
+  echo "$EMACS -Q -L . -batch -f batch-byte-compile $FILES"
+  $EMACS -Q -L . -batch -f batch-byte-compile $FILES
+
+  echo "mv $OUTFILES $LOCALPATH/build/"
+  mv $OUTFILES $LOCALPATH/build/
+
+  echo "rm $LOCALPATH/emacs.d/site-lisp/$OUTFILES"
+  rm $LOCALPATH/emacs.d/site-lisp/$OUTFILES
+
+  echo "ln -s $LOCALPATH/build/$OUTFILES $LOCALPATH/emacs.d/site-lisp/$OUTFILES"
+  ln -s $LOCALPATH/build/$OUTFILES $LOCALPATH/emacs.d/site-lisp/$OUTFILES
+
+  echo "popd > /dev/null"
+  popd > /dev/null
+}
+
 FILES="yafolding.el"
 OUTFILES="yafolding.elc"
 
+
 (pushd $DEPPATH/yafolding > /dev/null) &&
+ ($EMACS -Q -L . -batch -f batch-byte-compile $FILES) &&
+ (mv $OUTFILES $LOCALPATH/build/) &&
+ (rm $LOCALPATH/emacs.d/site-lisp/$OUTFILES) &&
+ (ln -s $LOCALPATH/build/$OUTFILES $LOCALPATH/emacs.d/site-lisp/$OUTFILES) &&
+ (popd > /dev/null)
+
+echo '************************************************************'
+
+standard_emacs_install "$DEPPATH/rspec-mode" "rspec-mode.el" "rspec-mode.elc"
+
+FOLDER="$DEPPATH/rspec-mode"
+FILES="rspec-mode.el"
+OUTFILES="rspec-mode.elc"
+
+(pushd $FOLDER > /dev/null) &&
  ($EMACS -Q -L . -batch -f batch-byte-compile $FILES) &&
  (mv $OUTFILES $LOCALPATH/build/) &&
  (rm $LOCALPATH/emacs.d/site-lisp/$OUTFILES) &&
