@@ -58,3 +58,9 @@
 [submodule "dependencies/helm-css-scss"]
 	path = dependencies/helm-css-scss
 	url = https://github.com/ShingoFukuyama/helm-css-scss.git
+[submodule "dependencies/popwin-el"]
+	path = dependencies/popwin-el
+	url = https://github.com/m2ym/popwin-el.git
+[submodule "dependencies/helm"]
+	path = dependencies/helm
+	url = https://github.com/emacs-helm/helm.git
