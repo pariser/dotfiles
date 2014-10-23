@@ -4,19 +4,19 @@
 
 * Clone at
 
-      git clone git@github.com:pariser/dotfiles.git
+        git clone git@github.com:pariser/dotfiles.git
 
 * Download the git submodules
 
-      git submodule update --recursive
+        git submodule update --recursive
 
 * Set up directory structure & link files
 
-      ./deploy.sh
+        ./deploy.sh
 
 * Update all the dependencies & packages
 
-      ./resolve_dependencies.sh
+        ./resolve_dependencies.sh
 
 ## TODO
 
