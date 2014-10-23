@@ -195,6 +195,158 @@
 ;;             (define-key javascript-mode-map "\C-c\C-n" 'flymake-goto-next-error)))
 
 ;;************************************************************
+;; Source Map support for Javascript files
+;; See: http://lisperator.net/blog/source-maps-for-emacs/
+;;************************************************************
+
+(defun query-source-map (&optional reverse)
+  (interactive)
+  (let* ((name (buffer-name))
+         (mapname (format "%s.map" name))
+         (line (line-number-at-pos))
+         (col (current-column)),
+         (formatstring ("source-map-query.js %s %s %s")))
+
+    ;; (if reverse
+    ;;     (setq formatstring (concatenate formatstring " reverse")))
+
+    (message (format formatstring mapname line col))
+    (if (file-exists-p mapname)
+        (let* ((json (shell-command-to-string
+                      (format formatstring mapname line col))))
+
+          (message json)
+          (let* ((info (json-read-from-string json))
+                 (file (cdr (assoc 'source info)))
+                 (line (cdr (assoc 'line info)))
+                 (col (cdr (assoc 'column info)))
+                 (name (cdr (assoc 'name info))))
+            (if file
+                (progn
+                  (find-file file)
+                  (goto-line line)
+                  (forward-char col))
+              (message "Cannot determine original location"))))
+      (message "Source map (%s) not found" mapname))))
+
+
+(define-key js-mode-map (kbd "C-M-.") 'query-source-map)
+
+;; ;; TODO: finish work-in-progress
+
+;; (defun query-source-map (&optional sourceMapFile positionType)
+;;   (interactive)
+
+;;   (if (not positionType)
+;;       (set 'positionType
+;;            (if (equal current-prefix-arg '(4))
+;;                "generated" "original")))
+
+;;   (if (and
+;;        (not sourceMapFile)
+;;        (eq positionType "original"))
+;;       (save-excursion
+;;         (goto-char (point-min))
+;;         (re-search-forward "^//# sourceMappingURL=\\(.+\\)$")
+;;         (set 'sourceMapFile (match-string 1))))
+
+;;   (if (not sourceMapFile)
+;;       (set 'sourceMapFile
+;;            (read-file-name "Source Map File:" nil nil t)))
+
+;;   (let* ((json (json-new-object))
+;;          (json (json-add-to-object json "line" (line-number-at-pos)))
+;;          (json (json-add-to-object json "col" (current-column)))
+;;          (json (json-add-to-object json "sourceMap" sourceMapFile))
+;;          (json (json-add-to-object json "positionType" positionType))
+;;          (json (json-add-to-object json "file" (buffer-file-name))))
+
+;;     (message (json-encode json))))
+
+;; (interactive
+;;    (cond
+;;     ((equal current-prefix-arg nil)
+;;      ;; universal argument not called
+;;      ;; prompt user for source map file
+;;      (list
+;;       (read-file-name "Source Map File:" nil nil t)))
+;;     ((equal current-prefix-arg '(4))
+;;      ;; universal argument called -- reverse direction!
+;;      ;; prompt user for source map file
+;;      (list
+;;       (read-file-name "Source Map File:" nil nil t)
+;;       t))))
+
+;; (message "#1")
+
+;; (let* ((line (line-number-at-pos))
+;;          (col (current-column))
+;;          (command
+;;           (format
+;;            (if forwardDirection "source-map-query.js %s %s %s forward" "source-map-query.js %s %s %s")
+;;            sourceMapFile line col)))
+;;     (message "Running command: %s" command)
+
+;;     (shell-command-to-string command)
+;;     (message "#2")
+
+;;     (let ((json (shell-command-to-string command)))
+;;       (message "Got command result: %s" json)
+
+;;       (condition-case err
+;;           (let* ((info (json-read-from-string json))
+;;                  (file (cdr (assoc 'source info)))
+;;                  (line (cdr (assoc 'line info)))
+;;                  (col (cdr (assoc 'column info)))
+;;                  (name (cdr (assoc 'name info))))
+;;             (if file
+;;                 (progn
+;;                   (find-file file)
+;;                   (goto-line line)
+;;                   (forward-char col))
+;;               (message "Cannot determine original location")))
+;;         (json-error
+;;          (princ (format "source-map-query.js did not return valid json: %s" json))))))
+
+
+;; (defun wrap-html-tag (tagName &optional className id)
+;;   "Add a HTML tag to beginning and ending of current word or text selection.
+;;
+;; When preceded with `universal-argument',
+;; no arg = prompt for tag, class.
+;; 2 = prompt for tag, id.
+;; any = prompt for tag, id, class.
+;;
+;; When called interactively,
+;; Default id value is 「id‹random number›」.
+;; Default class value is 「xyz」.
+;;
+;; When called in lisp program, if className is nil or empty string, don't add the attribute. Same for id."
+;;   (interactive
+;;    (cond
+;;     ((equal current-prefix-arg nil)     ; universal-argument not called
+;;      (list
+;;       (read-string "Tag (span):" nil nil "span") ))
+;;     ((equal current-prefix-arg '(4))    ; C-u
+;;      (list
+;;       (read-string "Tag (span):" nil nil "span")
+;;       (read-string "Class (xyz):" nil nil "xyz") ))
+;;     ((equal current-prefix-arg 2)       ; C-u 2
+;;      (list
+;;       (read-string "Tag (span):" nil nil "span")
+;;       (read-string "id:" nil nil (format "id%d" (random (expt 2 28 ))))
+;;       ))
+;;     (t                                  ; all other cases
+;;      (list
+;;       (read-string "Tag (span):" nil nil "span")
+;;       (read-string "Class (xyz):" nil nil "xyz")
+;;       (read-string "id:" nil nil (format "id%d" (random (expt 2 28 )))) )) ) )
+;;
+;;   ;; now, all the parameters of your function is filled.
+;;   ;; code body here
+;;   )
+
+;;************************************************************
 ;; Use Emacs Got Git (egg)
 ;;************************************************************
 
