@@ -4,6 +4,7 @@
 [submodule "dependencies/auto-complete"]
 	path = dependencies/auto-complete
 	url = https://github.com/auto-complete/auto-complete.git
+	ignore = dirty
 [submodule "dependencies/egg"]
 	path = dependencies/egg
 	url = https://github.com/bogolisk/egg.git
@@ -13,6 +14,7 @@
 [submodule "dependencies/textmate"]
 	path = dependencies/textmate
 	url = https://github.com/defunkt/textmate.el.git
+	ignore = dirty
 [submodule "dependencies/js-beautify"]
 	path = dependencies/js-beautify
 	url = https://github.com/einars/js-beautify
@@ -64,3 +66,4 @@
 [submodule "dependencies/helm"]
 	path = dependencies/helm
 	url = https://github.com/emacs-helm/helm.git
+	ignore = dirty
