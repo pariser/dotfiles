@@ -1,0 +1,64 @@
+#!/bin/bash
+#set -x
+
+# Shows you the largest objects in your repo's pack file.
+# Written for osx.
+#
+# @see https://stubbisms.wordpress.com/2009/07/10/git-script-to-show-largest-pack-objects-and-trim-your-waist-line/
+# @author Antony Stubbs
+# @author Andrew Pariser @pariser
+
+# set the internal field spereator to line break, so that we can iterate easily over the verify-pack output
+IFS=$'\n';
+isNumberRegex='^[0-9]+$'
+
+# list all objects including their size, sort by size, take top 10
+echo "Running git verify-pack. This will take a moment."
+
+objects=`git verify-pack -v .git/objects/pack/pack-*.idx | grep -v chain | sort -k3nr | head`
+echo "START RESULT ---------"
+echo -e $objects
+echo "END RESULT ---------"
+
+echo ''
+
+echo "All sizes are in kB's. The pack column is the size of the object, compressed, inside the pack file."
+
+output="size,pack,SHA,location"
+allObjects=`git rev-list --all --objects`
+for y in $objects
+do
+  echo ''
+  echo $y
+  echo $y | cut -f1 -d ' '
+  echo $y | cut -s -f3 -d ' '
+  echo $y | cut -s -f4 -d ' '
+
+  # extract the SHA
+  sha=`echo $y | cut -f1 -d' '`
+
+  # extract the size, convert to bytes
+  sizeBytes=`echo $y | cut -s -f3 -d' '`
+  if ! [[ $sizeBytes =~ $isNumberRegex ]] ; then
+    echo "error: $sizeBytes is not a number (sha: $sha)" >&2
+    continue
+  fi
+  size=$((sizeBytes/1024))
+
+  # extract the compressed size, convert to bytes
+  compressedSizeBytes=`echo $y | cut -s -f4 -d' '`
+  if ! [[ $compressedSizeBytes =~ $isNumberRegex ]] ; then
+    echo "error: $compressedSizeBytes is not a number (line: \"$y\")" >&2
+    continue
+  fi
+  compressedSize=$((compressedSizeBytes/1024))
+
+  # find the objects location in the repository tree
+  other=`echo "${allObjects}" | grep $sha`
+
+  # add to output
+  output="${output}\n${size},${compressedSize},${other}"
+done
+
+echo ''
+echo -e $output | column -t -s ', '

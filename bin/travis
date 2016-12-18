@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+rvm default do travis $@

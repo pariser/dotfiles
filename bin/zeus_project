@@ -1,0 +1,143 @@
+#!/usr/bin/env bash -i
+
+SCRIPTNAME="${0##*/}"
+PROJECT_DIRECTORY="$1"
+shift
+
+# MAKE SURE PROJECT DIRECTORY EXISTS
+if [[ ! -d $PROJECT_DIRECTORY ]]; then
+  echo "Usage: $SCRIPTNAME /path/to/rails/project/root [-c] [-s [PORT]]"
+  exit 1
+fi
+
+# DEFAULT VALUES FOR SCRIPT
+ZEUS=true
+SERVER=false
+CONSOLE=false
+PORT=-1
+
+# READ COMMAND LINE ARGUMENTS
+while [[ $# > 0 ]]; do
+  key="$1"
+  shift
+
+  case $key in
+    --no-zeus)
+      ZEUS=false
+    ;;
+    -s|--server)
+      SERVER=true
+      if [[ $# > 0 && $1 != *[!0-9]* ]]; then
+        PORT=$1
+        shift
+      fi
+    ;;
+    -c|--console)
+      CONSOLE=true
+    ;;
+    -h|--help)
+      echo "usage: $FUNCNAME (--no-zeus) (-s|--server (PORT))"
+      return 0
+    ;;
+    *)
+      echo "usage: $FUNCNAME (--no-zeus) (-s|--server (PORT))"
+      return 1
+    ;;
+  esac
+done
+
+# LOAD RVM
+[[ -s $HOME/.rvm/scripts/rvm ]] && source $HOME/.rvm/scripts/rvm
+
+# CD INTO PROJECT_DIRECTORY
+cd $PROJECT_DIRECTORY
+
+# CHECK THAT ZEUS IS INSTALLED
+which zeus 2>&1 >/dev/null
+RESULT=$?
+if [[ $RESULT -ne 0 ]]; then
+  echo ""
+  echo "It looks like zeus is not installed in the specified folder. To continue, execute:"
+  echo ""
+  echo "  cd $PROJECT_DIRECTORY; gem install zeus"
+  echo ""
+  exit 1
+fi
+
+# DO WE NEED TO START ZEUS?
+if [[ $ZEUS == true && ! -e ".zeus.sock" ]]; then
+  NEED_TO_START_ZEUS=true
+else
+  NEED_TO_START_ZEUS=false
+fi
+
+# DO WE NEED TO START A RAILS SERVER?
+if [[ $SERVER == true && ! -e "tmp/pids/server.pid" ]]; then
+  NEED_TO_START_SERVER=true
+else
+  NEED_TO_START_SERVER=false
+fi
+
+
+# DEBUGGING OUTPUT
+echo "Called $SCRIPTNAME with ZEUS=$ZEUS, SERVER=$SERVER ($PORT), CONSOLE=$CONSOLE ; NEED_TO_START_ZEUS=$NEED_TO_START_ZEUS, NEED_TO_START_SERVER=$NEED_TO_START_SERVER"
+
+if [[ $NEED_TO_START_SERVER == true ]]; then
+
+  echo "* STARTING SERVER"
+
+  # RUN SERVER WITHOUT ZEUS
+  if [[ $PORT -gt 0 ]]; then
+    SERVER_COMMAND="rails s --port $PORT"
+  else
+    SERVER_COMMAND="rails s"
+  fi
+
+  # RUN SERVER WITH ZEUS
+  if [[ $ZEUS == true ]]; then
+    if [[ $PORT -gt 0 ]]; then
+      SERVER_COMMAND="zeus s --port $PORT"
+    else
+      SERVER_COMMAND="zeus s"
+    fi
+  fi
+
+  osascript -e "tell application \"Terminal\" to activate" \
+            -e "tell application \"System Events\" to tell process \"Terminal\" to keystroke \"t\" using command down" \
+            -e "tell application \"System Events\" to tell process \"Terminal\" to keystroke \"cd $PROJECT_DIRECTORY\"" \
+            -e "tell application \"System Events\" to tell process \"Terminal\" to keystroke return" \
+            -e "tell application \"System Events\" to tell process \"Terminal\" to keystroke \"$SERVER_COMMAND\"" \
+            -e "tell application \"System Events\" to tell process \"Terminal\" to keystroke return"
+
+fi
+
+if [[ $CONSOLE == true ]]; then
+  echo "* STARTING CONSOLE"
+
+  # RUN CONSOLE WITHOUT ZEUS
+  SERVER_COMMAND="rails c"
+
+  # RUN CONSOLE WITH ZEUS
+  if [[ $ZEUS == true ]]; then
+    SERVER_COMMAND="zeus c"
+  fi
+
+  osascript -e "tell application \"Terminal\" to activate" \
+            -e "tell application \"System Events\" to tell process \"Terminal\" to keystroke \"t\" using command down" \
+            -e "tell application \"System Events\" to tell process \"Terminal\" to keystroke \"cd $PROJECT_DIRECTORY\"" \
+            -e "tell application \"System Events\" to tell process \"Terminal\" to keystroke return" \
+            -e "tell application \"System Events\" to tell process \"Terminal\" to keystroke \"$SERVER_COMMAND\"" \
+            -e "tell application \"System Events\" to tell process \"Terminal\" to keystroke return"
+
+fi
+
+if [[ $NEED_TO_START_ZEUS == true ]]; then
+  echo "* STARTING ZEUS"
+
+  osascript -e "tell application \"Terminal\" to activate" \
+            -e "tell application \"System Events\" to tell process \"Terminal\" to keystroke \"t\" using command down" \
+            -e "tell application \"System Events\" to tell process \"Terminal\" to keystroke \"cd $PROJECT_DIRECTORY\"" \
+            -e "tell application \"System Events\" to tell process \"Terminal\" to keystroke return"
+
+  zeus start
+fi

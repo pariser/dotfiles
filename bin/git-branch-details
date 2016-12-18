@@ -1,0 +1,285 @@
+#!/usr/bin/env ruby
+
+require 'time'
+require 'colored'
+require 'parallel'
+require 'optparse'
+
+class GitBranchDetails
+  NotAGitRepository = Class.new(StandardError)
+
+  GOOD_TRAVIS_STATES = %w( created passed started ).freeze
+  NEUTRAL_TRAVIS_STATES = [ "not found", "canceled" ].freeze
+  BAD_TRAVIS_STATES = %w( failed errored ).freeze
+
+  EXPECTED_TRAVIS_STATES = (GOOD_TRAVIS_STATES + NEUTRAL_TRAVIS_STATES + BAD_TRAVIS_STATES).freeze
+
+  SPECIAL_BRANCHES = %w(
+    master
+    production
+    staging
+    beta
+    integration
+  ).freeze
+
+  def self.parse_arguments(arguments)
+    branch_names = []
+    options = {}
+    args = arguments.dup
+
+    until args.empty?
+      break if arguments.first.start_with?('-')
+      branch_names << arguments.shift
+    end
+
+    option_parser = OptionParser.new do |opts|
+      opts.banner = "Usage: git branch-details [branch_name, ...] [options]"
+      opts.on('--[no-]travis', 'Check status of each branch on travis (can be slow)') do |should_run_travis|
+        options[:travis] = should_run_travis
+      end
+      opts.on('--merged', 'Only display merged branches') { options[:only_display_merged_branches] = true }
+    end
+
+    option_parser.parse! args
+
+    [ branch_names, options ]
+  end
+
+  def initialize(branch_names=nil, options={})
+    @branch_names = branch_names unless branch_names.empty?
+    @check_travis = options.key?(:travis) ? options[:travis] : false
+    @only_display_merged_branches = options.key?(:only_display_merged_branches) ? options[:only_display_merged_branches] : false
+  end
+
+  def print_report
+    ensure_git_repository!
+
+    branches
+
+    width_between_columns = 5
+
+    column_widths = columns.each_with_object({}) do |column, hash|
+      row_sizes = branches.map do |branch|
+        value = branch[column]
+        value.nil? ? 0 : value.length
+      end
+      hash[column] = (row_sizes + [column.length]).max
+    end
+
+    total_column_width = column_widths.values.reduce(0, &:+) + (column_widths.count - 1) * width_between_columns
+    max_total_column_width = 204
+    if total_column_width > max_total_column_width && column_widths["message"]
+      column_widths["message"] -= (total_column_width - max_total_column_width)
+    end
+
+    print_format = column_widths.map { |_, width| "%-#{width}s" }.join(" " * width_between_columns) + "\n"
+    x = print_format % columns
+    puts ""
+    puts x
+    puts '-' * (x.length - 1)
+
+    branches.each do |branch|
+      format_strings = []
+      values = []
+
+      columns.each do |column|
+        unformatted_value = branch[column]
+        unformatted_width = unformatted_value.nil? ? 0 : unformatted_value.length
+
+        if unformatted_width > column_widths[column]
+          unformatted_value = unformatted_value[0...(column_widths[column] - 3)] + '...'
+          unformatted_width = column_widths[column]
+        end
+
+        color = color_of_value(column, unformatted_value)
+
+        formatted_value = unformatted_value.nil? ? nil : unformatted_value.send(color)
+        formatted_width = formatted_value.nil? ? 0 : formatted_value.length
+
+        column_width = column_widths[column] + formatted_width - unformatted_width
+
+        format_strings << "%-#{column_width}.#{column_width}s"
+        values << formatted_value
+      end
+
+      print_format = format_strings.join(" " * width_between_columns) + "\n"
+
+      printf print_format, *values
+    end
+    puts ""
+    true
+  rescue NotAGitRepository
+    puts ""
+    puts "This directory is not a git repository".red
+    puts ""
+    false
+  end
+
+private
+
+  def columns
+    @columns ||= begin
+      cols = [
+        'name',
+        'latest commit',
+        'message',
+        'author handle',
+        'upstream',
+        'merged?',
+      ]
+      cols << 'travis' if @check_travis
+      cols
+    end
+    @columns
+  end
+
+  def color_of_value(column, value)
+    color = begin
+      case column
+      when 'name'
+        case value
+        when current_branch_name
+          :green
+        when *SPECIAL_BRANCHES
+          :yellow
+        end
+
+      when 'travis'
+        case value
+        when *GOOD_TRAVIS_STATES
+          :green
+        when *NEUTRAL_TRAVIS_STATES
+          :yellow
+        when *BAD_TRAVIS_STATES
+          :red
+        end
+
+      when 'upstream'
+        case value
+        when / gone/
+          :red
+        when / behind \d+/
+          :yellow
+        when / ahead \d+/
+          :green
+        end
+      end
+    end
+    color ||= :to_s
+    color
+  end
+
+  def ensure_git_repository!
+    git_status = `git status 2>&1`
+    raise NotAGitRepository, "#{self.class.name} must be run from a git repository" if git_status =~ /^fatal: Not a git repository/
+  end
+
+  def current_branch_name
+    @current_branch_name ||= `git rev-parse --abbrev-ref HEAD`.chomp
+    @current_branch_name
+  end
+
+  def branch_names
+    @branch_names ||= begin
+      git_branch_result = `git branch`.chomp.gsub(/^../, '').split("\n")
+      git_branch_result.reject! { |branch_name| branch_name =~ %r{/} }
+      git_branch_result
+    end
+    @branch_names
+  end
+
+  GIT_BRANCH_VV_PARSE_REGEX = /^(?<name>\S+)\s+(?<sha>[0-9a-f]+)\s+(\[(?<upstream>.+)\] )?(?<message>.*)$/
+
+  def branch_verbose_details
+    @branch_verbose_details ||= begin
+      # require 'pry-byebug'
+      # binding.pry
+
+      git_branch_result = `git branch -vv`.chomp.gsub(/^../, '').split("\n")
+      git_branch_result.each_with_object({}) do |result, hash|
+        match = GIT_BRANCH_VV_PARSE_REGEX.match(result)
+        next if match.nil?
+
+        upstream = match[:upstream]
+        if upstream && upstream.index("origin/#{match[:name]}").zero?
+          upstream.sub!("origin/#{match[:name]}", "✅")
+        else
+          upstream = "❌"
+        end
+
+        hash[match['name']] = {
+          'sha' => match['sha'],
+          'message' => match['message'],
+          'upstream' => upstream,
+        }
+      end
+    end
+    @branch_verbose_details
+  end
+
+  def get_branch_info(branch_name)
+    data = {
+      'name' => branch_name,
+    }
+
+    if branch_verbose_details.key?(branch_name)
+      data.merge!(branch_verbose_details[branch_name])
+    end
+
+    git_log_response = `git log -1 --format="%h,%an,%ae,%ci,%cr" refs/heads/#{branch_name}`.chomp.split(',')
+
+    ["sha", "author name", "author email", "latest commit time", "latest commit"].zip(git_log_response).each do |field, value|
+      data[field] = value
+    end
+
+    data["author handle"] = data["author email"].slice(0, data["author email"].index("@"))
+    data['latest commit time'] = Time.parse(data['latest commit time'])
+    data['merged?'] = `git branch -r --contains #{branch_name}`.chomp.gsub(/^../, '').split("\n").include?('origin/master') ? 'yes' : 'no'
+    data['travis'] = get_travis_state(branch_name) if @check_travis
+    data
+  rescue
+    require 'pry-byebug'
+    binding.pry
+    retry
+  end
+
+  def get_travis_state(branch_name)
+    # puts "travis show #{branch_name} 2>&1"
+    travis_show = `travis show #{branch_name} 2>&1`
+
+    if travis_show =~ /^resource not found/i
+      return "not found"
+    end
+
+    travis_state = travis_show[/State:\s+(.+)\n/, 1]
+    travis_state = "unknown state #{travis_state.inspect}" unless EXPECTED_TRAVIS_STATES.include?(travis_state)
+    travis_state
+  end
+
+  def branches
+    @branches ||= begin
+      message =
+        if @check_travis
+          "* Loading branch information and travis status"
+        else
+          "* Loading branch information"
+        end
+      print message
+      data = Parallel.map(branch_names, in_threads: 3) do |branch_name|
+        print "."
+        get_branch_info(branch_name)
+      end
+      puts ""
+
+      data.sort_by! { |b| b['latest commit time'] }.reverse!
+      data.select! { |d| d['merged?'] == 'yes' } if @only_display_merged_branches
+      data
+    end
+  end
+end
+
+if __FILE__ == $PROGRAM_NAME
+  branch_names, options = GitBranchDetails.parse_arguments(ARGV)
+  success = GitBranchDetails.new(branch_names, options).print_report
+  exit success ? 0 : 1
+end

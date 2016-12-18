@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+for branch in $@; do
+  git branch -D ${branch}
+  SKIP_LINT=1 git push origin :${branch}
+done

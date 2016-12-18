@@ -1,0 +1,44 @@
+#!/bin/sh
+
+RESTORE='\033[0m'
+
+RED='\033[00;31m'
+GREEN='\033[00;32m'
+YELLOW='\033[00;33m'
+BLUE='\033[00;34m'
+PURPLE='\033[00;35m'
+CYAN='\033[00;36m'
+LIGHTGRAY='\033[00;37m'
+
+current_branch=$(git rev-parse --abbrev-ref HEAD)
+tracked_remotes=$(git config --get-regexp "^branch\.[^\.]+\.remote$" | cut -d ' ' -f 2 | sort | uniq)
+branches=$(git for-each-ref refs/heads --format="%(refname:short)")
+
+for remote in $tracked_remotes; do
+  echo "* Fetching remote ${remote}..."
+  git fetch $remote
+  echo "  ${GREEN}Done${RESTORE}"
+done
+
+for branch in $branches; do
+  echo "\n* Branch: ${branch}..."
+
+  remote=$(git config --get "branch.${branch}.remote")
+  [ "$?" -ne "0" ] && echo "  - ${YELLOW}Skipping! Not tracked to any remote.${RESTORE}" && continue
+  remote_merge=$(git config --get "branch.${branch}.merge")
+  [ "$?" -ne "0" ] && echo "  - ${YELLOW}Skipping! Not tracked to any remote branch.${RESTORE}" && continue
+  remote_merge_short=$(git for-each-ref "${remote_merge}" --format="%(refname:short)")
+  [ "$?" -ne "0" ] && echo "  - ${RED}Error! Could not determine short refname for ref ${remote_merge}${RESTORE}" && continue
+
+  # echo "  FAST FORWARDING $branch from $remote/$remote_merge_short"
+  git checkout $branch > /dev/null 2>&1
+  git merge --ff-only $remote/$remote_merge_short > /dev/null 2>&1
+  if [ "$?" -eq "0" ]; then
+    echo "  - ${GREEN}Successfully fast-forwarded ${branch} from ${remote}/${remote_merge_short}${RESTORE}"
+  else
+    echo "  - ${RED}Could not fast-forward ${branch} from ${remote}/${remote_merge_short}${RESTORE}"
+  fi
+done
+
+git checkout $current_branch > /dev/null 2>&1
+echo "\nDone!"

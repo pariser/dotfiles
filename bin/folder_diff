@@ -1,0 +1,71 @@
+#!/usr/bin/env ruby
+
+require 'pathname'
+require 'digest'
+require 'colored'
+
+target_folder, source_folder = ARGV
+target_folder = Pathname.new(target_folder.sub(%r{/$}, ''))
+source_folder = Pathname.new(source_folder.sub(%r{/$}, ''))
+
+target_files = Dir.glob("#{target_folder}/**/*")
+target_files.reject! { |file| File.directory?(file) }
+target_files.map! { |file| Pathname.new(file).relative_path_from(target_folder) }
+
+source_files = Dir.glob("#{source_folder}/**/*")
+source_files.reject! { |file| File.directory?(file) }
+source_files.map! { |file| Pathname.new(file).relative_path_from(source_folder) }
+
+files_missing_on_target = source_files - target_files
+# files_missing_on_source = target_files - source_files
+
+if files_missing_on_target.empty?
+  puts "All files in #{source_folder} are accounted for in #{target_folder}".green
+else
+  puts "Missing the following files in #{target_folder}:".red
+  files_missing_on_target.each do |file_missing_on_target|
+    puts "* #{file_missing_on_target}"
+  end
+end
+puts ""
+
+any_files_differ = false
+files_on_both = target_files & source_files
+
+puts "Computing mtimes"
+index = 0
+count = files_on_both.count
+files_on_both_with_data = files_on_both.each_with_object({}) do |path, hash|
+  index += 1
+  print ".".green
+  puts " (%d of %d)" % [ index, count ] if index % 20 == 0
+  hash[path] = {
+    source_mtime: File.mtime("#{source_folder}/#{path}"),
+    target_mtime: File.mtime("#{target_folder}/#{path}"),
+    source_md5: Digest::MD5.file("#{source_folder}/#{path}"),
+    target_md5: Digest::MD5.file("#{target_folder}/#{path}"),
+  }
+end
+puts ""
+
+files_on_both_with_data.each do |path, data|
+  if data[:source_mtime] > data[:target_mtime]
+    unless any_files_differ
+      any_files_differ = true
+      puts "The following files differ:".red
+    end
+    puts "File #{path} has been modified in #{source_folder} more recently than in #{target_folder}".yellow
+  elsif data[:target_mtime] < data[:source_mtime]
+    # no-op
+  elsif data[:source_md5] != data[:target_md5]
+    unless any_files_differ
+      any_files_differ = true
+      puts "The following files differ:".red
+    end
+    puts "* File #{path} has a different md5".yellow
+    # no-op
+  end
+end
+
+puts "No files differ!".green unless any_files_differ
+puts ""
