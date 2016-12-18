@@ -4,14 +4,14 @@
 LOCALPATH="$( cd "$( dirname "$0" )" && pwd )"
 
 # Link the dotfiles that belong in ~/
-for FILE in profile bashrc gitconfig gitignore screenrc emacs emacs.d vimrc ackrc; do
+for FILE in profile bashrc gitconfig gitignore screenrc vimrc ackrc; do
   if [[ -f ~/.$FILE ]] || [[ -d ~/.$FILE ]] && ! [[ -L ~/.$FILE ]] ; then
     echo "Not linking file $LOCALPATH/$FILE -- ~/.$FILE already exists"
   elif [[ -L ~/.$FILE ]] ; then
     echo "~/.$FILE is already a symbolic link. Skipping."
   else
     ln -s $LOCALPATH/$FILE ~/.$FILE
-  fi 
+  fi
 done
 
 # Make bin,dev,lib directories
@@ -34,4 +34,3 @@ for FILE in $LOCALPATH/bin/* ; do
 done
 
 source ~/.bashrc
-

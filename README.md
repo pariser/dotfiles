@@ -31,10 +31,6 @@
 * Add atom config
 * Merge `resolve_dependencies.sh` and `deploy.sh`
 * Replace installation / dependencies files with single `install` script (in python or ruby?)
-* Remove emacs config
-  * Decide which emacs <-> git package to use
-  * Put mmm-mode, nxhtml, psgml under source control
-  * Find an emacs package that handles html5 well
 * Load newest versions of git submodules on running dependencies.sh
 
 ## Notes On Naming

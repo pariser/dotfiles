@@ -278,11 +278,6 @@ function logtail() {
   tail -F "`ls -t | head -1`"
 }
 
-function e() {
-  echo "/Applications/Aquamacs.app/Contents/MacOS/bin/emacsclient $1 &"
-  /Applications/Aquamacs.app/Contents/MacOS/bin/emacsclient $1 &
-}
-
 alias now="ruby -e 'puts Time.now.to_i'"
 
 alias nt="nosetests --nocapture --nologcapture --tests"
