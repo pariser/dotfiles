@@ -4,30 +4,38 @@
 
 * Clone at
 
-        git clone git@github.com:pariser/dotfiles.git
+  ```
+  git clone git@github.com:pariser/dotfiles.git
+  ```
 
 * Download the git submodules
 
-        git submodule update --recursive
+  ```
+  git submodule update --recursive
+  ```
 
 * Set up directory structure & link files
 
-        ./deploy.sh
+  ```
+  ./deploy.sh
+  ```
 
 * Update all the dependencies & packages
 
-        ./resolve_dependencies.sh
+  ```
+  ./resolve_dependencies.sh
+  ```
 
 ## TODO
 
-* Decide which emacs <-> git package to use
-* Put mmm-mode, nxhtml, psgml under source control
-* Find an emacs package that handles html5 well
+* Add atom config
 * Merge `resolve_dependencies.sh` and `deploy.sh`
 * Replace installation / dependencies files with single `install` script (in python or ruby?)
+* Remove emacs config
+  * Decide which emacs <-> git package to use
+  * Put mmm-mode, nxhtml, psgml under source control
+  * Find an emacs package that handles html5 well
 * Load newest versions of git submodules on running dependencies.sh
-* Atom configuration (?)
-* Clean up Emacs configuration (?)
 
 ## Notes On Naming
 

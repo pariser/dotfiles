@@ -22,7 +22,19 @@
     add-branch-note = "!git config branch.$(git symbolic-ref HEAD|sed \"s/refs\\/heads\\///\").note $( if [ $# -gt 0 ]; then $1; fi)"
     head = "!git rev-parse --abbrev-ref HEAD"
     upstream = "!git rev-parse --abbrev-ref --symbolic-full-name @{u} 2>/dev/null"
+    current-branch = "!git rev-parse --abbrev-ref HEAD"
+    local-branches-with-deleted-remote = "!git branch -vv | grep ': gone' | awk '{print $1}'"
+    # "!git branch -vv | grep -E '\[origin/.*: gone\]'"
 
 [filter "media"]
-	clean = git-media-clean %f
-	smudge = git-media-smudge %f
+	required = true
+	clean = git media clean %f
+	smudge = git media smudge %f
+[filter "hawser"]
+	clean = git hawser clean %f
+	smudge = git hawser smudge %f
+	required = true
+[filter "lfs"]
+	clean = git lfs clean %f
+	smudge = git lfs smudge %f
+	required = true

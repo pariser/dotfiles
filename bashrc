@@ -18,20 +18,26 @@ shopt -s histappend                      # append to history, don't overwrite it
 # Path
 ########################################################
 
-export PATH=~/bin:/usr/local/lib/node_modules:$PATH
-export PYTHONPATH=~/lib:$PYTHONPATH
+export PATH=~/bin:$PATH
+export PATH=./node_modules/.bin:$PATH
+export PATH=/usr/local/lib/node_modules/bin:$PATH
+export PATH=$PATH:/usr/local/opt/go/libexec/bin # brew info go
+export PATH=$PATH:/usr/local/sbin
 
 if [[ -d /usr/local/share/npm/bin ]] ; then
   export PATH=/usr/local/share/npm/bin:$PATH
 fi
 
-if [[ -d ~/.gem/ruby/2.8/bin ]] ; then
-  export PATH=~/.gem/ruby/2.8/bin:$PATH
-fi
-
 if [[ -d $HOME/.rvm/bin ]] ; then
   export PATH=$PATH:$HOME/.rvm/bin
 fi
+
+export PYTHONPATH=~/lib:$PYTHONPATH
+
+export GOPATH=~/dev/golang
+export PATH=$PATH:$GOPATH/bin
+
+export PATH=/usr/local/Qt5.5.1/5.5/clang_64/bin:$PATH
 
 ########################################################
 # Bash Completion
@@ -208,6 +214,8 @@ fi
 # Aliases
 ########################################################
 
+alias hack-the-planet="afplay $HOME/dev/learnup/work-advice/misc/hack-the-planet.mp3 &"
+
 # -- ls aliases
 
 alias ls="ls -G"
@@ -219,13 +227,41 @@ alias ydiff="diff -y --suppress-common-lines"
 
 # -- Git aliases
 
+alias git=hub
 alias gs="git status"
 alias gd="git diff"
 alias gco="git checkout"
 alias grom="git rebase origin/master"
+alias isgit="git status &> /dev/null"
+
+alias gist_diff="isgit && (git diff | gist -p -t diff | xargs open)"
+alias atom_diff="git diff | tmpin atom"
+
+function github() {
+  ref=$1
+  github_url=$(git remote -v | awk '/origin.*fetch/{print $2}' | sed -Ee 's#(git@|git://)#http://#' -e 's@com:@com/@' -e 's#\.git$##')
+  if [[ -n "$ref" ]]; then
+    if [[ $ref =~ ^#\[0-9\]+$ ]]; then
+      github_url="$github_url/pull/$ref"
+    else
+      github_url="$github_url/commit/$ref"
+    fi
+  else
+    github_branch=$(git rev-parse --abbrev-ref HEAD)
+    if [[ "_$github_branch" == "_master" ]]; then
+      # echo "master"
+      github_url="$github_url/commits/master"
+    else
+      # echo "branch"
+      github_url="$github_url/commits/$github_branch"
+    fi
+  fi
+  echo $github_url
+  open $github_url | head -n1
+}
 
 function gh() {
-  git status 2>&1 > /dev/null && cd `git rev-parse --show-toplevel`
+  isgit && cd `git rev-parse --show-toplevel` || return $?
 }
 
 function git_lineschanged() {
@@ -247,6 +283,8 @@ function e() {
   /Applications/Aquamacs.app/Contents/MacOS/bin/emacsclient $1 &
 }
 
+alias now="ruby -e 'puts Time.now.to_i'"
+
 alias nt="nosetests --nocapture --nologcapture --tests"
 
 alias serve="python -m SimpleHTTPServer 8000"
@@ -257,6 +295,52 @@ alias mlt="tail -f /usr/local/var/log/mongodb/mongo.log"
 
 alias aquamacs="/Applications/Aquamacs.app/Contents/MacOS/Aquamacs"
 alias aquamacs_byte_compile="aquamacs -Q -L . -batch -f batch-byte-compile"
+
+function pushd() {
+  command pushd "$@" > /dev/null
+}
+
+function popd() {
+  command popd "$@" > /dev/null
+}
+
+alias flush_memcached="echo \"flush_all\" | nc localhost 11211"
+
+alias showFinderDotfiles='defaults write com.apple.finder AppleShowAllFiles YES; killall Finder /System/Library/CoreServices/Finder.app'
+alias hideFinderDotfiles='defaults write com.apple.finder AppleShowAllFiles NO; killall Finder /System/Library/CoreServices/Finder.app'
+
+alias nginx-start="sudo launchctl load /Library/LaunchDaemons/homebrew.mxcl.nginx.plist"
+alias nginx-stop="sudo launchctl unload /Library/LaunchDaemons/homebrew.mxcl.nginx.plist"
+alias nginx-restart="nginx-stop && nginx-start"
+
+########################################################
+# Use N for node package management
+########################################################
+
+# N_PREFIX=${N_PREFIX-/usr/local}
+# BASE_VERSIONS_DIR=$N_PREFIX/n/versions
+#
+# function n_installed_versions() {
+#   find $BASE_VERSIONS_DIR -maxdepth 2 -type d \
+#     | sed 's|'$BASE_VERSIONS_DIR'/||g' \
+#     | egrep "/[0-9]+\.[0-9]+\.[0-9]+$" \
+#     | sort -k 1 -k 2,2n -k 3,3n -t .
+# }
+#
+# alias n_original=$(which n)
+#
+# function n() {
+#   if [[ _$1 == '_ls' ]]; then
+#     n_installed_versions
+#   else
+#     n_original $@
+#   fi
+#
+#   npm_global_prefix=~/.n/$(node --version)
+#
+#   npm config set prefix
+#
+# }
 
 ########################################################
 # Load non-version controlled (private) bashrc files

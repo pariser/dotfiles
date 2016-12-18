@@ -6,5 +6,8 @@
 --type-set=sass=.sass
 --type-set=log=.log
 --nolog
+--ignore-file=is:tags
+--ignore-file=match:.eslintcache
 --ignore-dir=tmp
 --ignore-dir=node_modules
+--ignore-dir=.yardoc
