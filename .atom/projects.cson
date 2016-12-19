@@ -1,0 +1,112 @@
+learnup:
+  title: "learnup"
+  paths: [
+    "/Users/pariser/dev/learnup/learnup"
+  ]
+  settings:
+    "core.ignoredNames": [
+      ".git"
+      ".DS_Store"
+      "*~"
+      ".git"
+      "node_modules"
+      ".yardoc"
+      "tmp"
+      "log"
+      "tags"
+      "public/system"
+      ".tmp"
+      ".eslintcache"
+    ]
+strawberry:
+  title: "strawberry"
+  paths: [
+    "/Users/pariser/dev/learnup/strawberry"
+  ]
+mm_eager_includer:
+  title: "mm_eager_includer"
+  paths: [
+    "/Users/pariser/dev/learnup/mm_eager_includer"
+  ]
+dotfiles:
+  title: "dotfiles"
+  paths: [
+    "/Users/pariser/dev/dotfiles"
+  ]
+denormalize_mm:
+  title: "denormalize_mm"
+  paths: [
+    "/Users/pariser/dev/learnup/denormalize_mm"
+  ]
+"Learnup Gems":
+  title: "Learnup Gems"
+  paths: [
+    "/Users/pariser/.rvm/gems/ruby-2.2.2@LearnUp/gems"
+  ]
+"wedding-registry-scaper":
+  title: "wedding-registry-scaper"
+  paths: [
+    "/Users/pariser/dev/wedding_registry_scraper"
+  ]
+"mm-sluggable":
+  title: "mm-sluggable"
+  paths: [
+    "/Users/pariser/dev/learnup/mm-sluggable"
+  ]
+fixturize:
+  title: "fixturize"
+  paths: [
+    "/Users/pariser/dev/learnup/fixturize"
+  ]
+analytics:
+  title: "analytics"
+  paths: [
+    "/Users/pariser/dev/learnup/analytics"
+  ]
+theparisers:
+  title: "theparisers"
+  paths: [
+    "/Users/pariser/dev/theparisers"
+  ]
+"zurb-foundation-3.2.5":
+  title: "zurb-foundation-3.2.5"
+  paths: [
+    "/Users/pariser/.rvm/gems/ruby-2.2.2@LearnUp/gems/zurb-foundation-3.2.5"
+  ]
+"compass-core-1.0.3":
+  title: "compass-core-1.0.3"
+  paths: [
+    "/Users/pariser/.rvm/gems/ruby-2.2.2@LearnUp/gems/compass-core-1.0.3"
+  ]
+"game-of-war":
+  title: "game-of-war"
+  paths: [
+    "/Users/pariser/dev/learnup/game_of_war"
+  ]
+server_bootstrap:
+  title: "server_bootstrap"
+  paths: [
+    "/Users/pariser/dev/learnup/server_bootstrap"
+  ]
+"work-advice":
+  title: "work-advice"
+  paths: [
+    "/Users/pariser/dev/learnup/work-advice"
+  ]
+resourcebot:
+  title: "resourcebot"
+  paths: [
+    "/Users/pariser/dev/learnup/slack-resourcebot"
+  ]
+"spice-rack":
+  title: "spice-rack"
+  paths: [
+    "/Users/pariser/dev/spice-rack"
+  ]
+  "linter-rubocop":
+    command: "/Users/pariser/dev/spice-rack/bin/rubocop"
+analyticsoplog:
+  title: "Analytics Oplog"
+  paths: [
+    "/Users/pariser/dev/learnup/analytics_oplog"
+  ]

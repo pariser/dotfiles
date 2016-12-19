@@ -8,7 +8,8 @@ HOME = File.expand_path("~")
 BIN = File.join(HOME, "bin")
 LOCALPATH = File.expand_path(File.dirname(__FILE__))
 DOTFILES = %w(profile bashrc gitconfig gitignore screenrc vimrc ackrc).freeze
-HOME_DIRECTORIES = %w(bin dev lib).freeze
+HOME_DIRECTORIES = %w(bin dev lib .atom).freeze
+ATOMFILES = %w(config.cson init.coffee keymap.cson projects.cson snippets.cson styles.less)
 
 def install(name, install_command)
   puts "  Installing #{name}..."
@@ -141,6 +142,25 @@ brew_install_if_missing %w(
 
 puts "\n" + <<-SEPARATOR.green + "\n"
 ************************************************************
+** Link atom config files
+SEPARATOR
+
+ATOMFILES.each do |atomfile|
+  source_file = File.join(LOCALPATH, ".atom", atomfile)
+  target_file = File.join(HOME, ".atom", atomfile)
+  if File.exist?(target_file) && File.symlink?(target_file)
+    puts "Not linking file #{source_file} -- already exists".yellow
+  elsif File.exist?(target_file) && !File.symlink?(target_file)
+    puts "Not linking file #{source_file} -- file already exists at #{target_file}".red
+  else
+    puts "Linking #{source_file} to #{target_file}".green
+    File.symlink(source_file, target_file)
+  end
+end
+
+
+puts "\n" + <<-SEPARATOR.green + "\n"
+************************************************************
 ** Instruct on how to install atom packages
 SEPARATOR
 
@@ -152,5 +172,6 @@ install_command = ["apm", "install", "--packages-file", package_file]
 puts "To install atom packages, run:".red.underline.bold
 puts ""
 puts "  #{install_command.join(" ")}"
+
 
 puts ""

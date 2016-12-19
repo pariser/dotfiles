@@ -1,0 +1,101 @@
+"*":
+  Rdio:
+    "showEqualizer (WindowResizePerformanceIssue )": false
+  aligner:
+    ":-alignment": "left"
+  "atom-beautify":
+    css:
+      convert_quotes: "single"
+      newline_between_rules: true
+    general:
+      _analyticsUserId: "b38a6e06-84e0-43a1-9c53-cdebc39b734b"
+      analytics: false
+  "autocomplete-plus":
+    autoActivationDelay: 500
+    includeCompletionsFromAllBuffers: true
+  "bracket-matcher":
+    autocompleteBrackets: false
+    autocompleteSmartQuotes: false
+  core:
+    disabledPackages: [
+      "select-rectangle"
+      "Rdio"
+      "incremental-search"
+      "linter-jshint"
+      "linter-eslint"
+    ]
+    excludeVcsIgnoredPaths: false
+    ignoredNames: [
+      ".git"
+      ".DS_Store"
+      "*~"
+      ".git"
+      "node_modules"
+      ".yardoc"
+      "tmp"
+      "log"
+      "tags"
+      "public/system"
+      ".tmp"
+      ".eslintcache"
+    ]
+    packagesWithKeymapsDisabled: [
+      "rails-transporter"
+    ]
+    telemetryConsent: "limited"
+  editor:
+    fontFamily: "Inconsolata"
+    invisibles: {}
+    normalizeIndentOnPaste: false
+    showIndentGuide: true
+    showInvisibles: true
+    tabType: "soft"
+  "emacs-mode":
+    addToKillRingOnSelect: true
+    hideSidebar: false
+    hideTabs: false
+    useEmacsCursor: false
+    useFuzzyBufferFinder: false
+    useFuzzyFileFinder: true
+  "exception-reporting":
+    userId: "e81e63e6-e4de-65f8-aac8-4a364814f045"
+  "fuzzy-finder":
+    preserveLastSearch: true
+  linter:
+    errorPanelHeight: 94
+    lintOnFly: false
+    showErrorPanel: false
+    showErrorTabFile: false
+    showErrorTabProject: false
+  "linter-eslint":
+    disableWhenNoEslintrcFileInPath: true
+    eslintRulesDir: "/Users/pariser/dev/learnup/learnup/.eslint-rules"
+    globalNodePath: "/usr/local"
+    useGlobalEslint: true
+  "linter-jshint": {}
+  "linter-rubocop":
+    command: "/Users/pariser/bin/pwd-rubocop"
+  "linter-scss-lint":
+    disableWhenNoConfigFileInPath: true
+    executablePath: "/Users/pariser/.rvm/wrappers/ruby-2.2.2@work-advice/scss-lint"
+  "merge-conflicts": {}
+  metrics:
+    userId: "6d87f910b8997c90643ccb80290f722d323e36cb"
+  minimap: {}
+  "rails-transporter": {}
+  "travis-ci-status":
+    personalAccessToken: "f2f7f096460400b0864bc68a10d4b425cfb17e03"
+    useTravisCiPro: true
+  "tree-view":
+    hideIgnoredNames: true
+    hideVcsIgnoredFiles: true
+  welcome:
+    showOnStartup: false
+".haml.text":
+  editor:
+    autoIndentOnPaste: false
+    normalizeIndentOnPaste: "false"
+".hamlc.text":
+  editor:
+    autoIndentOnPaste: false
+    normalizeIndentOnPaste: "false"

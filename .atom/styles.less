@@ -1,0 +1,42 @@
+/*
+ * Your Stylesheet
+ *
+ * This stylesheet is loaded when Atom starts up and is reloaded automatically
+ * when it is changed.
+ *
+ * If you are unfamiliar with LESS, you can read more about it here:
+ * http://www.lesscss.org
+ */
+
+atom-text-editor::shadow .isearch-result .region {
+ background-color: transparent;
+ border: 1px solid #888;
+}
+
+atom-text-editor::shadow .isearch-current .region {
+  background-color: rgba(238, 238, 238, 0.3);
+  border: 1px solid #888;
+}
+
+.source.diff {
+  .markup.deleted.diff { color: #DD5555; }
+  .markup.inserted.diff { color: #009933; }
+  .markup.changed.diff { color: #E6DB74; }
+}
+
+/* Make the minimap visible only in the focused pane */
+atom-text-editor {
+  &, &::shadow {
+    atom-text-editor-minimap {
+      display: none;
+    }
+  }
+
+  &.is-focused {
+    &, &::shadow {
+      atom-text-editor-minimap {
+        display: block;
+      }
+    }
+  }
+}

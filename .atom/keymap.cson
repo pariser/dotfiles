@@ -1,0 +1,88 @@
+# Your keymap
+#
+# Atom keymaps work similarly to stylesheets. Just as stylesheets use selectors
+# to apply styles to elements, Atom keymaps use selectors to associate
+# keystrokes with events in specific contexts.
+#
+# You can create a new keybinding in this file by typing 'key' and then hitting
+# tab.
+#
+# Here's an example taken from Atom's built-in keymap:
+#
+# '.editor':
+#   'enter': 'editor:newline'
+#
+# '.workspace':
+#   'ctrl-shift-p': 'core:move-up'
+#   'ctrl-p': 'core:move-down'
+#
+# You can find more information about keymaps in these guides:
+# * https://atom.io/docs/latest/customizing-atom#customizing-key-bindings
+# * https://atom.io/docs/latest/advanced/keymaps
+
+'atom-workspace':
+  'ctrl-cmd-r c': 'rails-transporter:open-controller'
+  'ctrl-cmd-r v f': 'rails-transporter:open-view-finder'
+  'ctrl-cmd-r v': 'rails-transporter:open-view'
+  'ctrl-cmd-r l': 'rails-transporter:open-layout'
+  'ctrl-cmd-r m': 'rails-transporter:open-model'
+  'ctrl-cmd-r h': 'rails-transporter:open-helper'
+  'ctrl-cmd-r t': 'rails-transporter:open-test'
+  'ctrl-cmd-r s': 'rails-transporter:open-spec'
+  'ctrl-cmd-r p': 'rails-transporter:open-partial-template'
+  'ctrl-cmd-r a': 'rails-transporter:open-asset'
+  'ctrl-cmd-r d m': 'rails-transporter:open-migration-finder'
+  'ctrl-cmd-r f': 'rails-transporter:open-factory'
+
+'body':
+  'escape': 'unset!'
+  'escape escape': 'core:cancel'
+  'ctrl-g': 'core:cancel'
+
+'.find-and-replace':
+  'escape': 'core:cancel'
+  'escape escape': 'unset!'
+
+'.command-palette':
+  'escape': 'core:cancel'
+  'escape escape': 'unset!'
+
+'atom-text-editor':
+  'alt-space': 'autocomplete-plus:activate'
+  'escape b': 'editor:move-to-beginning-of-word'
+  'escape f': 'editor:move-to-end-of-word'
+  'escape %': 'find-and-replace:show'
+
+'atom-text-editor:not(.mini)':
+  'alt-space': 'autocomplete:toggle'
+  'escape <': 'core:move-to-top'
+  'escape >': 'core:move-to-bottom'
+  'escape g g': 'go-to-line:toggle'
+
+'.platform-darwin atom-workspace atom-text-editor:not(.mini)':
+  'ctrl-s': 'incremental-search:forward'
+  'ctrl-r': 'incremental-search:backward'
+
+'.platform-darwin atom-workspace .isearch atom-text-editor':
+  'ctrl-s': 'incremental-search:forward'
+  'ctrl-r': 'incremental-search:backward'
+  'ctrl-w' : 'incremental-search:slurp'
+
+'.platform-darwin':
+  'ctrl-x 0': 'pane:close'
+  'ctrl-x 1': 'pane:close-other-items'
+  'ctrl-x 2': 'pane:split-down-creating-empty-pane'
+  'ctrl-x 3': 'pane:split-right-creating-empty-pane'
+  'ctrl-x o': 'window:focus-next-pane'
+
+'.platform-darwin, .platform-darwin .command-palette atom-text-editor':
+  'escape x': 'command-palette:toggle'
+
+'.platform-darwin atom-text-editor':
+  'alt-q': 'unset!'
+  'alt-cmd-q': 'unset!'
+  'escape shift-q': 'autoflow:reflow-paragraph'
+  'escape q': 'autoflow:reflow-selection'
+
+".platform-darwin, .platform-win32, .platform-linux":
+  "ctrl-g": "core:cancel" # Override go-to-line:toggle
