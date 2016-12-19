@@ -10,10 +10,6 @@ LOCALPATH = File.expand_path(File.dirname(__FILE__))
 DOTFILES = %w(profile bashrc gitconfig gitignore screenrc vimrc ackrc).freeze
 HOME_DIRECTORIES = %w(bin dev lib).freeze
 
-def run_command(command, &_block)
-  puts "* Command: #{command.join(" ").yellow}"
-end
-
 def install(name, install_command)
   puts "  Installing #{name}..."
   Open3.popen3(*install_command) do |_stdin, stdout, stderr, wait_thr|
@@ -143,4 +139,18 @@ brew_install_if_missing %w(
   source-highlight
 )
 
-exit 0
+puts "\n" + <<-SEPARATOR.green + "\n"
+************************************************************
+** Instruct on how to install atom packages
+SEPARATOR
+
+# To create a backup file as found in atom-packages.list:
+# apm list --installed --bare > atom-packages.list
+
+package_file = File.join(LOCALPATH, "atom-packages.list")
+install_command = ["apm", "install", "--packages-file", package_file]
+puts "To install atom packages, run:".red.underline.bold
+puts ""
+puts "  #{install_command.join(" ")}"
+
+puts ""
