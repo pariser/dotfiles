@@ -29,9 +29,6 @@
 ## TODO
 
 * Add atom config
-* Merge `resolve_dependencies.sh` and `deploy.sh`
-* Replace installation / dependencies files with single `install` script (in python or ruby?)
-* Load newest versions of git submodules on running dependencies.sh
 
 ## Notes On Naming
 
