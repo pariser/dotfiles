@@ -28,7 +28,7 @@
 
 ## TODO
 
-* Add atom config
+_Nothing to see here..._
 
 ## Notes On Naming
 

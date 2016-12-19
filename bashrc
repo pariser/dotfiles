@@ -20,6 +20,7 @@ shopt -s histappend                      # append to history, don't overwrite it
 
 export PATH=~/bin:$PATH
 export PATH=./node_modules/.bin:$PATH
+export PATH=/usr/local/bin:$PATH
 export PATH=/usr/local/lib/node_modules/bin:$PATH
 export PATH=$PATH:/usr/local/opt/go/libexec/bin # brew info go
 export PATH=$PATH:/usr/local/sbin
