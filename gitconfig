@@ -8,8 +8,8 @@
 [core]
     editor = vim
     excludesfile = ~/.gitignore
-    precomposeunicode = true
-    sparseCheckout = true
+	precomposeunicode = true
+	sparseCheckout = true
 
 [color]
     diff = auto
@@ -41,6 +41,6 @@
     smudge = git lfs smudge %f
     required = true
 [push]
-    default = current
+	default = current
 [rerere]
-    enabled = true
+	enabled = true

@@ -22,7 +22,6 @@
       "Rdio"
       "incremental-search"
       "linter-jshint"
-      "linter-eslint"
     ]
     excludeVcsIgnoredPaths: false
     ignoredNames: [
@@ -76,6 +75,7 @@
     executablePath: "/Users/andrew_pariser/.rvm/wrappers/ruby-2.2.2@work-advice/scss-lint"
   "linter-ui-default":
     panelHeight: 69
+    showPanel: true
   "merge-conflicts": {}
   metrics:
     userId: "6d87f910b8997c90643ccb80290f722d323e36cb"
