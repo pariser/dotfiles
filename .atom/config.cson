@@ -38,6 +38,7 @@
       "public/system"
       ".tmp"
       ".eslintcache"
+      "dist"
     ]
     packagesWithKeymapsDisabled: [
       "rails-transporter"
@@ -61,23 +62,20 @@
     userId: "e81e63e6-e4de-65f8-aac8-4a364814f045"
   "fuzzy-finder":
     preserveLastSearch: true
-  linter:
-    errorPanelHeight: 94
-    lintOnFly: false
-    showErrorPanel: false
-    showErrorTabFile: false
-    showErrorTabProject: false
+  linter: {}
   "linter-eslint":
     disableWhenNoEslintrcFileInPath: true
-    eslintRulesDir: "/Users/pariser/dev/learnup/learnup/.eslint-rules"
+    eslintRulesDir: "/Users/andrew_pariser/dev/learnup/learnup/.eslint-rules"
     globalNodePath: "/usr/local"
     useGlobalEslint: true
   "linter-jshint": {}
   "linter-rubocop":
-    command: "/Users/pariser/bin/pwd-rubocop"
+    command: "/Users/andrew_pariser/bin/pwd-rubocop"
   "linter-scss-lint":
     disableWhenNoConfigFileInPath: true
-    executablePath: "/Users/pariser/.rvm/wrappers/ruby-2.2.2@work-advice/scss-lint"
+    executablePath: "/Users/andrew_pariser/.rvm/wrappers/ruby-2.2.2@work-advice/scss-lint"
+  "linter-ui-default":
+    panelHeight: 69
   "merge-conflicts": {}
   metrics:
     userId: "6d87f910b8997c90643ccb80290f722d323e36cb"

@@ -3,6 +3,7 @@
 require 'colored'
 require 'open3'
 require 'json'
+require 'fileutils'
 
 HOME = File.expand_path("~")
 BIN = File.join(HOME, "bin")
@@ -98,7 +99,7 @@ puts "\n" + <<-SEPARATOR.green + "\n"
 ** Link scripts into ~/bin
 SEPARATOR
 
-Dir[File.join(BIN, "*")].each do |source_file|
+Dir[File.join(LOCALPATH, "bin", "*")].each do |source_file|
   basename = File.basename(source_file)
   target_file = File.join(BIN, basename)
 

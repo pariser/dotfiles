@@ -11,7 +11,7 @@ RUBY_VERSION="ruby"
 if [[ -f $PWD/.ruby-version ]]; then
   RUBY_VERSION="ruby-$(< $PWD/.ruby-version)"
 else
-  RUBY_VERSION=$(rvm current)
+  RUBY_VERSION=$(rvm current | cut -d' ' -f1)
 fi
 
 # Figure out RVM gemset
@@ -31,7 +31,6 @@ if [[ -f $PWD/.rubocop.yml ]]; then
 fi
 
 # Use RVM ruby & gemset
-# echo "rvm use $RUBY_VERSION$GEMSET &> /dev/null"
 rvm use $RUBY_VERSION$GEMSET &> /dev/null
 
 # Run rubocop & pass along arguments

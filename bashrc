@@ -73,6 +73,13 @@ PURPLE='\033[00;35m'
 CYAN='\033[00;36m'
 LIGHTGRAY='\033[00;37m'
 
+BOLDRED='\033[1;31m'
+BOLDGREEN='\033[1;32m'
+BOLDYELLOW='\033[1;33m'
+BOLDBLUE='\033[1;34m'
+BOLDPURPLE='\033[1;35m'
+BOLDCYAN='\033[1;36m'
+BOLDLIGHTGRAY='\033[1;37m'
 
 function test_colors(){
     echo -e "${GREEN}Hello ${CYAN}THERE${RESTORE} Restored here ${LCYAN}HELLO again${RESTORE}"
@@ -151,9 +158,12 @@ function git_sync_status_prompt() {
 function git_branch_string() {
     git status > /dev/null 2>&1 || return 0
     branch=$(git rev-parse --abbrev-ref HEAD)
-    [[ ${#branch} -gt 20 ]] && branch="$(echo $branch | cut -c1-19)…"
-    status=$(git_sync_status_prompt)
-    commits=$(git_commits_out_of_sync)
+    [[ ${#branch} -gt 20 ]] && branch="$(echo $branch | cut -c1-19)…"pwd
+    # TODO: speed these up on very large repositories
+    # status=$(git_sync_status_prompt)
+    # commits=$(git_commits_out_of_sync)
+    status=""
+    commits=""
     echo -e "${GREEN}(git::${branch}${status}${commits}${GREEN})${RESTORE} "
 }
 
@@ -178,7 +188,7 @@ function exit_code() {
 
 PROMPT_COMMAND="store_exit_code; $PROMPT_COMMAND"
 
-export PS1="\[\033[1;34m\][\$(date +%H:%M)] \[\033[1;36m\]\u@\h \w \$(git_branch_string)\$(parse_svn_branch)\[\033[1;31m\]\$(exit_code)\[\033[1;36m\]$\[\033[0m\] "
+export PS1="${BOLDBLUE}[\$(date +%H:%M)] ${CYAN}\u@${BOLDCYAN}\h ${CYAN}\w \$(git_branch_string)\$(parse_svn_branch)${BOLDRED}\$(exit_code)${BOLDCYAN}\$${RESTORE} "
 
 function gethost() {
   cat ~/.ssh/config | grep -A1 -E "$1\$" | grep HostName | awk '{print $2}'
@@ -240,7 +250,7 @@ alias atom_diff="git diff | tmpin atom"
 
 function github() {
   ref=$1
-  github_url=$(git remote -v | awk '/origin.*fetch/{print $2}' | sed -Ee 's#(git@|git://)#http://#' -e 's@com:@com/@' -e 's#\.git$##')
+  github_url=$(git remote -v | awk '/origin.*fetch/{print $2}' | sed -E -e 's@:@/@' -e 's#(git@|git://)#http://#' -e 's#\.git$##')
   if [[ -n "$ref" ]]; then
     if [[ $ref =~ ^#\[0-9\]+$ ]]; then
       github_url="$github_url/pull/$ref"
