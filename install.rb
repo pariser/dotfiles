@@ -8,9 +8,9 @@ require 'fileutils'
 HOME = File.expand_path("~")
 BIN = File.join(HOME, "bin")
 LOCALPATH = File.expand_path(File.dirname(__FILE__))
-DOTFILES = %w(profile bashrc gitconfig gitignore screenrc vimrc ackrc).freeze
+DOTFILES = %w(profile bashrc gitconfig gitignore screenrc vimrc ackrc rubocop.yml).freeze
 HOME_DIRECTORIES = %w(bin dev lib .atom).freeze
-ATOMFILES = %w(config.cson init.coffee keymap.cson projects.cson snippets.cson styles.less)
+ATOMFILES = %w(config.cson init.coffee keymap.cson projects.cson snippets.cson styles.less).freeze
 
 def install(name, install_command)
   puts "  Installing #{name}..."
@@ -39,22 +39,30 @@ def install_if_missing(name, version_command, install_command)
   install(name, install_command)
 end
 
+def check_brew_info(name)
+  puts "* Checking for brew package: #{name}"
+  output, status = Open3.capture2("brew", "info", "--json=v1", name)
+  unless status.success?
+    puts "  Error checking for brew package: #{name}"
+    puts output
+    raise
+  end
+  output
+end
+
+def parse_brew_output(name, output)
+  data = JSON.parse(output)
+  if data[0]["installed"].empty?
+    install("brew package: #{name}", ["brew", "install", name])
+  else
+    puts "  Found brew package #{name}: #{data[0]["installed"].to_json}".green
+  end
+end
+
 def brew_install_if_missing(*names)
   names.flatten.each do |name|
-    puts "* Checking for brew package: #{name}"
-    output, status = Open3.capture2(*["brew", "info", "--json=v1", name])
-    if !status.success?
-      puts "  Error checking for brew package: #{name}"
-      puts output
-      raise
-    end
-
-    data = JSON.parse(output)
-    if data[0]["installed"].empty?
-      install("brew package: #{name}", ["brew", "install", name])
-    else
-      puts "  Found brew package #{name}: #{data[0]["installed"].to_json}".green
-    end
+    output = check_brew_info(name)
+    parse_brew_output(name, output)
   end
 end
 
@@ -130,8 +138,15 @@ SEPARATOR
 
 install_if_missing(
   "brew",
-  ["brew", "-v"],
-  ["/usr/bin/ruby", "-e", '"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"']
+  [
+    "brew",
+    "-v",
+  ],
+  [
+    "/usr/bin/ruby",
+    "-e",
+    '"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"',
+  ]
 )
 
 brew_install_if_missing %w(
@@ -159,7 +174,6 @@ ATOMFILES.each do |atomfile|
   end
 end
 
-
 puts "\n" + <<-SEPARATOR.green + "\n"
 ************************************************************
 ** Instruct on how to install atom packages
@@ -173,6 +187,5 @@ install_command = ["apm", "install", "--packages-file", package_file]
 puts "To install atom packages, run:".red.underline.bold
 puts ""
 puts "  #{install_command.join(" ")}"
-
 
 puts ""

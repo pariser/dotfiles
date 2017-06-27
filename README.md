@@ -8,22 +8,16 @@
   git clone git@github.com:pariser/dotfiles.git
   ```
 
-* Download the git submodules
+* Install dependencies
 
   ```
-  git submodule update --recursive
+  gem install --no-ri --no-rdoc colored
   ```
 
 * Set up directory structure & link files
 
   ```
-  ./deploy.sh
-  ```
-
-* Update all the dependencies & packages
-
-  ```
-  ./resolve_dependencies.sh
+  ./install.rb
   ```
 
 ## TODO
