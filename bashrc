@@ -164,7 +164,7 @@ function git_branch_string() {
     # commits=$(git_commits_out_of_sync)
     status=""
     commits=""
-    echo -e "${GREEN}(git::${branch}${status}${commits}${GREEN})${RESTORE} "
+    echo -e "\\[${GREEN}\\](git::${branch}${status}${commits}\\[${GREEN}\\])\\[${RESTORE}\\] "
 }
 
 function parse_svn_url() {
@@ -188,7 +188,7 @@ function exit_code() {
 
 PROMPT_COMMAND="store_exit_code; $PROMPT_COMMAND"
 
-export PS1="${BOLDBLUE}[\$(date +%H:%M)] ${CYAN}\u@${BOLDCYAN}\h ${CYAN}\w \$(git_branch_string)\$(parse_svn_branch)${BOLDRED}\$(exit_code)${BOLDCYAN}\$${RESTORE} "
+export PS1="\\[${BOLDBLUE}\\][\$(date +%H:%M)] \\[${CYAN}\\]\u@\\[${BOLDCYAN}\\]\h \\[${CYAN}\\]\w $(git_branch_string)\$(parse_svn_branch)\\[${BOLDRED}\\]\$(exit_code)\\[${BOLDCYAN}\\]\$\\[${RESTORE}\\] "
 
 function gethost() {
   cat ~/.ssh/config | grep -A1 -E "$1\$" | grep HostName | awk '{print $2}'
