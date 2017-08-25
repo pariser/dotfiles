@@ -5,6 +5,7 @@
 --type-set=scss=.scss
 --type-set=sass=.sass
 --type-set=log=.log
+--type-set=jsx=.jsx
 --nolog
 --ignore-file=is:tags
 --ignore-file=match:.eslintcache
