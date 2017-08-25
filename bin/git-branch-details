@@ -37,6 +37,12 @@ class GitBranchDetails
       opts.on('--[no-]travis', 'Check status of each branch on travis (can be slow)') do |should_run_travis|
         options[:travis] = should_run_travis
       end
+      opts.on('--[no-]fetch', 'Run git fetch origin master?') do |fetch|
+        options[:fetch] = fetch
+      end
+      opts.on('--verbose', 'Verbose debugging') do |verbose|
+        options[:verbose] = verbose
+      end
       opts.on('--merged', 'Only display merged branches') { options[:only_display_merged_branches] = true }
     end
 
@@ -46,6 +52,8 @@ class GitBranchDetails
   end
 
   def initialize(branch_names=nil, options={})
+    @verbose = options[:verbose] == true
+    @fetch = options[:fetch]
     @branch_names = branch_names unless branch_names.empty?
     @check_travis = options.key?(:travis) ? options[:travis] : false
     @only_display_merged_branches = options.key?(:only_display_merged_branches) ? options[:only_display_merged_branches] : false
@@ -53,6 +61,8 @@ class GitBranchDetails
 
   def print_report
     ensure_git_repository!
+
+    fetch_remote_master!
 
     branches
 
@@ -170,38 +180,64 @@ private
   end
 
   def ensure_git_repository!
-    git_status = `git status 2>&1`
+    git_status = execute_command('git status 2>&1')
     raise NotAGitRepository, "#{self.class.name} must be run from a git repository" if git_status =~ /^fatal: Not a git repository/
   end
 
+  def fetch_head_timestamp
+    # From stackoverflow, but note the limitation described in the comment at
+    # https://stackoverflow.com/questions/2993902/how-do-i-check-the-date-and-time-of-the-latest-git-pull-that-was-executed#comment31991429_9229377
+    # which reveals that .git/FETCH_HEAD is modified on starting a fetch
+    # so this can provide false positives if the fetch failed
+    @fetch_head_timestamp ||= execute_command("stat -f '%m' .git/FETCH_HEAD").chomp.to_i
+  end
+
+  def fetch_head_stale?
+    fetch_head_timestamp < Time.now.to_i - 60 * 60
+  end
+
+  def fetch_remote_master!
+    if @fetch == false
+      puts "* Not fetching remote master branch (called with `--no-fetch`)"
+    elsif @fetch
+      puts "* Fetching remote master branch (called with `--fetch`)"
+      execute_command('git fetch origin master 2>&1 >/dev/null')
+    elsif fetch_head_stale?
+      puts "* Fetching remote master branch (last fetch over one hour ago)"
+      execute_command('git fetch origin master 2>&1 >/dev/null')
+    else
+      puts "* Not fetching remote master branch (fetched within last hour)"
+    end
+  end
+
   def current_branch_name
-    @current_branch_name ||= `git rev-parse --abbrev-ref HEAD`.chomp
+    @current_branch_name ||= execute_command('git rev-parse --abbrev-ref HEAD').chomp
     @current_branch_name
   end
 
   def branch_names
     @branch_names ||= begin
-      git_branch_result = `git branch`.chomp.gsub(/^../, '').split("\n")
+      git_branch_result = execute_command('git branch').chomp.gsub(/^../, '').split("\n")
       git_branch_result.reject! { |branch_name| branch_name =~ %r{/} }
       git_branch_result
     end
     @branch_names
   end
 
-  GIT_BRANCH_VV_PARSE_REGEX = /^(?<name>\S+)\s+(?<sha>[0-9a-f]+)\s+(\[(?<upstream>.+)\] )?(?<message>.*)$/
+  GIT_BRANCH_VV_PARSE_REGEX = /^(?<name>\S+)\s+(?<sha>[0-9a-f]+)\s+(\[(?<upstream>.+?)\] )?(?<message>.*)$/
 
   def branch_verbose_details
     @branch_verbose_details ||= begin
       # require 'pry-byebug'
       # binding.pry
 
-      git_branch_result = `git branch -vv`.chomp.gsub(/^../, '').split("\n")
+      git_branch_result = execute_command('git branch -vv').chomp.gsub(/^../, '').split("\n")
       git_branch_result.each_with_object({}) do |result, hash|
         match = GIT_BRANCH_VV_PARSE_REGEX.match(result)
         next if match.nil?
 
         upstream = match[:upstream]
-        if upstream && upstream.index("origin/#{match[:name]}").zero?
+        if upstream && upstream.index("origin/#{match[:name]}") == 0
           upstream.sub!("origin/#{match[:name]}", "✅")
         else
           upstream = "❌"
@@ -226,7 +262,7 @@ private
       data.merge!(branch_verbose_details[branch_name])
     end
 
-    git_log_response = `git log -1 --format="%h,%an,%ae,%ci,%cr" refs/heads/#{branch_name}`.chomp.split(',')
+    git_log_response = execute_command("git log -1 --format=\"%h,%an,%ae,%ci,%cr\" refs/heads/#{branch_name}").chomp.split(',')
 
     ["sha", "author name", "author email", "latest commit time", "latest commit"].zip(git_log_response).each do |field, value|
       data[field] = value
@@ -234,7 +270,8 @@ private
 
     data["author handle"] = data["author email"].slice(0, data["author email"].index("@"))
     data['latest commit time'] = Time.parse(data['latest commit time'])
-    data['merged?'] = `git branch -r --contains #{branch_name}`.chomp.gsub(/^../, '').split("\n").include?('origin/master') ? 'yes' : 'no'
+    # data['merged?'] = execute_command("git branch -r --contains #{branch_name}").chomp.gsub(/^../, '').split("\n").include?('origin/master') ? 'yes' : 'no'
+    data['merged?'] = execute_command("git merge-base origin/master #{branch_name}") == data["sha"] ? "yes" : "no"
     data['travis'] = get_travis_state(branch_name) if @check_travis
     data
   rescue
@@ -245,7 +282,7 @@ private
 
   def get_travis_state(branch_name)
     # puts "travis show #{branch_name} 2>&1"
-    travis_show = `travis show #{branch_name} 2>&1`
+    travis_show = execute_command("travis show #{branch_name} 2>&1")
 
     if travis_show =~ /^resource not found/i
       return "not found"
@@ -275,6 +312,11 @@ private
       data.select! { |d| d['merged?'] == 'yes' } if @only_display_merged_branches
       data
     end
+  end
+
+  def execute_command(command)
+    puts "** Executing #{command.green}" if @verbose
+    `#{command}`
   end
 end
 
