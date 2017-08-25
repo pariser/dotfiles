@@ -158,13 +158,13 @@ function git_sync_status_prompt() {
 function git_branch_string() {
     git status > /dev/null 2>&1 || return 0
     branch=$(git rev-parse --abbrev-ref HEAD)
-    [[ ${#branch} -gt 20 ]] && branch="$(echo $branch | cut -c1-19)…"pwd
+    [[ ${#branch} -gt 20 ]] && branch="$(echo $branch | cut -c1-19)…"
     # TODO: speed these up on very large repositories
     # status=$(git_sync_status_prompt)
     # commits=$(git_commits_out_of_sync)
     status=""
     commits=""
-    echo -e "\\[${GREEN}\\](git::${branch}${status}${commits}\\[${GREEN}\\])\\[${RESTORE}\\] "
+    echo -e "${GREEN}(git::${branch}${status}${commits})${RESTORE} "
 }
 
 function parse_svn_url() {
@@ -188,7 +188,7 @@ function exit_code() {
 
 PROMPT_COMMAND="store_exit_code; $PROMPT_COMMAND"
 
-export PS1="\\[${BOLDBLUE}\\][\$(date +%H:%M)] \\[${CYAN}\\]\u@\\[${BOLDCYAN}\\]\h \\[${CYAN}\\]\w $(git_branch_string)\$(parse_svn_branch)\\[${BOLDRED}\\]\$(exit_code)\\[${BOLDCYAN}\\]\$\\[${RESTORE}\\] "
+export PS1="\\[${BOLDBLUE}\\][\$(date +%H:%M)] \\[${CYAN}\\]\u@\\[${BOLDCYAN}\\]\h \\[${CYAN}\\]\w \$(git_branch_string)\$(parse_svn_branch)\\[${BOLDRED}\\]\$(exit_code)\\[${BOLDCYAN}\\]\$\\[${RESTORE}\\] "
 
 function gethost() {
   cat ~/.ssh/config | grep -A1 -E "$1\$" | grep HostName | awk '{print $2}'
@@ -264,7 +264,7 @@ function github() {
       github_url="$github_url/commits/master"
     else
       # echo "branch"
-      github_url="$github_url/commits/$github_branch"
+      github_url="$github_url/tree/$github_branch"
     fi
   fi
   echo $github_url
@@ -296,6 +296,7 @@ alias nt="nosetests --nocapture --nologcapture --tests"
 alias serve="python -m SimpleHTTPServer 8000"
 
 alias be="bundle exec"
+alias rubocop-changed="gd --name-only | grep -e '\\.rb$' | xargs rubocop"
 
 alias mlt="tail -f /usr/local/var/log/mongodb/mongo.log"
 
