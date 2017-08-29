@@ -1,8 +1,12 @@
-#!/usr/bin/env bash --login
+#!/usr/bin/env bash
 
-# Go to git root
+set -e
 
-git status &> /dev/null && cd `git rev-parse --show-toplevel`
+[[ -d "$HOME/.rvm/bin" ]] && export PATH=$PATH:$HOME/.rvm/bin
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
+
+GITROOT=$(git rev-parse --show-toplevel)
+cd $GITROOT
 
 # Figure out RVM version
 
@@ -31,7 +35,7 @@ if [[ -f $PWD/.rubocop.yml ]]; then
 fi
 
 # Use RVM ruby & gemset
-rvm use $RUBY_VERSION$GEMSET &> /dev/null
+# rvm use $RUBY_VERSION$GEMSET &> /dev/null
 
 # Run rubocop & pass along arguments
 # echo "rvm $RUBY_VERSION$GEMSET do rubocop $CONFIG_FILE$@"
