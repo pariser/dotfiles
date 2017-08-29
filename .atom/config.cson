@@ -22,6 +22,7 @@
       "Rdio"
       "incremental-search"
       "linter-jshint"
+      "github"
     ]
     excludeVcsIgnoredPaths: false
     ignoredNames: [
@@ -38,6 +39,7 @@
       ".tmp"
       ".eslintcache"
       "dist"
+      "build"
     ]
     packagesWithKeymapsDisabled: [
       "rails-transporter"
@@ -64,9 +66,6 @@
   linter: {}
   "linter-eslint":
     disableWhenNoEslintrcFileInPath: true
-    eslintRulesDir: "/Users/andrew_pariser/dev/learnup/learnup/.eslint-rules"
-    globalNodePath: "/usr/local"
-    useGlobalEslint: true
   "linter-jshint": {}
   "linter-rubocop":
     command: "/Users/andrew_pariser/bin/pwd-rubocop"
@@ -74,8 +73,7 @@
     disableWhenNoConfigFileInPath: true
     executablePath: "/Users/andrew_pariser/.rvm/wrappers/ruby-2.2.2@work-advice/scss-lint"
   "linter-ui-default":
-    panelHeight: 69
-    showPanel: true
+    panelHeight: 172
   "merge-conflicts": {}
   metrics:
     userId: "6d87f910b8997c90643ccb80290f722d323e36cb"
@@ -86,7 +84,6 @@
     useTravisCiPro: true
   "tree-view":
     hideIgnoredNames: true
-    hideVcsIgnoredFiles: true
   welcome:
     showOnStartup: false
 ".haml.text":

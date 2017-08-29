@@ -8,12 +8,12 @@
  * http://www.lesscss.org
  */
 
-atom-text-editor::shadow .isearch-result .region {
+atom-text-editor.editor .isearch-result .region {
  background-color: transparent;
  border: 1px solid #888;
 }
 
-atom-text-editor::shadow .isearch-current .region {
+atom-text-editor.editor .isearch-current .region {
   background-color: rgba(238, 238, 238, 0.3);
   border: 1px solid #888;
 }
@@ -26,14 +26,14 @@ atom-text-editor::shadow .isearch-current .region {
 
 /* Make the minimap visible only in the focused pane */
 atom-text-editor {
-  &, &::shadow {
+  &, &.editor {
     atom-text-editor-minimap {
       display: none;
     }
   }
 
   &.is-focused {
-    &, &::shadow {
+    &, &.editor {
       atom-text-editor-minimap {
         display: block;
       }

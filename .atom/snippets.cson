@@ -17,3 +17,11 @@
   'Learnup JS':
     'prefix': 'learnupjs'
     'body': "Learnup.$1 = (function() {\n  \"use strict\";\n\n  var o = {};\n\n  o.init = function() {\n    this.bindEvents();\n  };\n\n  o.bindEvents = function() {\n    $2\n  };\n\n  return o;\n\n}());"
+
+'.source.jsx':
+  'import React':
+    'prefix': 'react',
+    'body': """
+      import React from 'react';
+      import PropTypes from 'prop-types';
+    """
