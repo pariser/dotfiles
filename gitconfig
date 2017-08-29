@@ -8,8 +8,8 @@
 [core]
     editor = vim
     excludesfile = ~/.gitignore
-	precomposeunicode = true
-	sparseCheckout = true
+    precomposeunicode = true
+    sparseCheckout = true
 
 [color]
     diff = auto
@@ -18,6 +18,11 @@
 
 [pull]
     rebase = true
+[push]
+    default = current
+
+[rerere]
+    enabled = true
 
 [alias]
     permission-reset = "!git-diff -p | grep -E '^(diff|old mode|new mode)' | sed -e 's/^old/NEW/;s/^new/old/;s/^NEW/new/' | git apply"
@@ -37,10 +42,7 @@
     smudge = git hawser smudge %f
     required = true
 [filter "lfs"]
-    clean = git lfs clean %f
-    smudge = git lfs smudge %f
+    clean = git-lfs clean -- %f
+    smudge = git-lfs smudge -- %f
+    process = git-lfs filter-process
     required = true
-[push]
-	default = current
-[rerere]
-	enabled = true
