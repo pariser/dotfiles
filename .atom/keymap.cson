@@ -66,7 +66,7 @@
 '.platform-darwin atom-workspace .isearch atom-text-editor':
   'ctrl-s': 'incremental-search:forward'
   'ctrl-r': 'incremental-search:backward'
-  'ctrl-w' : 'incremental-search:slurp'
+  'ctrl-w': 'incremental-search:slurp'
 
 '.platform-darwin':
   'ctrl-x 0': 'pane:close'
@@ -86,3 +86,10 @@
 
 ".platform-darwin, .platform-win32, .platform-linux":
   "ctrl-g": "core:cancel" # Override go-to-line:toggle
+
+'atom-workspace atom-text-editor':
+  # override atomic-emacs "editor:newline" with the lower specificity selector in bracket-matcher
+  'ctrl-m': 'bracket-matcher:go-to-matching-bracket'
+
+'atom-text-editor:not([mini])':
+  'alt-cmd-b': 'git-blame:toggle'

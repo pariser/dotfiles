@@ -24,7 +24,6 @@
       "linter-jshint"
       "github"
     ]
-    excludeVcsIgnoredPaths: false
     ignoredNames: [
       ".git"
       ".DS_Store"
@@ -43,12 +42,15 @@
     ]
     packagesWithKeymapsDisabled: [
       "rails-transporter"
+      "git-blame"
     ]
     telemetryConsent: "limited"
   editor:
     fontFamily: "Inconsolata"
+    fontSize: 13
     invisibles: {}
     normalizeIndentOnPaste: false
+    preferredLineLength: 100
     showIndentGuide: true
     showInvisibles: true
     tabType: "soft"
@@ -77,7 +79,8 @@
   "merge-conflicts": {}
   metrics:
     userId: "6d87f910b8997c90643ccb80290f722d323e36cb"
-  minimap: {}
+  minimap:
+    displayCodeHighlights: false
   "rails-transporter": {}
   "travis-ci-status":
     personalAccessToken: "f2f7f096460400b0864bc68a10d4b425cfb17e03"

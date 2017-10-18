@@ -242,6 +242,7 @@ alias git=hub
 alias gs="git status"
 alias gd="git diff"
 alias gco="git checkout"
+alias gbd="git branch-details"
 alias grom="git rebase origin/master"
 alias isgit="git status &> /dev/null"
 
@@ -319,6 +320,8 @@ alias hideFinderDotfiles='defaults write com.apple.finder AppleShowAllFiles NO; 
 alias nginx-start="sudo launchctl load /Library/LaunchDaemons/homebrew.mxcl.nginx.plist"
 alias nginx-stop="sudo launchctl unload /Library/LaunchDaemons/homebrew.mxcl.nginx.plist"
 alias nginx-restart="nginx-stop && nginx-start"
+
+alias npm-dependencies="ack \"from '[^.]\" | grep -vE '^\$' | awk -F'[ ]' '{ print \$(NF)}' | sort | uniq"
 
 ########################################################
 # Use N for node package management
