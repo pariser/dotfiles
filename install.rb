@@ -8,10 +8,40 @@ require 'fileutils'
 HOME = File.expand_path("~")
 BIN = File.join(HOME, "bin")
 LOCALPATH = File.expand_path(File.dirname(__FILE__))
-DOTFILES = %w(profile bashrc gitconfig gitignore screenrc vimrc ackrc rubocop.yml aliases vercomp zshrc).freeze
-HOME_DIRECTORIES = %w(bin dev lib .atom).freeze
-ATOMFILES = %w(config.cson init.coffee keymap.cson projects.cson snippets.cson styles.less).freeze
-VSCODEFILES = %w(keybindings.json settings.json tasks.json installed-extensions.txt).freeze
+
+DOTFILES = %w(
+  profile
+  bashrc
+  gitconfig
+  gitignore
+  screenrc
+  vimrc
+  ackrc
+  rubocop.yml
+  aliases
+  vercomp
+  zshrc
+).freeze
+HOME_DIRECTORIES = %w(
+  bin
+  dev
+  lib
+  .atom
+).freeze
+ATOMFILES = %w(
+  config.cson
+  init.coffee
+  keymap.cson
+  projects.cson
+  snippets.cson
+  styles.less
+).freeze
+VSCODEFILES = %w(
+  keybindings.json
+  settings.json
+  tasks.json
+  installed-extensions.txt
+).freeze
 
 # -------- utilities
 
@@ -85,9 +115,9 @@ def run_steps!(*steps)
   puts "steps_to_run: #{steps_to_run}"
 
   steps_to_run.each do |step_name, block|
-    puts "\n" + <<-SEPARATOR.green + "\n"
-************************************************************
-RUNNING STEP: #{step_name}
+    puts "\n" + <<~SEPARATOR.green + "\n"
+      ************************************************************
+      RUNNING STEP: #{step_name}
     SEPARATOR
 
     block.call
@@ -221,7 +251,7 @@ step 'vscode' do
 
   VSCODEFILES.each do |vscodefile|
     source_file = File.join(LOCALPATH, "vscode", vscodefile)
-    target_file = File.join(HOME, "./Library/Application Support/Code/User", vscodefile)
+    target_file = File.join(HOME, "Library/Application Support/Code/User", vscodefile)
     if File.exist?(target_file) && File.symlink?(target_file)
       puts "Not linking file #{source_file} -- already exists".yellow
     elsif File.exist?(target_file) && !File.symlink?(target_file)
@@ -232,12 +262,17 @@ step 'vscode' do
     end
   end
 
+
+  puts ""
+  puts "** Instruct on how to install vscode packages".green
+
   # To update the list of installed extensions, run the following command:
   #
-  #    code --list-extensions > ~/Library/Application Support/Code/User/installed-extensions.txt
+  #    code --list-extensions > ~/Library/Application\ Support/Code/User/installed-extensions.txt
   #
 
-  puts "Run the following command to install vscode extensions".green
+  puts "To install vscode packages, run:".red.underline.bold
+  puts ""
 
   puts <<-EOF
     cat ~/Library/Application\\ Support/Code/User/installed-extensions.txt | xargs -L1 code --install-extension
