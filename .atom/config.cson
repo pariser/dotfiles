@@ -10,6 +10,8 @@
     general:
       _analyticsUserId: "b38a6e06-84e0-43a1-9c53-cdebc39b734b"
       analytics: false
+    json:
+      default_beautifier: "Prettier"
   "autocomplete-plus":
     autoActivationDelay: 500
     includeCompletionsFromAllBuffers: true
@@ -17,12 +19,18 @@
     autocompleteBrackets: false
     autocompleteSmartQuotes: false
   core:
+    customFileTypes:
+      ".scratchpad": [
+        "gfm"
+      ]
     disabledPackages: [
       "select-rectangle"
       "Rdio"
       "incremental-search"
       "linter-jshint"
       "github"
+      "linter-rubocop"
+      "ide-sorbet"
     ]
     ignoredNames: [
       ".git"
@@ -39,6 +47,19 @@
       ".eslintcache"
       "dist"
       "build"
+      ".bundle"
+      "config/commit"
+      "db/*.sqlite3"
+      "coverage"
+      "*.rbc"
+      "*.DS_Store"
+      "dump.rdb"
+      "*.swp"
+      "Dockerfile.kube_gen"
+      "generated-apps"
+      "build/"
+      "app/schemas/_xrepo/"
+      "sorbet"
     ]
     packagesWithKeymapsDisabled: [
       "rails-transporter"
@@ -47,7 +68,7 @@
     telemetryConsent: "limited"
   editor:
     fontFamily: "Inconsolata"
-    fontSize: 13
+    fontSize: 17
     invisibles: {}
     normalizeIndentOnPaste: false
     preferredLineLength: 100
@@ -65,23 +86,29 @@
     userId: "e81e63e6-e4de-65f8-aac8-4a364814f045"
   "fuzzy-finder":
     preserveLastSearch: true
+    scoringSystem: "fast"
+    useRipGrep: true
+  github:
+    graphicalConflictResolution: false
   linter: {}
   "linter-eslint":
     disableWhenNoEslintrcFileInPath: true
   "linter-jshint": {}
-  "linter-rubocop":
-    command: "/Users/andrew_pariser/bin/pwd-rubocop"
+  "linter-rubocop": {}
   "linter-scss-lint":
     disableWhenNoConfigFileInPath: true
     executablePath: "/Users/andrew_pariser/.rvm/wrappers/ruby-2.2.2@work-advice/scss-lint"
   "linter-ui-default":
     panelHeight: 172
+    showPanel: true
   "merge-conflicts": {}
   metrics:
     userId: "6d87f910b8997c90643ccb80290f722d323e36cb"
   minimap:
     displayCodeHighlights: false
   "rails-transporter": {}
+  "spell-check":
+    useLocales: false
   "travis-ci-status":
     personalAccessToken: "f2f7f096460400b0864bc68a10d4b425cfb17e03"
     useTravisCiPro: true

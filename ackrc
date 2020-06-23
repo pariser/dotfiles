@@ -6,6 +6,9 @@
 --type-set=sass=.sass
 --type-set=log=.log
 --type-set=jsx=.jsx
+--type-set=ts=.ts
+--type-set=erb=.erb
+--type-set=thrift=.thrift
 --nolog
 --ignore-file=is:tags
 --ignore-file=match:.eslintcache

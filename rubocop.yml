@@ -13,8 +13,8 @@ Style/PercentLiteralDelimiters:
 Style/StringLiteralsInInterpolation:
   Enabled: false
 
-Layout/IndentHeredoc:
-  Enabled: false
+# Layout/IndentHeredoc:
+#   Enabled: false
 
-Style/TrailingCommaInLiteral:
-  EnforcedStyleForMultiline: consistent_comma
+# Style/TrailingCommaInLiteral:
+#   EnforcedStyleForMultiline: consistent_comma

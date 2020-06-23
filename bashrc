@@ -25,20 +25,33 @@ export PATH=/usr/local/lib/node_modules/bin:$PATH
 export PATH=$PATH:/usr/local/opt/go/libexec/bin # brew info go
 export PATH=$PATH:/usr/local/sbin
 
-if [[ -d /usr/local/share/npm/bin ]] ; then
+# NPM
+if [[ -d /usr/local/share/npm/bin ]]; then
   export PATH=/usr/local/share/npm/bin:$PATH
 fi
 
+# RVM
 if [[ -d $HOME/.rvm/bin ]] ; then
   export PATH=$PATH:$HOME/.rvm/bin
 fi
 
+# Python
 export PYTHONPATH=~/lib:$PYTHONPATH
 
+# Go
 export GOPATH=~/dev/golang
 export PATH=$PATH:$GOPATH/bin
 
 export PATH=/usr/local/Qt5.5.1/5.5/clang_64/bin:$PATH
+
+########################################################
+# Sourced external packages
+########################################################
+
+[ -f ~/lib/rake ] && source ~/lib/rake
+
+# added by travis gem
+[ -f $HOME/.travis/travis.sh ] && source $HOME/.travis/travis.sh
 
 ########################################################
 # Bash Completion
@@ -46,10 +59,6 @@ export PATH=/usr/local/Qt5.5.1/5.5/clang_64/bin:$PATH
 
 if [ -f $(brew --prefix)/etc/bash_completion ]; then
   source $(brew --prefix)/etc/bash_completion
-fi
-
-if [ -f ~/lib/rake ]; then
-  source ~/lib/rake
 fi
 
 ########################################################
@@ -156,25 +165,21 @@ function git_sync_status_prompt() {
 }
 
 function git_branch_string() {
-    git status > /dev/null 2>&1 || return 0
+    #  First, check if we're even within a git repository
+    inside_work_tree=$(git rev-parse --is-inside-work-tree 2> /dev/null)
+    [[ "$?" != "0" ]] && return
+
+    #  Get the branch associated with HEAD
     branch=$(git rev-parse --abbrev-ref HEAD)
     [[ ${#branch} -gt 20 ]] && branch="$(echo $branch | cut -c1-19)…"
+
     # TODO: speed these up on very large repositories
     # status=$(git_sync_status_prompt)
     # commits=$(git_commits_out_of_sync)
     status=""
     commits=""
-    echo -e "${GREEN}(git::${branch}${status}${commits})${RESTORE} "
-}
 
-function parse_svn_url() {
-  svn info 2>/dev/null | grep -e '^URL*' | sed -e 's#^URL: *\(.*\)#\1#g '
-}
-function parse_svn_repository_root() {
-  svn info 2>/dev/null | grep -e '^Repository Root:*' | sed -e 's#^Repository Root: *\(.*\)#\1\/#g '
-}
-function parse_svn_branch() {
-  parse_svn_url | sed -e 's#^'"$(parse_svn_repository_root)"'##g' | awk -F / '{print "(svn::"$1 "/" $2 ") "}'
+    echo "(git::${branch}${status}${commits}) "
 }
 
 function store_exit_code() {
@@ -186,9 +191,13 @@ function exit_code() {
   echo -n "$EXIT_CODE "
 }
 
+function store_tab_title() {
+  echo -ne "\033]0;${PWD/#$HOME/~}\007"
+}
+
 PROMPT_COMMAND="store_exit_code; $PROMPT_COMMAND"
 
-export PS1="\\[${BOLDBLUE}\\][\$(date +%H:%M)] \\[${CYAN}\\]\u@\\[${BOLDCYAN}\\]\h \\[${CYAN}\\]\w \$(git_branch_string)\$(parse_svn_branch)\\[${BOLDRED}\\]\$(exit_code)\\[${BOLDCYAN}\\]\$\\[${RESTORE}\\] "
+export PS1="\\[${BOLDBLUE}\\][\$(date +%H:%M)] \\[${CYAN}\\]\u@\\[${BOLDCYAN}\\]\h \\[${CYAN}\\]\w \\[${GREEN}\\]\$(git_branch_string)\\[${RESTORE}\\]\\[${BOLDRED}\\]\$(exit_code)\\[${BOLDCYAN}\\]\$\\[${RESTORE}\\] "
 
 function gethost() {
   cat ~/.ssh/config | grep -A1 -E "$1\$" | grep HostName | awk '{print $2}'
@@ -221,107 +230,21 @@ if [[ -f ~/bin/autocomplete_ssh_config.py ]]; then
   complete -W "$(~/bin/autocomplete_ssh_config.py)" ssh
 fi
 
+# Git completion for "gco" and "gsw" aliases
+__git_complete gco _git_checkout
+__git_complete gsw _git_checkout
+
+########################################################
+# Version Comparison
+########################################################
+
+[[ -f ~/.vercomp ]] && source ~/.vercomp
+
 ########################################################
 # Aliases
 ########################################################
 
-alias hack-the-planet="afplay $HOME/dev/learnup/work-advice/misc/hack-the-planet.mp3 &"
-
-# -- ls aliases
-
-alias ls="ls -G"
-alias ll="ls -ltr"
-
-# -- side-by-side diff
-
-alias ydiff="diff -y --suppress-common-lines"
-
-# -- Git aliases
-
-alias git=hub
-alias gs="git status"
-alias gd="git diff"
-alias gco="git checkout"
-alias gbd="git branch-details"
-alias grom="git rebase origin/master"
-alias isgit="git status &> /dev/null"
-
-alias gist_diff="isgit && (git diff | gist -p -t diff | xargs open)"
-alias atom_diff="git diff | tmpin atom"
-
-function github() {
-  ref=$1
-  github_url=$(git remote -v | awk '/origin.*fetch/{print $2}' | sed -E -e 's@:@/@' -e 's#(git@|git://)#http://#' -e 's#\.git$##')
-  if [[ -n "$ref" ]]; then
-    if [[ $ref =~ ^#\[0-9\]+$ ]]; then
-      github_url="$github_url/pull/$ref"
-    else
-      github_url="$github_url/commit/$ref"
-    fi
-  else
-    github_branch=$(git rev-parse --abbrev-ref HEAD)
-    if [[ "_$github_branch" == "_master" ]]; then
-      # echo "master"
-      github_url="$github_url/commits/master"
-    else
-      # echo "branch"
-      github_url="$github_url/tree/$github_branch"
-    fi
-  fi
-  echo $github_url
-  open $github_url | head -n1
-}
-
-function gh() {
-  isgit && cd `git rev-parse --show-toplevel` || return $?
-}
-
-function git_lineschanged() {
-  git log --numstat --pretty="%H" $1 | awk 'NF==3 {plus+=$1; minus+=$2} END {printf("+%d, -%d\n", plus, minus)}'
-}
-
-# -- Git completion for "gco" alias
-
-__git_complete gco _git_checkout
-
-# -- Useful one-liners
-
-function logtail() {
-  tail -F "`ls -t | head -1`"
-}
-
-alias now="ruby -e 'puts Time.now.to_i'"
-
-alias nt="nosetests --nocapture --nologcapture --tests"
-
-alias serve="python -m SimpleHTTPServer 8000"
-
-alias be="bundle exec"
-alias rubocop-changed="gd --name-only | grep -e '\\.rb$' | xargs rubocop"
-
-alias mlt="tail -f /usr/local/var/log/mongodb/mongo.log"
-
-alias aquamacs="/Applications/Aquamacs.app/Contents/MacOS/Aquamacs"
-alias aquamacs_byte_compile="aquamacs -Q -L . -batch -f batch-byte-compile"
-
-function pushd() {
-  command pushd "$@" > /dev/null
-}
-
-function popd() {
-  command popd "$@" > /dev/null
-}
-
-alias flush_memcached="echo \"flush_all\" | nc localhost 11211"
-
-alias showFinderDotfiles='defaults write com.apple.finder AppleShowAllFiles YES; killall Finder /System/Library/CoreServices/Finder.app'
-alias hideFinderDotfiles='defaults write com.apple.finder AppleShowAllFiles NO; killall Finder /System/Library/CoreServices/Finder.app'
-
-alias nginx-start="sudo launchctl load /Library/LaunchDaemons/homebrew.mxcl.nginx.plist"
-alias nginx-stop="sudo launchctl unload /Library/LaunchDaemons/homebrew.mxcl.nginx.plist"
-alias nginx-restart="nginx-stop && nginx-start"
-
-alias npm-dependencies="ack \"from '[^.]\" | grep -vE '^\$' | awk -F'[ ]' '{ print \$(NF)}' | sort | uniq"
+[[ -f ~/.aliases ]] && source ~/.aliases
 
 ########################################################
 # Use N for node package management
@@ -361,6 +284,3 @@ for f in ~/.bash_ext_*; do
     source $f
   fi
 done
-
-# added by travis gem
-[ -f $HOME/.travis/travis.sh ] && source $HOME/.travis/travis.sh

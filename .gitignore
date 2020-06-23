@@ -1,3 +1,4 @@
 emacs.d/auto-save-list
 bin/node_modules
 bashrc-airlab
+zshrc_ext_airbnb

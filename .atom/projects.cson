@@ -2,7 +2,14 @@
   {
     title: "dotfiles"
     paths: [
-      "/Users/pariser/dev/dotfiles"
+      "/Users/andrew_pariser/dev/pariser/dotfiles"
+      "/Users/andrew_pariser/.oh-my-zsh"
+    ]
+  }
+  {
+    title: "TODO"
+    paths: [
+      "/Users/andrew_pariser/dev/airbnb/gist-pariser-todo"
     ]
   }
 ]

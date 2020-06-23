@@ -64,6 +64,9 @@ class GitBranchDetails
 
     fetch_remote_master!
 
+    # Figure out the starting branch name
+    current_branch_name
+
     branches
 
     width_between_columns = 5
@@ -123,6 +126,8 @@ class GitBranchDetails
     puts "This directory is not a git repository".red
     puts ""
     false
+  ensure
+    execute_command("git switch #{current_branch_name}")
   end
 
 private
@@ -253,10 +258,18 @@ private
     @branch_verbose_details
   end
 
-  def get_branch_info(branch_name)
+  def attempt_branch_merge_master(branch_name)
     data = {
       'name' => branch_name,
     }
+
+    execute_command("git switch #{branch_name}")
+    execute_command("git rebase origin/master")
+    unless $?.exitstatus == 0
+      execute_command("git rebase --abort")
+    end
+
+
 
     if branch_verbose_details.key?(branch_name)
       data.merge!(branch_verbose_details[branch_name])
@@ -305,10 +318,8 @@ private
           "* Loading branch information"
         end
       print message
-      data = Parallel.map(branch_names, in_threads: 3) do |branch_name|
-        print "."
-        get_branch_info(branch_name)
-      end
+      print "."
+      attempt_branch_merge_master(branch_name)
       puts ""
 
       data.sort_by! { |b| b['latest commit time'] }.reverse!

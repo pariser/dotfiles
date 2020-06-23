@@ -1,0 +1,106 @@
+## -*- mode: Shell-script; -*-
+
+########################################################
+# Version Comparison
+########################################################
+
+if [ -n "`$SHELL -c 'echo $ZSH_VERSION'`" ]; then
+   # assume Zsh
+   function vercomp() {
+     if [[ $1 == $2 ]]; then
+       return 0
+     fi
+
+     is-at-least $1 $2
+     val_one=$?
+     is-at-least $2 $1
+     val_two=$?
+
+     if [[ $val_one -eq 1 && $val_two -eq 1 ]]; then
+       return 0
+     elif [[ $val_one -eq 1 ]]; then
+       return 1
+     else
+       return 2
+     fi
+
+     # if [ $? -eq 0 ]; then
+     #   return 2
+     # else
+     #   return 1
+     # fi
+   }
+elif [ -n "`$SHELL -c 'echo $BASH_VERSION'`" ]; then
+  # assume Bash
+  # https://stackoverflow.com/a/4025065
+  function vercomp() {
+    if [[ $1 == $2 ]]; then
+      return 0
+    fi
+
+    local IFS=.
+    local i ver1=($1) ver2=($2)
+
+    # fill empty fields in ver1 with zeros
+    for ((i=${#ver1[@]}; i<${#ver2[@]}; i++)); do
+      ver1[i]=0
+    done
+
+    for ((i=0; i<${#ver1[@]}; i++)); do
+      # fill empty fields in ver2 with zeros
+      if [[ -z ${ver2[i]} ]]; then
+        ver2[i]=0
+      fi
+
+      if ((10#${ver1[i]} > 10#${ver2[i]})); then
+        return 1
+      fi
+
+      if ((10#${ver1[i]} < 10#${ver2[i]})); then
+        return 2
+      fi
+    done
+
+    return 0
+  }
+else
+   echo "Unsupported shell!"
+fi
+
+# testvercomp () {
+#     vercomp $1 $2
+#     case $? in
+#         0) op='=';;
+#         1) op='>';;
+#         2) op='<';;
+#     esac
+#     if [[ $op != $3 ]]
+#     then
+#         echo "FAIL: Expected '$3', Actual '$op', Arg1 '$1', Arg2 '$2'"
+#     else
+#         echo "Pass: '$1 $op $2'"
+#     fi
+# }
+
+# echo "The following tests should pass"
+# testvercomp "1"            "1"            "="
+# testvercomp "2.1"          "2.2"          "<"
+# testvercomp "3.0.4.10"     "3.0.4.2"      ">"
+# testvercomp "4.08"         "4.08.01"      "<"
+# testvercomp "3.2.1.9.8144" "3.2"          ">"
+# testvercomp "3.2"          "3.2.1.9.8144" "<"
+# testvercomp "1.2"          "2.1"          "<"
+# testvercomp "2.1"          "1.2"          ">"
+# testvercomp "5.6.7"        "5.6.7"        "="
+
+# echo "The following pedantic tests should pass"
+# testvercomp "1.01.1"       "1.1.1"        "="
+# testvercomp "1.1.1"        "1.01.1"       "="
+# testvercomp "1"            "1.0"          "="
+# testvercomp "1.0"          "1"            "="
+# testvercomp "1.0.2.0"      "1.0.2"        "="
+# testvercomp "1..0"         "1.0"          "="
+# testvercomp "1.0"          "1..0"         "="
+
+# echo "The following test should fail (test the tester)"
+# testvercomp "1" "1" ">"

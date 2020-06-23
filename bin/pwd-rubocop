@@ -6,7 +6,9 @@ set -e
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
 
 GITROOT=$(git rev-parse --show-toplevel)
-cd $GITROOT
+if [[ "$GITROOT" != "$PWD" ]]; then
+  cd $GITROOT
+fi
 
 # Figure out RVM version
 
@@ -14,6 +16,7 @@ RUBY_VERSION="ruby"
 
 if [[ -f $PWD/.ruby-version ]]; then
   RUBY_VERSION="ruby-$(< $PWD/.ruby-version)"
+  RUBY_VERSION=${RUBY_VERSION//ruby-ruby-/ruby-}
 else
   RUBY_VERSION=$(rvm current | cut -d' ' -f1)
 fi
@@ -36,6 +39,13 @@ fi
 
 # Use RVM ruby & gemset
 # rvm use $RUBY_VERSION$GEMSET &> /dev/null
+
+# Remove --no-display-cop-names since our current rubocop version doesn't support this argument
+for arg do
+  shift
+  [ "$arg" = "--no-display-cop-names" ] && continue
+  set -- "$@" "$arg"
+done
 
 # Run rubocop & pass along arguments
 # echo "rvm $RUBY_VERSION$GEMSET do rubocop $CONFIG_FILE$@"

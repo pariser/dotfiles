@@ -33,6 +33,7 @@
   'ctrl-cmd-r a': 'rails-transporter:open-asset'
   'ctrl-cmd-r d m': 'rails-transporter:open-migration-finder'
   'ctrl-cmd-r f': 'rails-transporter:open-factory'
+  'ctrl-\\': 'tree-view:toggle'
 
 'body':
   'escape': 'unset!'

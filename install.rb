@@ -8,9 +8,11 @@ require 'fileutils'
 HOME = File.expand_path("~")
 BIN = File.join(HOME, "bin")
 LOCALPATH = File.expand_path(File.dirname(__FILE__))
-DOTFILES = %w(profile bashrc gitconfig gitignore screenrc vimrc ackrc rubocop.yml).freeze
+DOTFILES = %w(profile bashrc gitconfig gitignore screenrc vimrc ackrc rubocop.yml aliases vercomp zshrc).freeze
 HOME_DIRECTORIES = %w(bin dev lib .atom).freeze
 ATOMFILES = %w(config.cson init.coffee keymap.cson projects.cson snippets.cson styles.less).freeze
+
+# -------- utilities
 
 def install(name, install_command)
   puts "  Installing #{name}..."
@@ -66,126 +68,157 @@ def brew_install_if_missing(*names)
   end
 end
 
-puts "\n" + <<-SEPARATOR.green + "\n"
-************************************************************
-** Link the dotfiles that belong in ~/
-SEPARATOR
+# -------- CLI
 
-DOTFILES.each do |dotfile|
-  source_file = File.join(LOCALPATH, dotfile)
-  target_file = File.join(HOME, ".#{dotfile}")
-  if File.exist?(target_file) && File.symlink?(target_file)
-    puts "Not linking file #{source_file} -- already exists".yellow
-  elsif File.exist?(target_file) && !File.symlink?(target_file)
-    puts "Not linking file #{source_file} -- file already exists at #{target_file}".red
-  else
-    puts "Linking #{source_file} to #{target_file}".green
-    File.symlink(source_file, target_file)
+$steps = []
+
+def step(step_name, &block)
+  $steps << [step_name, block]
+end
+
+def run_steps!(*steps)
+  puts "steps: #{steps}"
+  steps_to_run = steps.length == 0 ?
+    $steps :
+    $steps.select { |name, _| steps.include?(name) }
+  puts "steps_to_run: #{steps_to_run}"
+
+  steps_to_run.each do |step_name, block|
+    puts "\n" + <<-SEPARATOR.green + "\n"
+************************************************************
+RUNNING STEP: #{step_name}
+    SEPARATOR
+
+    block.call
   end
 end
 
-puts "\n" + <<-SEPARATOR.green + "\n"
-************************************************************
-** Make bin, dev, lib directories
-SEPARATOR
+# -------- various installation steps
 
-HOME_DIRECTORIES.each do |home_directory|
-  target_directory = File.join(HOME, home_directory)
+step 'dotfiles' do
+  puts "** Link the dotfiles that belong in ~/".green
 
-  if File.exist?(target_directory) && File.directory?(target_directory)
-    puts "Not creating #{target_directory} -- already exists".yellow
-  elsif File.exist?(target_directory)
-    puts "Not creating #{target_directory} -- file exists at location!".red
-  else
-    puts "Creating #{target_directory}".green
-    FileUtils.mkdir_p(target_directory)
+  DOTFILES.each do |dotfile|
+    source_file = File.join(LOCALPATH, dotfile)
+    target_file = File.join(HOME, ".#{dotfile}")
+    if File.exist?(target_file) && File.symlink?(target_file)
+      puts "Not linking file #{source_file} -- already exists".yellow
+    elsif File.exist?(target_file) && !File.symlink?(target_file)
+      puts "Not linking file #{source_file} -- file already exists at #{target_file}".red
+    else
+      puts "Linking #{source_file} to #{target_file}".green
+      File.symlink(source_file, target_file)
+    end
   end
 end
 
-puts "\n" + <<-SEPARATOR.green + "\n"
-************************************************************
-** Link scripts into ~/bin
-SEPARATOR
+step 'directories' do
+  puts "** Make bin, dev, lib directories".green
 
-Dir[File.join(LOCALPATH, "bin", "*")].each do |source_file|
-  basename = File.basename(source_file)
-  target_file = File.join(BIN, basename)
+  HOME_DIRECTORIES.each do |home_directory|
+    target_directory = File.join(HOME, home_directory)
 
-  if File.exist?(target_file) && File.symlink?(target_file)
-    puts "Not linking file #{source_file} -- already exists".yellow
-  elsif File.exist?(target_file)
-    puts "Not linking file #{source_file} -- file already exists at #{target_file}".red
-  else
-    puts "Linking #{source_file} to #{target_file}".green
-    File.symlink(source_file, target_file)
+    if File.exist?(target_directory) && File.directory?(target_directory)
+      puts "Not creating #{target_directory} -- already exists".yellow
+    elsif File.exist?(target_directory)
+      puts "Not creating #{target_directory} -- file exists at location!".red
+    else
+      puts "Creating #{target_directory}".green
+      FileUtils.mkdir_p(target_directory)
+    end
   end
 end
 
-puts "\n" + <<-SEPARATOR.green + "\n"
-************************************************************
-** Yarn in ~/bin to satisfy dependencies
-SEPARATOR
+step 'bin-scripts' do
+  puts "** Link scripts into ~/bin".green
 
-if File.exist?(File.join(BIN, "package.json"))
-  puts "Running `yarn` inside #{BIN}"
-  `cd ~/bin && yarn`
+  Dir[File.join(LOCALPATH, "bin", "*")].each do |source_file|
+    basename = File.basename(source_file)
+    target_file = File.join(BIN, basename)
+
+    if File.exist?(target_file) && File.symlink?(target_file)
+      puts "Not linking file #{source_file} -- already exists".yellow
+    elsif File.exist?(target_file)
+      puts "Not linking file #{source_file} -- file already exists at #{target_file}".red
+    else
+      puts "Linking #{source_file} to #{target_file}".green
+      File.symlink(source_file, target_file)
+    end
+  end
 end
 
-puts "\n" + <<-SEPARATOR.green + "\n"
-************************************************************
-** Install homebrew and dependent packages
-SEPARATOR
+step 'yarn' do
+  puts "** Yarn in ~/bin to satisfy dependencies".green
 
-install_if_missing(
-  "brew",
-  [
+  if File.exist?(File.join(BIN, "package.json"))
+    puts "Running `yarn` inside #{BIN}"
+    `cd ~/bin && yarn`
+  end
+end
+
+step 'brew' do
+  puts "** Install homebrew".green
+
+  install_if_missing(
     "brew",
-    "-v",
-  ],
-  [
-    "/usr/bin/ruby",
-    "-e",
-    '"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"',
-  ]
-)
-
-brew_install_if_missing %w(
-  node
-  yarn
-  bash-completion
-  source-highlight
-)
-
-puts "\n" + <<-SEPARATOR.green + "\n"
-************************************************************
-** Link atom config files
-SEPARATOR
-
-ATOMFILES.each do |atomfile|
-  source_file = File.join(LOCALPATH, ".atom", atomfile)
-  target_file = File.join(HOME, ".atom", atomfile)
-  if File.exist?(target_file) && File.symlink?(target_file)
-    puts "Not linking file #{source_file} -- already exists".yellow
-  elsif File.exist?(target_file) && !File.symlink?(target_file)
-    puts "Not linking file #{source_file} -- file already exists at #{target_file}".red
-  else
-    puts "Linking #{source_file} to #{target_file}".green
-    File.symlink(source_file, target_file)
-  end
+    [
+      "brew",
+      "-v",
+    ],
+    [
+      "/usr/bin/ruby",
+      "-e",
+      '"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"',
+    ]
+  )
 end
 
-puts "\n" + <<-SEPARATOR.green + "\n"
-************************************************************
-** Instruct on how to install atom packages
-SEPARATOR
+step 'brew-deps' do
+  puts "** Install dependent packages from homebrew".green
 
-# To create a backup file as found in atom-packages.list:
-# apm list --installed --bare > atom-packages.list
+  brew_install_if_missing %w(
+    node
+    yarn
+    bash-completion
+    source-highlight
+  )
+end
 
-package_file = File.join(LOCALPATH, "atom-packages.list")
-install_command = ["apm", "install", "--packages-file", package_file]
-puts "To install atom packages, run:".red.underline.bold
-puts ""
-puts "  #{install_command.join(" ")}"
+step 'atom' do
+  puts "** Link atom config files".green
 
-puts ""
+  ATOMFILES.each do |atomfile|
+    source_file = File.join(LOCALPATH, ".atom", atomfile)
+    target_file = File.join(HOME, ".atom", atomfile)
+    if File.exist?(target_file) && File.symlink?(target_file)
+      puts "Not linking file #{source_file} -- already exists".yellow
+    elsif File.exist?(target_file) && !File.symlink?(target_file)
+      puts "Not linking file #{source_file} -- file already exists at #{target_file}".red
+    else
+      puts "Linking #{source_file} to #{target_file}".green
+      File.symlink(source_file, target_file)
+    end
+  end
+
+  puts ""
+  puts "** Instruct on how to install atom packages".green
+
+  # To create a backup file as found in atom-packages.list:
+  # apm list --installed --bare > atom-packages.list
+
+  package_file = File.join(LOCALPATH, "atom-packages.list")
+  install_command = ["apm", "install", "--packages-file", package_file]
+  puts "To install atom packages, run:".red.underline.bold
+  puts ""
+  puts "  #{install_command.join(" ")}"
+
+  puts ""
+end
+
+# -------- various installation steps
+
+if ARGV.include?('-h') || ARGV.include?('--help')
+  puts "Available steps: #{$steps.map { |name, _| name }.join(", ")}"
+else
+  run_steps! *ARGV
+end
