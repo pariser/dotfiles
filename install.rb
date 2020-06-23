@@ -11,6 +11,7 @@ LOCALPATH = File.expand_path(File.dirname(__FILE__))
 DOTFILES = %w(profile bashrc gitconfig gitignore screenrc vimrc ackrc rubocop.yml aliases vercomp zshrc).freeze
 HOME_DIRECTORIES = %w(bin dev lib .atom).freeze
 ATOMFILES = %w(config.cson init.coffee keymap.cson projects.cson snippets.cson styles.less).freeze
+VSCODEFILES = %w(keybindings.json settings.json tasks.json installed-extensions.txt).freeze
 
 # -------- utilities
 
@@ -211,6 +212,36 @@ step 'atom' do
   puts "To install atom packages, run:".red.underline.bold
   puts ""
   puts "  #{install_command.join(" ")}"
+
+  puts ""
+end
+
+step 'vscode' do
+  puts "** Link vscode config files".green
+
+  VSCODEFILES.each do |vscodefile|
+    source_file = File.join(LOCALPATH, "vscode", vscodefile)
+    target_file = File.join(HOME, "./Library/Application Support/Code/User", vscodefile)
+    if File.exist?(target_file) && File.symlink?(target_file)
+      puts "Not linking file #{source_file} -- already exists".yellow
+    elsif File.exist?(target_file) && !File.symlink?(target_file)
+      puts "Not linking file #{source_file} -- file already exists at #{target_file}".red
+    else
+      puts "Linking #{source_file} to #{target_file}".green
+      File.symlink(source_file, target_file)
+    end
+  end
+
+  # To update the list of installed extensions, run the following command:
+  #
+  #    code --list-extensions > ~/Library/Application Support/Code/User/installed-extensions.txt
+  #
+
+  puts "Run the following command to install vscode extensions".green
+
+  puts <<-EOF
+    cat ~/Library/Application\\ Support/Code/User/installed-extensions.txt | xargs -L1 code --install-extension
+  EOF
 
   puts ""
 end

@@ -1,0 +1,61 @@
+{
+    "workbench.colorTheme": "Atom One Dark",
+    "atomKeymap.promptV3Features": true,
+    "editor.multiCursorModifier": "ctrlCmd",
+    "sorbet.intellisenseProvider": "sorbet",
+    "sorbet.runWith": [
+        // "bundle",
+        // "exec",
+        // "srb"
+
+        // "/Users/andrew_pariser/.rvm/gems/ruby-2.3.1/bin/srb"
+
+        "rvm",
+        "2.3.1",
+        "do",
+        "srb",
+        "tc"
+    ],
+    "sorbet.sorbetPath": "",
+    "sorbet.extraArgs": [],
+    "editor.rulers": [
+        100,
+        120
+    ],
+    "C_Cpp.updateChannel": "Insiders",
+    "workbench.activityBar.visible": false,
+    "workbench.startupEditor": "newUntitledFile",
+    "editor.fontFamily": "Inconsolata",
+    "editor.fontSize": 17,
+    "editor.tabSize": 2,
+    "debug.console.fontFamily": "Inconsolata",
+    "workbench.tree.indent": 14,
+    "workbench.iconTheme": "vscode-icon-theme",
+    "terminal.external.osxExec": "iTerm.app",
+    "terminal.integrated.fontSize": 15,
+    "workbench.editor.enablePreviewFromQuickOpen": false,
+    "explorer.compactFolders": false,
+    "explorer.confirmDelete": false,
+    "files.trimTrailingWhitespace": true,
+    "editor.minimap.enabled": false,
+    "window.zoomLevel": 0,
+    "editor.autoClosingBrackets": "never",
+    "ruby.format": "rubocop",
+    "ruby.useBundler": true,
+    "ActiveFileInStatusBar.fullpath": false,
+    "editor.autoClosingQuotes": "never",
+    "editor.autoClosingOvertype": "never",
+    "editor.suggestSelection": "first",
+    "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
+    "java.semanticHighlighting.enabled": true,
+    "files.exclude": {
+        "**/.classpath": true,
+        "**/.project": true,
+        "**/.settings": true,
+        "**/.factorypath": true
+    },
+    "[json]": {
+        "editor.defaultFormatter": "vscode.json-language-features"
+    },
+    "files.insertFinalNewline": true
+}
