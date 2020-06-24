@@ -99,6 +99,17 @@ def brew_install_if_missing(*names)
   end
 end
 
+def install_symlink_if_missing(source_file, target_file)
+  if File.exist?(target_file) && File.symlink?(target_file)
+    puts "Not linking file #{source_file} -- already exists".yellow
+  elsif File.exist?(target_file) && !File.symlink?(target_file)
+    puts "Not linking file #{source_file} -- file already exists at #{target_file}".red
+  else
+    puts "Linking #{source_file} to #{target_file}".green
+    File.symlink(source_file, target_file)
+  end
+end
+
 # -------- CLI
 
 $steps = []
@@ -132,15 +143,15 @@ step 'dotfiles' do
   DOTFILES.each do |dotfile|
     source_file = File.join(LOCALPATH, dotfile)
     target_file = File.join(HOME, ".#{dotfile}")
-    if File.exist?(target_file) && File.symlink?(target_file)
-      puts "Not linking file #{source_file} -- already exists".yellow
-    elsif File.exist?(target_file) && !File.symlink?(target_file)
-      puts "Not linking file #{source_file} -- file already exists at #{target_file}".red
-    else
-      puts "Linking #{source_file} to #{target_file}".green
-      File.symlink(source_file, target_file)
-    end
+    install_symlink_if_missing(source_file, target_file)
   end
+end
+
+step 'oh-my-zsh' do
+  puts "** Link the zsh configuration files that belong in ~/.oh-my-zsh".green
+
+  puts "TODO".red.bold.underline
+  puts File.join(HOME, ".oh-my-zsh/themes/pariser.zsh-theme")
 end
 
 step 'directories' do
@@ -164,26 +175,8 @@ step 'bin-scripts' do
   puts "** Link scripts into ~/bin".green
 
   Dir[File.join(LOCALPATH, "bin", "*")].each do |source_file|
-    basename = File.basename(source_file)
-    target_file = File.join(BIN, basename)
-
-    if File.exist?(target_file) && File.symlink?(target_file)
-      puts "Not linking file #{source_file} -- already exists".yellow
-    elsif File.exist?(target_file)
-      puts "Not linking file #{source_file} -- file already exists at #{target_file}".red
-    else
-      puts "Linking #{source_file} to #{target_file}".green
-      File.symlink(source_file, target_file)
-    end
-  end
-end
-
-step 'yarn' do
-  puts "** Yarn in ~/bin to satisfy dependencies".green
-
-  if File.exist?(File.join(BIN, "package.json"))
-    puts "Running `yarn` inside #{BIN}"
-    `cd ~/bin && yarn`
+    target_file = File.join(BIN, File.basename(source_file))
+    install_symlink_if_missing(source_file, target_file)
   end
 end
 
@@ -213,6 +206,15 @@ step 'brew-deps' do
     bash-completion
     source-highlight
   )
+end
+
+step 'yarn' do
+  puts "** Yarn in ~/bin to satisfy dependencies".green
+
+  if File.exist?(File.join(BIN, "package.json"))
+    puts "Running `yarn` inside #{BIN}"
+    `cd ~/bin && yarn`
+  end
 end
 
 step 'atom' do

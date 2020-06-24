@@ -30,11 +30,6 @@ if [[ -d /usr/local/share/npm/bin ]]; then
   export PATH=/usr/local/share/npm/bin:$PATH
 fi
 
-# RVM
-if [[ -d $HOME/.rvm/bin ]] ; then
-  export PATH=$PATH:$HOME/.rvm/bin
-fi
-
 # Python
 export PYTHONPATH=~/lib:$PYTHONPATH
 

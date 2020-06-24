@@ -97,7 +97,6 @@
   "linter-rubocop": {}
   "linter-scss-lint":
     disableWhenNoConfigFileInPath: true
-    executablePath: "/Users/andrew_pariser/.rvm/wrappers/ruby-2.2.2@work-advice/scss-lint"
   "linter-ui-default":
     panelHeight: 172
     showPanel: true

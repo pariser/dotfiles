@@ -14,6 +14,7 @@
 import os
 import sys
 import shutil
+from os.path import expanduser
 from termcolor import colored
 
 # define your file extensions here, case is ignored.
@@ -27,8 +28,8 @@ jpg_extension = ".jpg"
 # source_root = "/Volumes/Blackthorne/Photos/"
 # waste_root = "/Volumes/Blackthorne/Photos-JPG/"
 
-source_root = "/Users/pariser/Pictures/"
-waste_root = "/Users/pariser/Pictures-JPG/"
+source_root = expanduser("~/Pictures")
+waste_root = expanduser("~/Pictures-JPG")
 
 ##### do not modify below ##########
 
