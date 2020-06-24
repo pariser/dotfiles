@@ -113,14 +113,27 @@ export PATH="/usr/local/sbin:$PATH"
 
 # openssl is used for all sorts of things
 export PATH="/usr/local/opt/openssl@1.1/bin:$PATH"
-export LDFLAGS="-L/usr/local/opt/openssl@1.1/lib"
+export LDFLAGS="-L/usr/local/opt/openssl@1.1/lib $LDFLAGS"
 
 # boost is used for the thrift compiler
-export LDFLAGS="-L/usr/local/opt/boost/lib"
+export LDFLAGS="-L/usr/local/opt/boost/lib $LDFLAGS"
 
 # Bison is used for the thrift compiler
 export PATH="/usr/local/opt/bison/bin:$PATH"
-export LDFLAGS="-L/usr/local/opt/bison/lib"
+export LDFLAGS="-L/usr/local/opt/bison/lib $LDFLAGS"
+
+# readline is keg-only, which means it was not symlinked into /usr/local,
+# because macOS provides BSD libedit.
+
+# For compilers to find readline you may need to set:
+#   export LDFLAGS="-L/usr/local/opt/readline/lib"
+#   export CPPFLAGS="-I/usr/local/opt/readline/include"
+
+# For pkg-config to find readline you may need to set:
+#   export PKG_CONFIG_PATH="/usr/local/opt/readline/lib/pkgconfig"
+
+export LDFLAGS="-L/usr/local/opt/readline/lib $LDFLAGS"
+export CPPFLAGS="-I/usr/local/opt/readline/include $CPPFLAGS"
 
 ########################################################
 # rbenv
@@ -129,6 +142,17 @@ export LDFLAGS="-L/usr/local/opt/bison/lib"
 eval "$(rbenv init -)"
 
 export PATH="$HOME/.rbenv/shims:$PATH"
+
+# ruby-build installs a non-Homebrew OpenSSL for each Ruby version installed and these are never upgraded.
+
+# To link Rubies to Homebrew's OpenSSL 1.1 (which is upgraded) add the following
+# to your ~/.zshrc:
+#   export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl@1.1)"
+
+# Note: this may interfere with building old versions of Ruby (e.g <2.4) that use
+# OpenSSL <1.1.
+
+export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl@1.1)"
 
 ########################################################
 # nvm
@@ -141,7 +165,6 @@ export NVM_DIR="$HOME/.nvm"
 # run `nvm use` when cd into root directory of project with `.nvmrc` file
 autoload -U add-zsh-hook
 load-nvmrc() {
-  echo "running load-nvmrc"
   [[ -a .nvmrc ]] || return
 
   local node_version="$(nvm version)"
@@ -149,7 +172,6 @@ load-nvmrc() {
 
   if [ "$nvmrc_node_version" = "N/A" ]; then
     >&2 echo "nvm version "$(cat .nvmrc)" not installed; run `nvm install` to install it"
-    nvm install
   elif [ "$nvmrc_node_version" != "$node_version" ]; then
     nvm use
   fi
@@ -168,8 +190,10 @@ load-nvmrc
 # Load non-version controlled (private) zshrc files
 ########################################################
 
+setopt NULL_GLOB # Don't complain if the glob pattern does not match any results
 for f in ~/.zsh_ext_*; do
   if [[ ! ($f =~ \.swp$) ]]; then
     source $f
   fi
 done
+unsetopt NULL_GLOB # Restore default behavior about glob pattern

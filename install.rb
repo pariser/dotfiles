@@ -21,6 +21,7 @@ DOTFILES = %w(
   aliases
   vercomp
   zshrc
+  gemrc
 ).freeze
 HOME_DIRECTORIES = %w(
   bin
@@ -148,10 +149,11 @@ step 'dotfiles' do
 end
 
 step 'oh-my-zsh' do
-  puts "** Link the zsh configuration files that belong in ~/.oh-my-zsh".green
+  puts "** Link my zsh theme files that belongs in ~/.oh-my-zsh".green
 
-  puts "TODO".red.bold.underline
-  puts File.join(HOME, ".oh-my-zsh/themes/pariser.zsh-theme")
+  source_file = File.join(LOCALPATH, "zsh-theme")
+  target_file = File.join(HOME, ".oh-my-zsh/themes/pariser.zsh-theme")
+  install_symlink_if_missing(source_file, target_file)
 end
 
 step 'directories' do

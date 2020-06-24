@@ -55,5 +55,6 @@
     "[json]": {
         "editor.defaultFormatter": "vscode.json-language-features"
     },
-    "files.insertFinalNewline": true
+    "files.insertFinalNewline": true,
+    "python.languageServer": "Microsoft"
 }
