@@ -19,7 +19,7 @@ alias ydiff="diff -y --suppress-common-lines"
 
 # -- Git aliases
 
-alias git=hub
+# . alias git=hub
 alias gs="git status"
 alias gd="git diff"
 alias gb="git branch"
