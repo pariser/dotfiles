@@ -56,5 +56,10 @@
         "editor.defaultFormatter": "vscode.json-language-features"
     },
     "files.insertFinalNewline": true,
-    "python.languageServer": "Microsoft"
+    "python.languageServer": "Microsoft",
+    "java.requirements.JDK11Warning": false,
+    "cSpell.enableFiletypes": [
+        "ruby",
+        "thrift"
+    ]
 }
