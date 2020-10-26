@@ -7,7 +7,7 @@ require 'fileutils'
 
 HOME = File.expand_path("~")
 BIN = File.join(HOME, "bin")
-LOCALPATH = File.expand_path(File.dirname(__FILE__))
+LOCAL_PATH = File.expand_path(File.dirname(__FILE__))
 
 DOTFILES = %w(
   profile
@@ -29,7 +29,7 @@ HOME_DIRECTORIES = %w(
   lib
   .atom
 ).freeze
-ATOMFILES = %w(
+ATOM_FILES = %w(
   config.cson
   init.coffee
   keymap.cson
@@ -37,7 +37,7 @@ ATOMFILES = %w(
   snippets.cson
   styles.less
 ).freeze
-VSCODEFILES = %w(
+VSCODE_FILES = %w(
   keybindings.json
   settings.json
   tasks.json
@@ -142,7 +142,7 @@ step 'dotfiles' do
   puts "** Link the dotfiles that belong in ~/".green
 
   DOTFILES.each do |dotfile|
-    source_file = File.join(LOCALPATH, dotfile)
+    source_file = File.join(LOCAL_PATH, dotfile)
     target_file = File.join(HOME, ".#{dotfile}")
     install_symlink_if_missing(source_file, target_file)
   end
@@ -151,7 +151,7 @@ end
 step 'oh-my-zsh' do
   puts "** Link my zsh theme files that belongs in ~/.oh-my-zsh".green
 
-  source_file = File.join(LOCALPATH, "zsh-theme")
+  source_file = File.join(LOCAL_PATH, "zsh-theme")
   target_file = File.join(HOME, ".oh-my-zsh/themes/pariser.zsh-theme")
   install_symlink_if_missing(source_file, target_file)
 end
@@ -176,7 +176,7 @@ end
 step 'bin-scripts' do
   puts "** Link scripts into ~/bin".green
 
-  Dir[File.join(LOCALPATH, "bin", "*")].each do |source_file|
+  Dir[File.join(LOCAL_PATH, "bin", "*")].each do |source_file|
     target_file = File.join(BIN, File.basename(source_file))
     install_symlink_if_missing(source_file, target_file)
   end
@@ -222,9 +222,9 @@ end
 step 'atom' do
   puts "** Link atom config files".green
 
-  ATOMFILES.each do |atomfile|
-    source_file = File.join(LOCALPATH, ".atom", atomfile)
-    target_file = File.join(HOME, ".atom", atomfile)
+  ATOM_FILES.each do |atom_file|
+    source_file = File.join(LOCAL_PATH, ".atom", atom_file)
+    target_file = File.join(HOME, ".atom", atom_file)
     if File.exist?(target_file) && File.symlink?(target_file)
       puts "Not linking file #{source_file} -- already exists".yellow
     elsif File.exist?(target_file) && !File.symlink?(target_file)
@@ -241,7 +241,7 @@ step 'atom' do
   # To create a backup file as found in atom-packages.list:
   # apm list --installed --bare > atom-packages.list
 
-  package_file = File.join(LOCALPATH, "atom-packages.list")
+  package_file = File.join(LOCAL_PATH, "atom-packages.list")
   install_command = ["apm", "install", "--packages-file", package_file]
   puts "To install atom packages, run:".red.underline.bold
   puts ""
@@ -253,9 +253,9 @@ end
 step 'vscode' do
   puts "** Link vscode config files".green
 
-  VSCODEFILES.each do |vscodefile|
-    source_file = File.join(LOCALPATH, "vscode", vscodefile)
-    target_file = File.join(HOME, "Library/Application Support/Code/User", vscodefile)
+  VSCODE_FILES.each do |vscode_file|
+    source_file = File.join(LOCAL_PATH, "vscode", vscode_file)
+    target_file = File.join(HOME, "Library/Application Support/Code/User", vscode_file)
     if File.exist?(target_file) && File.symlink?(target_file)
       puts "Not linking file #{source_file} -- already exists".yellow
     elsif File.exist?(target_file) && !File.symlink?(target_file)

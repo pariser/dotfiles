@@ -9,7 +9,6 @@
     editor = vim
     excludesfile = ~/.gitignore
     precomposeunicode = true
-    sparseCheckout = true
 
 [color]
     diff = auto
@@ -46,3 +45,5 @@
     smudge = git-lfs smudge -- %f
     process = git-lfs filter-process
     required = true
+[pager]
+    branch = /usr/local/Cellar/less/551/bin/less --quit-if-one-screen -R

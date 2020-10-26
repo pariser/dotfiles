@@ -15,3 +15,7 @@
 --ignore-dir=tmp
 --ignore-dir=node_modules
 --ignore-dir=.yardoc
+--ignore-dir=generated-apps
+--ignore-dir=app/schemas/_xrepo
+--ignore-dir=build/schemas/_xrepo
+--ignore-dir=build/ruby
