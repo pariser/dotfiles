@@ -6,6 +6,6 @@
     "commander": "^2.9.0",
     "minimist": "^1.2.3",
     "source-map": "^0.5.6",
-    "underscore": "^1.8.3"
+    "underscore": "^1.12.1"
   }
 }
