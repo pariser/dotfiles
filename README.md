@@ -30,6 +30,9 @@ gh      git home
 
 ydiff   side-by-side diff
         named after the -y argument, and it suppresses common lines too
+
+gromas  git rebase -i origin/master --autosquash
+        kick off an interactive rebase against master using autosquash
 ```
 
 
