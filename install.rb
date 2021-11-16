@@ -125,18 +125,18 @@ end
 
 $steps = []
 
-def step(step_name, &block)
-  $steps << [step_name, block]
+def step(step_name, options = {}, &block)
+  $steps << [step_name, options, block]
 end
 
 def run_steps!(*steps)
   puts "steps: #{steps}"
   steps_to_run = steps.length == 0 ?
-    $steps :
+    $steps.reject { |_, options| options[:disabled] } :
     $steps.select { |name, _| steps.include?(name) }
   puts "steps_to_run: #{steps_to_run}"
 
-  steps_to_run.each do |step_name, block|
+  steps_to_run.each do |step_name, _options, block|
     puts "\n" + <<~SEPARATOR.green + "\n"
       ************************************************************
       RUNNING STEP: #{step_name}
@@ -212,24 +212,10 @@ end
 step 'brew-deps' do
   puts "** Install dependent packages from homebrew".green
 
-  brew_install_if_missing %w(
-    node
-    yarn
-    bash-completion
-    source-highlight
-  )
+  brew_install_if_missing %w()
 end
 
-step 'yarn' do
-  puts "** Yarn in ~/bin to satisfy dependencies".green
-
-  if File.exist?(File.join(BIN, "package.json"))
-    puts "Running `yarn` inside #{BIN}"
-    `cd ~/bin && yarn`
-  end
-end
-
-step 'atom' do
+step 'atom', disabled: true do
   puts "** Link atom config files".green
 
   ATOM_FILES.each do |atom_file|
