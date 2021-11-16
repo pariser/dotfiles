@@ -36,7 +36,6 @@
     "explorer.confirmDelete": false,
     "files.trimTrailingWhitespace": true,
     "editor.minimap.enabled": false,
-    "window.zoomLevel": 0,
     "editor.autoClosingBrackets": "never",
     "ruby.format": "rubocop",
     "ruby.useBundler": true,
@@ -61,5 +60,16 @@
     "cSpell.enableFiletypes": [
         "ruby",
         "thrift"
-    ]
+    ],
+    "cSpell.userWords": [
+        "DOGSTATSD",
+        "camelize",
+        "downcase",
+        "metadata's"
+    ],
+    "explorer.confirmDragAndDrop": false,
+    "cSpell.enabled": true,
+    "workbench.editorAssociations": {
+        "*.ipynb": "jupyter.notebook.ipynb"
+    }
 }

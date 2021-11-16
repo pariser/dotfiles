@@ -42,6 +42,7 @@ VSCODE_FILES = %w(
   settings.json
   tasks.json
   installed-extensions.txt
+  projects.json
 ).freeze
 
 # -------- utilities

@@ -1,5 +1,16 @@
-# If you come from bash you might have to change your $PATH.
-# export PATH=$HOME/bin:/usr/local/bin:$PATH
+########################################################
+# Start the ZSH profiling tool (if ZSH_PROFILING is set)
+########################################################
+
+# To determine how long zsh takes to load:
+#
+#   time zsh -i -c exit
+#
+# To determine how long zsh takes to load with specific profiling tools:
+#
+#   time ZSH_PROFILING=1 zsh -i -c exit
+
+[[ "_${ZSH_PROFILING}" = "_1" ]] && zmodload zsh/zprof
 
 ########################################################
 # Oh My ZSH
@@ -104,16 +115,22 @@ source $ZSH/oh-my-zsh.sh
 ########################################################
 
 export PATH=~/bin:$PATH
+export PATH="/usr/local/opt/thrift@0.9/bin:$PATH"
 export PATH="/usr/local/opt/mysql@5.6/bin:$PATH"
 export PATH="/usr/local/sbin:$PATH"
+
+# pip-installed packages
+python3 -m site &> /dev/null && PATH="$PATH:`python3 -m site --user-base`/bin"
+python2 -m site &> /dev/null && PATH="$PATH:`python2 -m site --user-base`/bin"
 
 ########################################################
 # Brew libraries
 ########################################################
 
-# openssl is used for all sorts of things
-export PATH="/usr/local/opt/openssl@1.1/bin:$PATH"
-export LDFLAGS="-L/usr/local/opt/openssl@1.1/lib $LDFLAGS"
+local OPENSSL_VERSION=1.0
+
+export PATH="/usr/local/opt/openssl@${OPENSSL_VERSION}/bin:$PATH"
+export LDFLAGS="-L/usr/local/opt/openssl@${OPENSSL_VERSION}/lib $LDFLAGS"
 
 # boost is used for the thrift compiler
 export LDFLAGS="-L/usr/local/opt/boost/lib $LDFLAGS"
@@ -135,6 +152,14 @@ export LDFLAGS="-L/usr/local/opt/bison/lib $LDFLAGS"
 export LDFLAGS="-L/usr/local/opt/readline/lib $LDFLAGS"
 export CPPFLAGS="-I/usr/local/opt/readline/include $CPPFLAGS"
 
+export LDFLAGS="-L/usr/local/opt/thrift@0.9/lib $LDFLAGS"
+export CPPFLAGS="-I/usr/local/opt/thrift@0.9/include $CPPFLAGS"
+
+export LDFLAGS="-L/usr/local/opt/libffi/lib $LDFLAGS"
+export CPPFLAGS="-I/usr/local/opt/libffi/include $CPPFLAGS"
+
+export PKG_CONFIG_PATH="/usr/local/opt/libffi/lib/pkgconfig:$PKG_CONFIG_PATH"
+
 ########################################################
 # rbenv
 ########################################################
@@ -152,7 +177,7 @@ export PATH="$HOME/.rbenv/shims:$PATH"
 # Note: this may interfere with building old versions of Ruby (e.g <2.4) that use
 # OpenSSL <1.1.
 
-export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl@1.1)"
+export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl@${OPENSSL_VERSION})"
 
 ########################################################
 # nvm
@@ -166,8 +191,9 @@ export NVM_DIR="$HOME/.nvm"
 autoload -U add-zsh-hook
 load-nvmrc() {
   [[ -a .nvmrc ]] || return
+  command -v nvm >/dev/null 2>&1 || return
 
-  local node_version="$(nvm version)"
+  local node_version="$(nvm version > /dev/null)"
   local nvmrc_node_version=$(nvm version "$(cat .nvmrc)")
 
   if [ "$nvmrc_node_version" = "N/A" ]; then
@@ -197,3 +223,9 @@ for f in ~/.zsh_ext_*; do
   fi
 done
 unsetopt NULL_GLOB # Restore default behavior about glob pattern
+
+########################################################
+# End the ZSH profiling tool
+########################################################
+
+[[ "_${ZSH_PROFILING}" = "_1" ]] && zprof
