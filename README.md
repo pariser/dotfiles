@@ -40,9 +40,6 @@ ydiff   side-by-side diff
 git clone git@github.com:pariser/dotfiles.git
 cd dotfiles
 
-# Install dependencies
-gem install --no-ri --no-rdoc colored
-
 # Set up directory structure & link files
 ./install.rb
 ```

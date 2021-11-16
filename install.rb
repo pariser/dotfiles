@@ -1,5 +1,14 @@
 #!/usr/bin/env ruby
 
+require 'bundler/inline'
+
+gemfile do
+  source 'https://rubygems.org'
+
+  gem 'colored'
+  gem 'terminal-table'
+end
+
 require 'colored'
 require 'open3'
 require 'json'
@@ -289,7 +298,12 @@ end
 # -------- various installation steps
 
 if ARGV.include?('-h') || ARGV.include?('--help')
-  puts "Available steps: #{$steps.map { |name, _| name }.join(", ")}"
+  require 'terminal-table'
+
+  puts Terminal::Table.new({
+    headings: ['Install Step', 'Enabled'],
+    rows: $steps.map { |name, options, _| [name, !options[:disabled]] },
+  })
 else
   run_steps! *ARGV
 end
