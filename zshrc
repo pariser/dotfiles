@@ -1,3 +1,5 @@
+set +e
+set +x
 ########################################################
 # Start the ZSH profiling tool (if ZSH_PROFILING is set)
 ########################################################
@@ -114,7 +116,7 @@ source $ZSH/oh-my-zsh.sh
 # Path
 ########################################################
 
-export PATH="~/bin:$PATH"
+export PATH="$HOME/bin:$PATH"
 export PATH="/usr/local/opt/mysql@5.6/bin:$PATH"
 export PATH="/usr/local/sbin:$PATH"
 export PATH="/usr/local/bin:$PATH"
@@ -128,7 +130,7 @@ python2 -m site &> /dev/null && PATH="$PATH:`python2 -m site --user-base`/bin"
 # Brew libraries
 ########################################################
 
-local OPENSSL_VERSION=1.0
+local OPENSSL_VERSION=1.1
 
 export PATH="/usr/local/opt/openssl@${OPENSSL_VERSION}/bin:$PATH"
 export LDFLAGS="-L/usr/local/opt/openssl@${OPENSSL_VERSION}/lib $LDFLAGS"
