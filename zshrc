@@ -114,10 +114,11 @@ source $ZSH/oh-my-zsh.sh
 # Path
 ########################################################
 
-export PATH=~/bin:$PATH
-export PATH="/usr/local/opt/thrift@0.9/bin:$PATH"
+export PATH="~/bin:$PATH"
 export PATH="/usr/local/opt/mysql@5.6/bin:$PATH"
 export PATH="/usr/local/sbin:$PATH"
+export PATH="/usr/local/bin:$PATH"
+export PATH="./node_modules/.bin:$PATH"
 
 # pip-installed packages
 python3 -m site &> /dev/null && PATH="$PATH:`python3 -m site --user-base`/bin"

@@ -7,7 +7,6 @@
         // "bundle",
         // "exec",
         // "srb"
-
         "rvm",
         "2.3.1",
         "do",
@@ -54,8 +53,11 @@
     "[json]": {
         "editor.defaultFormatter": "vscode.json-language-features"
     },
+    "[javascript]": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
     "files.insertFinalNewline": true,
-    "python.languageServer": "Default",
     "java.requirements.JDK11Warning": false,
     "cSpell.enableFiletypes": [
         "ruby",
@@ -71,5 +73,12 @@
     "cSpell.enabled": true,
     "workbench.editorAssociations": {
         "*.ipynb": "jupyter.notebook.ipynb"
-    }
+    },
+    "python.languageServer": "Microsoft",
+    "javascript.suggest.autoImports": false,
+    "liveshare.presence": true,
+    "liveshare.authenticationProvider": "GitHub",
+    "window.title": "${activeEditorMedium}${separator}${rootName}",
+    "typescript.tsserver.log": "off",
+    "security.workspace.trust.untrustedFiles": "open"
 }

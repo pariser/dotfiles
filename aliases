@@ -10,42 +10,46 @@ alias hack-the-planet="afplay $HOME/dev/learnup/work-advice/misc/hack-the-planet
 
 # -- ls aliases
 
-alias ls="ls -G"
-alias ll="ls -ltr"
+alias ls='ls -G'
+alias ll='ls -ltr'
 
 # -- side-by-side diff
 
-alias ydiff="diff -y --suppress-common-lines"
+alias ydiff='diff -y --suppress-common-lines'
 
 # -- Git aliases
 
-# . alias git=hub
-alias gs="git status"
-alias gd="git diff"
-alias gb="git branch"
-alias gco="git checkout"
-alias gbd="git branch-details"
-alias gbm="git branch -m"
-alias gfom="git fetch origin master"
-alias grom="git rebase origin/master"
-alias gpom="git pull origin master"
-alias gromas="git rebase -i origin/master --autosquash"
-alias isgit="git status &> /dev/null"
+# assumes .oh-my-zsh is installed with the git plugin -- relies on `git_main_branch`, see:
+# https://github.com/ohmyzsh/ohmyzsh/blob/835a0a5d17765243cabee782acb5905a9aab33c3/plugins/git/git.plugin.zsh#L30-L41
+
+alias git=hub # assumes hub is installed (brew install hub)
+alias gs='git status'
+alias gd='git diff'
+alias gb='git branch'
+alias gco='git checkout'
+alias gbd='git branch-details'
+alias gbm='git branch -m'
+alias isgit='git status &> /dev/null'
+
+alias gfom='git fetch origin $(git_main_branch)'
+alias grom='git rebase origin/$(git_main_branch)'
+alias gpom='git pull origin $(git_main_branch)'
+alias gromas='git rebase -i origin/$(git_main_branch) --autosquash'
 
 git_version=$(git --version | grep git | cut -d ' ' -f 3)
 has_git_switch=$(vercomp $git_version "2.23.0")
 if [[ $has_git_switch -ne 1 ]]; then
-  alias gsc="git switch -c"
-  alias gcm="git switch master"
-  alias gsw="git switch"
+  alias gsc='git switch -c'
+  alias gcm='git switch $(git_main_branch)'
+  alias gsw='git switch'
 else
-  alias gsc="git checkout -b"
-  alias gcm="git checkout master"
-  alias gsw="git checkout"
+  alias gsc='git checkout -b'
+  alias gcm='git checkout $(git_main_branch)'
+  alias gsw='git checkout'
 fi
 
-alias gist_diff="isgit && (git diff | gist -p -t diff | xargs open)"
-alias atom_diff="git diff | tmpin atom"
+alias gist_diff='isgit && (git diff | gist -p -t diff | xargs open)'
+alias atom_diff='git diff | tmpin atom'
 
 function github() {
   ref=$1
@@ -58,9 +62,10 @@ function github() {
     fi
   else
     github_branch=$(git rev-parse --abbrev-ref HEAD)
-    if [[ "_$github_branch" == "_master" ]]; then
-      # echo "master"
-      github_url="$github_url/commits/master"
+    main_branch=$(git_main_branch)
+    if [[ "_$github_branch" == "_$main_branch" ]]; then
+      # echo "main"
+      github_url="$github_url/commits/$main_branch"
     else
       # echo "branch"
       github_url="$github_url/compare/$github_branch?expand=1"
@@ -71,14 +76,15 @@ function github() {
   open $github_url | head -n1
 }
 
-function gh() {
+function gcd() {
   isgit && cd `git rev-parse --show-toplevel` || return $?
 }
 
 function grmm() {
-  merged_branches=$(git branch --merged origin/master | grep -v -E " master$" | grep -v "\*")
+  main_branch=$(git_main_branch)
+  merged_branches=$(git branch --merged origin/${main_branch} | grep -v -E " ${main_branch}$" | grep -v "\*")
   [[ -z $merged_branches ]] && echo "No merged branches found" && return
-  echo "Found the following git branches already merged into origin/master:"
+  echo "Found the following git branches already merged into origin/${main_branch}:"
   for merged_branch in $merged_branches; do
     echo "> $merged_branch"
   done
@@ -90,7 +96,7 @@ function grmm() {
     # assume bash
     read -p "Are you sure you want to delete these branches? [yN]: " confirm && [[ $confirm =~ [yY](es)* ]] || return
   fi
-  git branch --merged origin/master | grep -v -E " master$" | grep -v "\*" | xargs -n 1 git branch -D
+  git branch --merged origin/${main_branch} | grep -v -E " ${main_branch}$" | grep -v "\*" | xargs -n 1 git branch -D
 }
 
 function git_lineschanged() {
@@ -103,19 +109,16 @@ function logtail() {
   tail -F "`ls -t | head -1`"
 }
 
-alias now="ruby -e 'puts Time.now.to_i'"
+alias now='ruby -e "puts Time.now.to_i"'
 
-alias nt="nosetests --nocapture --nologcapture --tests"
+alias nt='nosetests --nocapture --nologcapture --tests'
 
 alias serve="python -m SimpleHTTPServer 8000"
 
-alias be="bundle exec"
+alias be='bundle exec'
 alias rubocop-changed="gd --name-only | grep -e '\\.rb$' | xargs rubocop"
 
-alias mlt="tail -f /usr/local/var/log/mongodb/mongo.log"
-
-# alias aquamacs="/Applications/Aquamacs.app/Contents/MacOS/Aquamacs"
-# alias aquamacs_byte_compile="aquamacs -Q -L . -batch -f batch-byte-compile"
+alias mlt='tail -f /usr/local/var/log/mongodb/mongo.log'
 
 function pushd() {
   if [[ -n $ZSH_NAME ]]; then
@@ -142,8 +145,8 @@ alias flush_memcached="echo \"flush_all\" | nc localhost 11211"
 alias showFinderDotfiles='defaults write com.apple.finder AppleShowAllFiles YES; killall Finder /System/Library/CoreServices/Finder.app'
 alias hideFinderDotfiles='defaults write com.apple.finder AppleShowAllFiles NO; killall Finder /System/Library/CoreServices/Finder.app'
 
-alias nginx-start="sudo launchctl load /Library/LaunchDaemons/homebrew.mxcl.nginx.plist"
-alias nginx-stop="sudo launchctl unload /Library/LaunchDaemons/homebrew.mxcl.nginx.plist"
-alias nginx-restart="nginx-stop && nginx-start"
+alias nginx-start='sudo launchctl load /Library/LaunchDaemons/homebrew.mxcl.nginx.plist'
+alias nginx-stop='sudo launchctl unload /Library/LaunchDaemons/homebrew.mxcl.nginx.plist'
+alias nginx-restart='nginx-stop && nginx-start'
 
 alias npm-dependencies="ack \"from '[^.]\" | grep -vE '^\$' | awk -F'[ ]' '{ print \$(NF)}' | sort | uniq"

@@ -22,10 +22,10 @@ recently executed shell command (if non-zero).
 ### Some aliases and one-liners
 
 Everyone has their aliases and one-line shell functions. As defined in
-my [bashrc](https://github.com/pariser/dotfiles/blob/master/bashrc),
+my [aliases](https://github.com/pariser/dotfiles/blob/master/aliases),
 my favorite are:
 ```
-gh      git home
+gcd     git cd
         cd to the root of your git repository (when applicable)
 
 ydiff   side-by-side diff
