@@ -7,6 +7,7 @@ require 'optparse'
 
 class GitBranchDetails
   NotAGitRepository = Class.new(StandardError)
+  NonZeroReturnCode = Class.new(StandardError)
 
   GOOD_TRAVIS_STATES = %w( created passed started ).freeze
   NEUTRAL_TRAVIS_STATES = [ "not found", "canceled" ].freeze
@@ -15,6 +16,7 @@ class GitBranchDetails
   EXPECTED_TRAVIS_STATES = (GOOD_TRAVIS_STATES + NEUTRAL_TRAVIS_STATES + BAD_TRAVIS_STATES).freeze
 
   SPECIAL_BRANCHES = %w(
+    main
     master
     production
     staging
@@ -37,7 +39,7 @@ class GitBranchDetails
       opts.on('--[no-]travis', 'Check status of each branch on travis (can be slow)') do |should_run_travis|
         options[:travis] = should_run_travis
       end
-      opts.on('--[no-]fetch', 'Run git fetch origin master?') do |fetch|
+      opts.on('--[no-]fetch', 'Run git fetch origin main?') do |fetch|
         options[:fetch] = fetch
       end
       opts.on('--verbose', 'Verbose debugging') do |verbose|
@@ -62,7 +64,7 @@ class GitBranchDetails
   def print_report
     ensure_git_repository!
 
-    fetch_remote_master!
+    fetch_remote_main_branch!
 
     branches
 
@@ -184,6 +186,29 @@ private
     raise NotAGitRepository, "#{self.class.name} must be run from a git repository" if git_status =~ /^fatal: Not a git repository/
   end
 
+  # ported from the git plugin from oh-my-zsh
+  # https://github.com/ohmyzsh/ohmyzsh/blob/3668ec2a82250020ca0c285ef8b277f1385a8085/plugins/git/git.plugin.zsh#L30-L41
+  def git_main_branch
+    @git_main_branch ||= begin
+      %w(
+        refs/heads/main
+        refs/heads/trunk
+        refs/remotes/origin/main
+        refs/remotes/origin/trunk
+        refs/remotes/upstream/main
+        refs/remotes/upstream/trunk
+      ).each do |ref|
+        begin
+          execute_command('git rev-parse --git-dir &>/dev/null')
+        rescue NonZeroReturnCode
+        else
+          return ref.split('/').last
+        end
+      end
+      "main"
+    end
+  end
+
   def fetch_head_timestamp
     # From stackoverflow, but note the limitation described in the comment at
     # https://stackoverflow.com/questions/2993902/how-do-i-check-the-date-and-time-of-the-latest-git-pull-that-was-executed#comment31991429_9229377
@@ -196,17 +221,17 @@ private
     fetch_head_timestamp < Time.now.to_i - 60 * 60
   end
 
-  def fetch_remote_master!
+  def fetch_remote_main_branch!
     if @fetch == false
-      puts "* Not fetching remote master branch (called with `--no-fetch`)"
+      puts "* Not fetching remote #{git_main_branch} branch (called with `--no-fetch`)"
     elsif @fetch
-      puts "* Fetching remote master branch (called with `--fetch`)"
-      execute_command('git fetch origin master 2>&1 >/dev/null')
+      puts "* Fetching remote #{git_main_branch} branch (called with `--fetch`)"
+      execute_command("git fetch origin #{git_main_branch} 2>&1 >/dev/null")
     elsif fetch_head_stale?
-      puts "* Fetching remote master branch (last fetch over one hour ago)"
-      execute_command('git fetch origin master 2>&1 >/dev/null')
+      puts "* Fetching remote #{git_main_branch} branch (last fetch over one hour ago)"
+      execute_command("git fetch origin #{git_main_branch} 2>&1 >/dev/null")
     else
-      puts "* Not fetching remote master branch (fetched within last hour)"
+      puts "* Not fetching remote #{git_main_branch} branch (fetched within last hour)"
     end
   end
 
@@ -270,11 +295,16 @@ private
 
     data["author handle"] = data["author email"].slice(0, data["author email"].index("@"))
     data['latest commit time'] = Time.parse(data['latest commit time'])
-    data['merged?'] = execute_command("git branch -r --contains #{branch_name}").chomp.gsub(/^../, '').split("\n").include?('origin/master') ? 'yes' : 'no'
+
+    merged_branches = execute_command("git branch -r --contains #{branch_name}").
+      chomp.
+      gsub(/^../, '').
+      split("\n")
+    data['merged?'] = merged_branches.include?("origin/#{git_main_branch}") ? 'yes' : 'no'
     # puts "Branch: #{branch_name}, " \
     #   "SHA: #{data["sha"]}, " \
-    #   "Merge Base: #{execute_command("git merge-base origin/master #{branch_name}")}"
-    # data['merged?'] = execute_command("git merge-base origin/master #{branch_name}") == data["sha"] ? "yes" : "no"
+    #   "Merge Base: #{execute_command("git merge-base origin/#{git_main_branch} #{branch_name}")}"
+    # data['merged?'] = execute_command("git merge-base origin/#{git_main_branch} #{branch_name}") == data["sha"] ? "yes" : "no"
     data['travis'] = get_travis_state(branch_name) if @check_travis
     data
   rescue
@@ -319,7 +349,9 @@ private
 
   def execute_command(command)
     puts "** Executing #{command.green}" if @verbose
-    `#{command}`
+    result = `#{command}`
+    raise NonZeroReturnCode unless $?.success?
+    result
   end
 end
 
