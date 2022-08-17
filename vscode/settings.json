@@ -1,7 +1,31 @@
 {
-    "workbench.colorTheme": "Atom One Dark",
+    "ActiveFileInStatusBar.fullpath": false,
     "atomKeymap.promptV3Features": true,
+    "debug.console.fontFamily": "Inconsolata",
+    "editor.autoClosingBrackets": "never",
+    "editor.autoClosingOvertype": "never",
+    "editor.autoClosingQuotes": "never",
+    "editor.fontFamily": "Inconsolata",
+    "editor.fontSize": 17,
+    "editor.minimap.enabled": false,
     "editor.multiCursorModifier": "ctrlCmd",
+    "editor.rulers": [100, 120],
+    "editor.suggestSelection": "first",
+    "editor.tabSize": 2,
+    "explorer.compactFolders": false,
+    "explorer.confirmDelete": false,
+    "files.trimTrailingWhitespace": true,
+    "ruby.format": "rubocop",
+    "ruby.useBundler": true,
+    "terminal.external.osxExec": "iTerm.app",
+    "terminal.integrated.fontSize": 15,
+    "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
+    "workbench.activityBar.visible": false,
+    "workbench.colorTheme": "Atom One Dark",
+    "workbench.editor.enablePreviewFromQuickOpen": false,
+    "workbench.iconTheme": "vscode-icon-theme",
+    "workbench.startupEditor": "newUntitledFile",
+    "workbench.tree.indent": 14,
     "sorbet.intellisenseProvider": "sorbet",
     "sorbet.runWith": [
         // "bundle",
@@ -15,35 +39,6 @@
     ],
     "sorbet.sorbetPath": "",
     "sorbet.extraArgs": [],
-    "editor.rulers": [
-        100,
-        120
-    ],
-    "C_Cpp.updateChannel": "Insiders",
-    "workbench.activityBar.visible": false,
-    "workbench.startupEditor": "newUntitledFile",
-    "editor.fontFamily": "Inconsolata",
-    "editor.fontSize": 17,
-    "editor.tabSize": 2,
-    "debug.console.fontFamily": "Inconsolata",
-    "workbench.tree.indent": 14,
-    "workbench.iconTheme": "vscode-icon-theme",
-    "terminal.external.osxExec": "iTerm.app",
-    "terminal.integrated.fontSize": 15,
-    "workbench.editor.enablePreviewFromQuickOpen": false,
-    "explorer.compactFolders": false,
-    "explorer.confirmDelete": false,
-    "files.trimTrailingWhitespace": true,
-    "editor.minimap.enabled": false,
-    "editor.autoClosingBrackets": "never",
-    "ruby.format": "rubocop",
-    "ruby.useBundler": true,
-    "ActiveFileInStatusBar.fullpath": false,
-    "editor.autoClosingQuotes": "never",
-    "editor.autoClosingOvertype": "never",
-    "editor.suggestSelection": "first",
-    "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
-    "java.semanticHighlighting.enabled": true,
     "files.exclude": {
         "**/.classpath": true,
         "**/.project": true,
@@ -58,7 +53,6 @@
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
     "files.insertFinalNewline": true,
-    "java.requirements.JDK11Warning": false,
     "cSpell.enableFiletypes": [
         "ruby",
         "thrift"
@@ -69,16 +63,33 @@
         "downcase",
         "metadata's"
     ],
-    "explorer.confirmDragAndDrop": false,
     "cSpell.enabled": true,
+    "explorer.confirmDragAndDrop": false,
     "workbench.editorAssociations": {
-        "*.ipynb": "jupyter.notebook.ipynb"
+        "*.ipynb": "jupyter-notebook"
     },
     "python.languageServer": "Default",
     "javascript.suggest.autoImports": false,
     "liveshare.presence": true,
-    "liveshare.authenticationProvider": "GitHub",
     "window.title": "${activeEditorMedium}${separator}${rootName}",
     "typescript.tsserver.log": "off",
-    "security.workspace.trust.untrustedFiles": "open"
+    "security.workspace.trust.untrustedFiles": "open",
+    "editor.bracketPairColorization.enabled": true,
+    "editor.guides.bracketPairs": "active",
+    "editor.guides.bracketPairsHorizontal": "active",
+    "editor.guides.highlightActiveIndentation": false,
+    "workbench.colorCustomizations": {
+        // Bracket colors
+        "editorBracketHighlight.foreground1": "#FFD700",
+        "editorBracketHighlight.foreground2": "#DA70D6",
+        "editorBracketHighlight.foreground3": "#179fff",
+        // Inactive guide colors
+        "editorBracketPairGuide.background1": "#ffd90080",
+        "editorBracketPairGuide.background2": "#CC66CC80",
+        "editorBracketPairGuide.background3": "#87CEFA80",
+        // Active guide colors
+        "editorBracketPairGuide.activeBackground1": "#ffd90080",
+        "editorBracketPairGuide.activeBackground2": "#CC66CC80",
+        "editorBracketPairGuide.activeBackground3": "#87CEFA80",
+    }
 }
