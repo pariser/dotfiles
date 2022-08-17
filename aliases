@@ -83,7 +83,7 @@ function gcd() {
 function grmm() {
   main_branch=$(git_main_branch)
   merged_branches=$(git branch --merged origin/${main_branch} | grep -v -E " ${main_branch}$" | grep -v "\*")
-  [[ -z $merged_branches ]] && echo "No merged branches found" && return
+  [[ -z $merged_branches ]] && echo "No branches found already merged into ${main_branch}" && return
   echo "Found the following git branches already merged into origin/${main_branch}:"
   for merged_branch in $merged_branches; do
     echo "> $merged_branch"
