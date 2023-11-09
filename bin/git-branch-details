@@ -24,6 +24,23 @@ class GitBranchDetails
     integration
   ).freeze
 
+  module Platform
+    MAC = :mac
+    LINUX = :linux
+
+    def self.current
+      @current ||= begin
+        uname = `uname`
+        case uname
+        when /Darwin/
+          MAC
+        when /Linux/
+          LINUX
+        end
+      end
+    end
+  end
+
   def self.parse_arguments(arguments)
     branch_names = []
     options = {}
@@ -214,7 +231,14 @@ private
     # https://stackoverflow.com/questions/2993902/how-do-i-check-the-date-and-time-of-the-latest-git-pull-that-was-executed#comment31991429_9229377
     # which reveals that .git/FETCH_HEAD is modified on starting a fetch
     # so this can provide false positives if the fetch failed
-    @fetch_head_timestamp ||= execute_command("stat -f '%m' .git/FETCH_HEAD").chomp.to_i
+    @fetch_head_timestamp ||= begin
+      case Platform.current
+      when Platform::MAC
+        execute_command("stat -f '%m' .git/FETCH_HEAD").chomp.to_i
+      when Platform::LINUX
+        execute_command("stat -c '%Y' .git/FETCH_HEAD").chomp.to_i
+      end
+    end
   end
 
   def fetch_head_stale?

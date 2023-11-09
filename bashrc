@@ -49,10 +49,19 @@ export PATH=/usr/local/Qt5.5.1/5.5/clang_64/bin:$PATH
 [ -f $HOME/.travis/travis.sh ] && source $HOME/.travis/travis.sh
 
 ########################################################
+# NVM
+########################################################
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+########################################################
 # Bash Completion
 ########################################################
 
-if [ -f $(brew --prefix)/etc/bash_completion ]; then
+which brew 2>1 &> /dev/null
+if [ $? -eq 0 && -f $(brew --prefix)/etc/bash_completion ]; then
   source $(brew --prefix)/etc/bash_completion
 fi
 
@@ -192,7 +201,21 @@ function store_tab_title() {
 
 PROMPT_COMMAND="store_exit_code; $PROMPT_COMMAND"
 
-export PS1="\\[${BOLDBLUE}\\][\$(date +%H:%M)] \\[${CYAN}\\]\u@\\[${BOLDCYAN}\\]\h \\[${CYAN}\\]\w \\[${GREEN}\\]\$(git_branch_string)\\[${RESTORE}\\]\\[${BOLDRED}\\]\$(exit_code)\\[${BOLDCYAN}\\]\$\\[${RESTORE}\\] "
+if [ -z ${DOCKER_CONTAINER_NAME+x} ]; then
+  echo "USING DOCKER SETTINGS"
+  USER="🐳"
+  HOSTNAME=$DOCKER_CONTAINER_NAME
+  TIME_COLOR=$BOLDBLUE
+  GIT=""
+else
+  echo "NOT USING DOCKER SETTINGS"
+  USER="\u"
+  HOSTNAME="\h"
+  TIME_COLOR=$BOLDLIGHTGRAY
+  GIT="\$(git_branch_string)"
+fi
+
+export PS1="\\[${TIME_COLOR}\\][\$(date +%H:%M)] \\[${CYAN}\\]${USER}@\\[${BOLDCYAN}\\]${HOSTNAME} \\[${CYAN}\\]\w \\[${GREEN}\\]${GIT}\\[${RESTORE}\\]\\[${BOLDRED}\\]\$(exit_code)\\[${BOLDCYAN}\\]\$\\[${RESTORE}\\] "
 
 function gethost() {
   cat ~/.ssh/config | grep -A1 -E "$1\$" | grep HostName | awk '{print $2}'

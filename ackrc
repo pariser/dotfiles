@@ -19,3 +19,5 @@
 --ignore-dir=app/schemas/_xrepo
 --ignore-dir=build/schemas/_xrepo
 --ignore-dir=build/ruby
+--ignore-dir=vendor/bundle
+--ignore-dir=integration-tests/rspec/vendor/bundle
