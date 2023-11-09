@@ -1,31 +1,64 @@
 {
+    "[javascript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true
+    },
+    "[json]": {
+        "editor.defaultFormatter": "vscode.json-language-features"
+    },
+    "[python]": {
+        "editor.formatOnType": true
+    },
     "ActiveFileInStatusBar.fullpath": false,
     "atomKeymap.promptV3Features": true,
+    "cSpell.enabled": true,
+    "cSpell.enableFiletypes": [
+        "ruby",
+        "thrift"
+    ],
+    "cSpell.userWords": [
+        "DOGSTATSD",
+        "camelize",
+        "downcase"
+    ],
     "debug.console.fontFamily": "Inconsolata",
     "editor.autoClosingBrackets": "never",
     "editor.autoClosingOvertype": "never",
     "editor.autoClosingQuotes": "never",
+    "editor.bracketPairColorization.enabled": true,
     "editor.fontFamily": "Inconsolata",
     "editor.fontSize": 17,
+    "editor.guides.bracketPairs": "active",
+    "editor.guides.bracketPairsHorizontal": "active",
+    "editor.guides.highlightActiveIndentation": false,
+    "editor.inlineSuggest.enabled": true,
     "editor.minimap.enabled": false,
     "editor.multiCursorModifier": "ctrlCmd",
-    "editor.rulers": [100, 120],
+    "editor.rulers": [
+        100,
+        120
+    ],
     "editor.suggestSelection": "first",
     "editor.tabSize": 2,
     "explorer.compactFolders": false,
     "explorer.confirmDelete": false,
+    "explorer.confirmDragAndDrop": false,
+    "files.exclude": {
+        "**/.classpath": true,
+        "**/.factorypath": true,
+        "**/.project": true,
+        "**/.settings": true
+    },
+    "files.insertFinalNewline": true,
     "files.trimTrailingWhitespace": true,
-    "ruby.format": "rubocop",
+    "github.copilot.advanced": {},
+    "javascript.suggest.autoImports": false,
+    "liveshare.presence": true,
+    "python.languageServer": "Default",
+    "ruby.format": false,
     "ruby.useBundler": true,
-    "terminal.external.osxExec": "iTerm.app",
-    "terminal.integrated.fontSize": 15,
-    "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
-    "workbench.activityBar.visible": false,
-    "workbench.colorTheme": "Atom One Dark",
-    "workbench.editor.enablePreviewFromQuickOpen": false,
-    "workbench.iconTheme": "vscode-icon-theme",
-    "workbench.startupEditor": "newUntitledFile",
-    "workbench.tree.indent": 14,
+    "security.workspace.trust.untrustedFiles": "open",
+    "sorbet.extraArgs": [],
     "sorbet.intellisenseProvider": "sorbet",
     "sorbet.runWith": [
         // "bundle",
@@ -38,58 +71,33 @@
         "tc"
     ],
     "sorbet.sorbetPath": "",
-    "sorbet.extraArgs": [],
-    "files.exclude": {
-        "**/.classpath": true,
-        "**/.project": true,
-        "**/.settings": true,
-        "**/.factorypath": true
-    },
-    "[json]": {
-        "editor.defaultFormatter": "vscode.json-language-features"
-    },
-    "[javascript]": {
-        "editor.formatOnSave": true,
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "files.insertFinalNewline": true,
-    "cSpell.enableFiletypes": [
-        "ruby",
-        "thrift"
-    ],
-    "cSpell.userWords": [
-        "DOGSTATSD",
-        "camelize",
-        "downcase",
-        "metadata's"
-    ],
-    "cSpell.enabled": true,
-    "explorer.confirmDragAndDrop": false,
-    "workbench.editorAssociations": {
-        "*.ipynb": "jupyter-notebook"
-    },
-    "python.languageServer": "Default",
-    "javascript.suggest.autoImports": false,
-    "liveshare.presence": true,
-    "window.title": "${activeEditorMedium}${separator}${rootName}",
+    "terminal.external.osxExec": "iTerm.app",
+    "terminal.integrated.fontSize": 15,
     "typescript.tsserver.log": "off",
-    "security.workspace.trust.untrustedFiles": "open",
-    "editor.bracketPairColorization.enabled": true,
-    "editor.guides.bracketPairs": "active",
-    "editor.guides.bracketPairsHorizontal": "active",
-    "editor.guides.highlightActiveIndentation": false,
+    "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
+    "window.title": "${activeEditorMedium}${separator}${rootName}",
+    "workbench.activityBar.location": "hidden",
+    "workbench.activityBar.visible": false,
     "workbench.colorCustomizations": {
         // Bracket colors
         "editorBracketHighlight.foreground1": "#FFD700",
         "editorBracketHighlight.foreground2": "#DA70D6",
         "editorBracketHighlight.foreground3": "#179fff",
-        // Inactive guide colors
-        "editorBracketPairGuide.background1": "#ffd90080",
-        "editorBracketPairGuide.background2": "#CC66CC80",
-        "editorBracketPairGuide.background3": "#87CEFA80",
         // Active guide colors
         "editorBracketPairGuide.activeBackground1": "#ffd90080",
         "editorBracketPairGuide.activeBackground2": "#CC66CC80",
         "editorBracketPairGuide.activeBackground3": "#87CEFA80",
-    }
+        // Inactive guide colors
+        "editorBracketPairGuide.background1": "#ffd90080",
+        "editorBracketPairGuide.background2": "#CC66CC80",
+        "editorBracketPairGuide.background3": "#87CEFA80"
+    },
+    "workbench.colorTheme": "Atom One Dark",
+    "workbench.editor.enablePreviewFromQuickOpen": false,
+    "workbench.editorAssociations": {
+        "*.ipynb": "jupyter-notebook"
+    },
+    "workbench.iconTheme": "vscode-icon-theme",
+    "workbench.startupEditor": "newUntitledFile",
+    "workbench.tree.indent": 14
 }

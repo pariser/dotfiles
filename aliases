@@ -22,7 +22,7 @@ alias ydiff='diff -y --suppress-common-lines'
 # assumes .oh-my-zsh is installed with the git plugin -- relies on `git_main_branch`, see:
 # https://github.com/ohmyzsh/ohmyzsh/blob/835a0a5d17765243cabee782acb5905a9aab33c3/plugins/git/git.plugin.zsh#L30-L41
 
-alias git=hub # assumes hub is installed (brew install hub)
+# alias git=hub # assumes hub is installed (brew install hub)
 alias gs='git status'
 alias gd='git diff'
 alias gb='git branch'
@@ -116,7 +116,8 @@ alias nt='nosetests --nocapture --nologcapture --tests'
 alias serve="python -m SimpleHTTPServer 8000"
 
 alias be='bundle exec'
-alias rubocop-changed="gd --name-only | grep -e '\\.rb$' | xargs rubocop"
+alias gdr="gd --name-only | grep -e '\\.rb$' | xargs rubocop" # git diff rubocop
+alias gsr="git status -s | cut -c4- | grep -e '\\.rb$' | xargs rubocop" # git status rubocop
 
 alias mlt='tail -f /usr/local/var/log/mongodb/mongo.log'
 

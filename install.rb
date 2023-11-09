@@ -13,6 +13,8 @@ require 'colored'
 require 'open3'
 require 'json'
 require 'fileutils'
+require 'tempfile'
+require 'open-uri'
 
 HOME = File.expand_path("~")
 BIN = File.join(HOME, "bin")
@@ -71,16 +73,28 @@ def install(name, install_command)
   end
 end
 
-def install_if_missing(name, version_command, install_command)
-  puts "* Checking for #{name}"
-  Open3.popen3(*version_command) do |_stdin, stdout, _stderr, wait_thr|
-    if wait_thr.value.success?
-      puts "  Found #{name}: #{stdout.read.inspect}".green
-      return false
+def install_if_missing(name, version_command, install_command = nil, &block)
+  begin
+    puts "* Checking for #{name}"
+    Open3.popen3(*version_command) do |_stdin, stdout, _stderr, wait_thr|
+      if wait_thr.value.success?
+        puts "  Found #{name}: #{stdout.read.inspect}".green
+        return false
+      end
     end
+  rescue Errno::ENOENT => e
+    puts "  Did not find #{name}: #{e}"
   end
 
-  install(name, install_command)
+  if block_given?
+    unless install_command.nil?
+      raise ArgumentError, "expected block or install command but got both"
+    end
+
+    block.call
+  else
+    install(name, install_command)
+  end
 end
 
 def check_brew_info(name)
@@ -92,6 +106,8 @@ def check_brew_info(name)
     raise
   end
   output
+rescue Errno::ENOENT
+  raise "Brew not installed"
 end
 
 def parse_brew_output(name, output)
@@ -119,6 +135,8 @@ def install_symlink_if_missing(source_file, target_file)
     puts "Linking #{source_file} to #{target_file}".green
     File.symlink(source_file, target_file)
   end
+rescue Errno::EEXIST
+  puts "Not linking file #{source_file} -- already exists".yellow
 end
 
 # -------- CLI
@@ -159,6 +177,20 @@ step 'dotfiles' do
 end
 
 step 'oh-my-zsh' do
+  puts "** Install Oh My Zsh".green
+
+  install_if_missing("oh-my-zsh", ["test", "-d", File.join(HOME, ".oh-my-zsh")]) do
+    Tempfile.open('install-oh-my-zsh', '/tmp') do |tempfile|
+      URI.open('https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh') do |resp|
+        tempfile.write(resp.read)
+      end
+
+      tempfile.close
+
+      install("oh-my-zsh", ["sh", tempfile.path])
+    end
+  end
+
   puts "** Link my zsh theme files that belongs in ~/.oh-my-zsh".green
 
   source_file = File.join(LOCAL_PATH, "zsh-theme")
@@ -215,20 +247,40 @@ step 'brew-deps' do
   brew_install_if_missing %w()
 end
 
+step 'inconsolata' do
+  puts "* Checking for inconsolata".green
+
+  output, status = Open3.capture2("system_profiler", "SPFontsDataType")
+  unless status.success?
+    puts "  Error checking for inconsolata".red
+    puts output
+    raise
+  end
+
+  if output.include?('Inconsolata')
+    puts "Inconsolata already installed. Skipping".yellow
+    next
+  end
+
+  puts ""
+  puts "** Instruct on how to install inconsolata".green
+
+  puts "To install inconsolata, download and install from:".red.underline.bold
+  puts ""
+
+  puts <<-EOF
+    https://fonts.google.com/download?family=Inconsolata
+  EOF
+end
+
 step 'atom', disabled: true do
   puts "** Link atom config files".green
 
   ATOM_FILES.each do |atom_file|
     source_file = File.join(LOCAL_PATH, ".atom", atom_file)
     target_file = File.join(HOME, ".atom", atom_file)
-    if File.exist?(target_file) && File.symlink?(target_file)
-      puts "Not linking file #{source_file} -- already exists".yellow
-    elsif File.exist?(target_file) && !File.symlink?(target_file)
-      puts "Not linking file #{source_file} -- file already exists at #{target_file}".red
-    else
-      puts "Linking #{source_file} to #{target_file}".green
-      File.symlink(source_file, target_file)
-    end
+
+    install_symlink_if_missing(source_file, target_file)
   end
 
   puts ""
@@ -252,14 +304,7 @@ step 'vscode' do
   VSCODE_FILES.each do |vscode_file|
     source_file = File.join(LOCAL_PATH, "vscode", vscode_file)
     target_file = File.join(HOME, "Library/Application Support/Code/User", vscode_file)
-    if File.exist?(target_file) && File.symlink?(target_file)
-      puts "Not linking file #{source_file} -- already exists".yellow
-    elsif File.exist?(target_file) && !File.symlink?(target_file)
-      puts "Not linking file #{source_file} -- file already exists at #{target_file}".red
-    else
-      puts "Linking #{source_file} to #{target_file}".green
-      File.symlink(source_file, target_file)
-    end
+    install_symlink_if_missing(source_file, target_file)
   end
 
 
@@ -279,6 +324,18 @@ step 'vscode' do
   EOF
 
   puts ""
+end
+
+step 'instruct-restart-shell' do
+  puts "** Instruct to restart shell".green
+
+  puts "To ensure that your shell updates and your aliases are registered, run:".red.underline.bold
+  puts ""
+  puts "  source ~/.zshrc"
+  puts "  source ~/.aliases"
+
+  puts ""
+
 end
 
 # -------- various installation steps
