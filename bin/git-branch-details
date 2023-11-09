@@ -4,6 +4,7 @@ require 'time'
 require 'colored'
 require 'parallel'
 require 'optparse'
+require 'open3'
 
 class GitBranchDetails
   NotAGitRepository = Class.new(StandardError)
@@ -373,9 +374,18 @@ private
 
   def execute_command(command)
     puts "** Executing #{command.green}" if @verbose
-    result = `#{command}`
-    raise NonZeroReturnCode unless $?.success?
-    result
+    Open3.popen3(command) do |_stdin, stdout, stderr, wait_thr|
+      if wait_thr.value.success?
+        return stdout.read
+      else
+        if @verbose
+          puts "  Error executing #{command.green}".red
+          $stdout.puts stdout.read
+          $stderr.puts stderr.read
+        end
+        raise NonZeroReturnCode
+      end
+    end
   end
 end
 
