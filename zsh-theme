@@ -8,7 +8,7 @@ git_prompt_in_large_repositories() {
     GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
     echo "%{$ZSH_THEME_GIT_PROMPT_PREFIX%}%{${GIT_BRANCH}%}%{$ZSH_THEME_GIT_PROMPT_CLEAN%}%{$ZSH_THEME_GIT_PROMPT_SUFFIX%}"
   else
-    git_prompt_info
+    _omz_git_prompt_info
   fi
 }
 
