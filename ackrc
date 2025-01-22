@@ -12,6 +12,8 @@
 --nolog
 --ignore-file=is:tags
 --ignore-file=match:.eslintcache
+--ignore-file=match:coverage.json
+--ignore-file=match:.resultset.json
 --ignore-dir=tmp
 --ignore-dir=node_modules
 --ignore-dir=.yardoc

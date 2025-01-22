@@ -36,17 +36,9 @@ alias grom='git rebase origin/$(git_main_branch)'
 alias gpom='git pull origin $(git_main_branch)'
 alias gromas='git rebase -i origin/$(git_main_branch) --autosquash'
 
-git_version=$(git --version | grep git | cut -d ' ' -f 3)
-has_git_switch=$(vercomp $git_version "2.23.0")
-if [[ $has_git_switch -ne 1 ]]; then
-  alias gsc='git switch -c'
-  alias gcm='git switch $(git_main_branch)'
-  alias gsw='git switch'
-else
-  alias gsc='git checkout -b'
-  alias gcm='git checkout $(git_main_branch)'
-  alias gsw='git checkout'
-fi
+alias gsc='git switch -c'
+alias gcm='git switch $(git_main_branch)'
+alias gsw='git switch'
 
 alias gist_diff='isgit && (git diff | gist -p -t diff | xargs open)'
 alias atom_diff='git diff | tmpin atom'
