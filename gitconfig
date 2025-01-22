@@ -10,6 +10,9 @@
     excludesfile = ~/.gitignore
     precomposeunicode = true
 
+[safe]
+    directory = /Users/Shared/repos/treehouse.git
+
 [color]
     diff = auto
     status = auto
