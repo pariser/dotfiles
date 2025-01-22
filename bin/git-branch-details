@@ -48,8 +48,8 @@ class GitBranchDetails
     args = arguments.dup
 
     until args.empty?
-      break if arguments.first.start_with?('-')
-      branch_names << arguments.shift
+      break if args.first.start_with?('-')
+      branch_names << args.shift
     end
 
     option_parser = OptionParser.new do |opts|
@@ -217,7 +217,7 @@ private
         refs/remotes/upstream/trunk
       ).each do |ref|
         begin
-          execute_command('git rev-parse --git-dir &>/dev/null')
+          execute_command("git show-ref -q --verify #{ref} 2>&1")
         rescue NonZeroReturnCode
         else
           return ref.split('/').last
@@ -379,9 +379,11 @@ private
         return stdout.read
       else
         if @verbose
-          puts "  Error executing #{command.green}".red
-          $stdout.puts stdout.read
-          $stderr.puts stderr.read
+          puts "   Error executing #{command.green}".red
+          out = stdout.read
+          err = stderr.read
+          $stdout.puts out if out =~ /\S/
+          $stderr.puts err if err =~ /\S/
         end
         raise NonZeroReturnCode
       end

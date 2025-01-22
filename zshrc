@@ -123,8 +123,7 @@ function useJava17() {
   export PATH=$JAVA_HOME/bin:$PATH
 }
 
-export JAVA_HOME=$(/usr/libexec/java_home -v 1.17)
-export PATH=$JAVA_HOME/bin:$PATH
+useJava8
 
 ########################################################
 # nvm
@@ -177,3 +176,5 @@ unsetopt NULL_GLOB # Restore default behavior about glob pattern
 ########################################################
 
 [[ "_${ZSH_PROFILING}" = "_1" ]] && zprof
+
+test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
