@@ -61,8 +61,8 @@ python2 -m site &> /dev/null && PATH="$PATH:`python2 -m site --user-base`/bin"
 
 # local OPENSSL_VERSION=1.0
 
-export PATH="/usr/local/opt/thrift@0.9/bin:$PATH"
-export PATH="/usr/local/opt/mysql@5.6/bin:$PATH"
+# export PATH="/usr/local/opt/thrift@0.9/bin:$PATH"
+# export PATH="/usr/local/opt/mysql@5.6/bin:$PATH"
 export PATH=/usr/local/sbin:$PATH
 
 # export PATH="/usr/local/opt/openssl@${OPENSSL_VERSION}/bin:$PATH"
