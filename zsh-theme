@@ -4,11 +4,12 @@ ZSH_THEME_GIT_PROMPT_DIRTY="%{$fg[blue]%}) %{$fg[yellow]%}✗"
 ZSH_THEME_GIT_PROMPT_CLEAN="%{$fg[blue]%})"
 
 git_prompt_in_large_repositories() {
-  if [[ $(pwd) == "$HOME/airlab/repos/treehouse"* ]]; then
+  if [ "$(git rev-parse --is-inside-work-tree 2>/dev/null)" = "true" ]; then
+    # this is faster than `_omz_git_prompt_info`
     GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
     echo "%{$ZSH_THEME_GIT_PROMPT_PREFIX%}%{${GIT_BRANCH}%}%{$ZSH_THEME_GIT_PROMPT_CLEAN%}%{$ZSH_THEME_GIT_PROMPT_SUFFIX%}"
   else
-    git_prompt_info
+    echo ""
   fi
 }
 

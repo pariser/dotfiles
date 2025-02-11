@@ -4,16 +4,6 @@
 <dict>
 	<key>AllowTabbarInTitlebarAccessoryBigSur</key>
 	<false/>
-	<key>AppleAntiAliasingThreshold</key>
-	<integer>1</integer>
-	<key>ApplePressAndHoldEnabled</key>
-	<false/>
-	<key>AppleScrollAnimationEnabled</key>
-	<integer>0</integer>
-	<key>AppleSmoothFixedFontsSizeThreshold</key>
-	<integer>1</integer>
-	<key>AppleWindowTabbingMode</key>
-	<string>manual</string>
 	<key>Default Bookmark Guid</key>
 	<string>85195D95-A983-4FDB-85F8-EC3231BBEC56</string>
 	<key>DefaultTabBarHeight</key>
@@ -366,7 +356,7 @@
 					<key>action</key>
 					<string>CoprocessTrigger</string>
 					<key>parameter</key>
-					<string>/opt/homebrew/bin/op item get 5hqqoiafioxoi6bmdnrg3ritgy --fields password --cache</string>
+					<string>/opt/homebrew/bin/op item get 5hqqoiafioxoi6bmdnrg3ritgy --fields password --cache --reveal</string>
 					<key>partial</key>
 					<true/>
 					<key>regex</key>

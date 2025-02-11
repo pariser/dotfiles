@@ -16,6 +16,8 @@ require 'fileutils'
 require 'tempfile'
 require 'open-uri'
 
+FORCE_SYMLINKS = false
+
 HOME = File.expand_path("~")
 BIN = File.join(HOME, "bin")
 LOCAL_PATH = File.expand_path(File.dirname(__FILE__))
@@ -126,7 +128,12 @@ def brew_install_if_missing(*names)
   end
 end
 
-def install_symlink_if_missing(source_file, target_file)
+def install_symlink_if_missing(source_file, target_file, attempt: 1)
+  if FORCE_SYMLINKS && File.exist?(target_file) && File.symlink?(target_file)
+    puts "  " + "Deleting previous symlink #{target_file} -- due to FORCE_SYMLINKS".green.bold
+    File.delete(target_file)
+  end
+
   if File.exist?(target_file) && File.symlink?(target_file)
     puts "Not linking file #{source_file} -- already exists".yellow
   elsif File.exist?(target_file) && !File.symlink?(target_file)
@@ -136,6 +143,13 @@ def install_symlink_if_missing(source_file, target_file)
     File.symlink(source_file, target_file)
   end
 rescue Errno::EEXIST
+  if attempt == 1 && FORCE_SYMLINKS
+    puts "  " + "Deleting previous symlink #{target_file} -- due to FORCE_SYMLINKS".green.bold
+    File.delete(target_file)
+    attempt += 1
+    retry
+  end
+
   puts "Not linking file #{source_file} -- already exists".yellow
 end
 
