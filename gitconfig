@@ -10,9 +10,6 @@
     excludesfile = ~/.gitignore
     precomposeunicode = true
 
-[safe]
-    directory = /Users/Shared/repos/treehouse.git
-
 [color]
     diff = auto
     status = auto
@@ -58,3 +55,6 @@
 [rebase]
     autoStash = true
     updateRefs = true
+
+[includeIf "gitdir:~/repos/"]
+    path = ".gitconfig.airbnb"
