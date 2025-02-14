@@ -1,5 +1,4 @@
 {
-    "remote.SSH.connectTimeout": 120,
     "[javascript]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode",
         "editor.formatOnSave": true
@@ -11,12 +10,7 @@
         "editor.formatOnType": true
     },
     "ActiveFileInStatusBar.fullpath": false,
-    "atomKeymap.promptV3Features": true,
     "cSpell.enabled": true,
-    "cSpell.enableFiletypes": [
-        "ruby",
-        "thrift"
-    ],
     "cSpell.userWords": [
         "camelize",
         "DOGSTATSD",
@@ -25,6 +19,7 @@
         "struct"
     ],
     "debug.console.fontFamily": "Inconsolata",
+    "editor.accessibilitySupport": "off",
     "editor.autoClosingBrackets": "never",
     "editor.autoClosingOvertype": "never",
     "editor.autoClosingQuotes": "never",
@@ -54,31 +49,20 @@
     },
     "files.insertFinalNewline": true,
     "files.trimTrailingWhitespace": true,
-    "github.copilot.advanced": {},
+    "git.openRepositoryInParentFolders": "never",
     "javascript.suggest.autoImports": false,
-    "liveshare.presence": true,
     "python.languageServer": "Default",
-    "ruby.format": false,
-    "ruby.useBundler": true,
+    "redhat.telemetry.enabled": false,
+    "remote.SSH.connectTimeout": 120,
+    "ruby.rubocop.useBundler": true,
     "security.workspace.trust.untrustedFiles": "open",
-    "sorbet.extraArgs": [],
-    "sorbet.intellisenseProvider": "sorbet",
-    "sorbet.runWith": [
-        // "bundle",
-        // "exec",
-        // "srb"
-        "rvm",
-        "2.3.1",
-        "do",
-        "srb",
-        "tc"
-    ],
-    "sorbet.sorbetPath": "",
+    "solargraph.folding": false,
     "terminal.external.osxExec": "iTerm.app",
     "terminal.integrated.fontSize": 15,
     "typescript.tsserver.log": "off",
     "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
     "window.title": "${activeEditorMedium}${separator}${rootName}",
+    "window.zoomLevel": -1,
     "workbench.activityBar.location": "hidden",
     "workbench.colorCustomizations": {
         // Bracket colors
@@ -101,11 +85,5 @@
     },
     "workbench.iconTheme": "vscode-icon-theme",
     "workbench.startupEditor": "newUntitledFile",
-    "workbench.tree.indent": 14,
-    "window.zoomLevel": -1,
-    "git.openRepositoryInParentFolders": "never",
-    "github.copilot.editor.enableAutoCompletions": true,
-    "cmake.showOptionsMovedNotification": false,
-    "editor.accessibilitySupport": "off",
-    "redhat.telemetry.enabled": false
+    "workbench.tree.indent": 14
 }

@@ -108,8 +108,8 @@ alias nt='nosetests --nocapture --nologcapture --tests'
 alias serve="python -m SimpleHTTPServer 8000"
 
 alias be='bundle exec'
-alias gdr="gd --name-only | grep -e '\\.rb$' | xargs rubocop" # git diff rubocop
-alias gsr="git status -s | cut -c4- | grep -e '\\.rb$' | xargs rubocop" # git status rubocop
+alias gdr="gd --name-only | grep -e '\\.rb$' | xargs bundle exec rubocop" # git diff rubocop
+alias gsr="git status -s | cut -c4- | grep -e '\\.rb$' | xargs bundle exec rubocop" # git status rubocop
 
 alias mlt='tail -f /usr/local/var/log/mongodb/mongo.log'
 
