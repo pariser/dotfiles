@@ -1,10 +1,3 @@
-[user]
-    name = Andrew Pariser
-    email = pariser@gmail.com
-
-[github]
-    user = pariser
-
 [core]
     editor = vim
     excludesfile = ~/.gitignore
@@ -56,5 +49,9 @@
     autoStash = true
     updateRefs = true
 
-[includeIf "gitdir:~/repos/"]
-    path = ".gitconfig.airbnb"
+[includeIf "hasconfig:remote.*.url:git.musta.ch"]
+    path = ~/.gitconfig.airbnb
+
+[includeIf "hasconfig:remote.*.url:github.com"]
+    path = ~/.gitconfig.github
+

@@ -58,12 +58,11 @@
     "security.workspace.trust.untrustedFiles": "open",
     "solargraph.folding": false,
     "terminal.external.osxExec": "iTerm.app",
-    "terminal.integrated.fontSize": 15,
+    "terminal.integrated.fontSize": 16,
     "typescript.tsserver.log": "off",
     "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
     "window.title": "${activeEditorMedium}${separator}${rootName}",
     "window.zoomLevel": -1,
-    "workbench.activityBar.location": "hidden",
     "workbench.colorCustomizations": {
         // Bracket colors
         "editorBracketHighlight.foreground1": "#FFD700",
@@ -78,12 +77,70 @@
         "editorBracketPairGuide.background2": "#CC66CC80",
         "editorBracketPairGuide.background3": "#87CEFA80"
     },
-    "workbench.colorTheme": "Atom One Dark",
     "workbench.editor.enablePreviewFromQuickOpen": false,
     "workbench.editorAssociations": {
         "*.ipynb": "jupyter-notebook"
     },
     "workbench.iconTheme": "vscode-icon-theme",
     "workbench.startupEditor": "newUntitledFile",
-    "workbench.tree.indent": 14
+    "workbench.tree.indent": 14,
+    "[typescript]": {
+        "editor.defaultFormatter": "vscode.typescript-language-features"
+    },
+    "workbench.colorTheme": "Atom One Dark",
+    "workbench.preferredDarkColorTheme": "Atom One Dark",
+    "workbench.preferredLightColorTheme": "Atom One Light",
+    "rubyLsp.addonSettings": {
+        "Ruby LSP RSpec": {
+            "rspecCommand": "rspec -f d"
+        }
+    },
+    "yaml.schemas": {},
+    "github.copilot.nextEditSuggestions.enabled": true,
+    "editor.inlineSuggest.edits.showCollapsed": true,
+    "rubyLsp.enabledFeatures": {
+        "codeActions": true,
+        "diagnostics": true,
+        "documentHighlights": true,
+        "documentLink": true,
+        "documentSymbols": true,
+        "foldingRanges": true,
+        "formatting": true,
+        "hover": true,
+        "inlayHint": true,
+        "onTypeFormatting": true,
+        "selectionRanges": true,
+        "semanticHighlighting": true,
+        "completion": true,
+        "codeLens": false,
+        "definition": true,
+        "workspaceSymbol": true,
+        "signatureHelp": true,
+        "typeHierarchy": true
+    },
+    "docker.extension.enableComposeLanguageServer": false,
+    "workbench.secondarySideBar.defaultVisibility": "hidden",
+    "git.blame.statusBarItem.enabled": true,
+    "git.blame.editorDecoration.enabled": false,
+    "gitlens.codeLens.authors.enabled": false,
+    "gitlens.codeLens.recentChange.enabled": false,
+    "gitlens.codeLens.enabled": false,
+    "gitlens.codeLens.authors.command": false,
+    "gitlens.codeLens.recentChange.command": false,
+    "[dockercompose]": {
+        "editor.insertSpaces": true,
+        "editor.tabSize": 2,
+        "editor.autoIndent": "advanced",
+        "editor.quickSuggestions": {
+            "other": true,
+            "comments": false,
+            "strings": true
+        },
+        "editor.defaultFormatter": "redhat.vscode-yaml"
+    },
+    "[github-actions-workflow]": {
+        "editor.defaultFormatter": "redhat.vscode-yaml"
+    },
+    "claudeCode.preferredLocation": "panel",
+    "chat.useNestedAgentsMdFiles": true
 }

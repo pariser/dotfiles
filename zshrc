@@ -50,6 +50,7 @@ export LESS=-iXFR
 
 export PATH=~/bin:$PATH
 export PATH=/opt/homebrew/bin:$PATH
+export PATH=~/go/bin:$PATH
 
 # pip-installed packages
 python3 -m site &> /dev/null && PATH="$PATH:`python3 -m site --user-base`/bin"
