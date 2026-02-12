@@ -6,7 +6,7 @@
 # Aliases
 ########################################################
 
-alias hack-the-planet="afplay $HOME/dev/learnup/work-advice/misc/hack-the-planet.mp3 &"
+# alias hack-the-planet="afplay $HOME/dev/learnup/work-advice/misc/hack-the-planet.mp3 &"
 
 # -- ls aliases
 
@@ -40,6 +40,7 @@ alias gsc='git switch -c'
 alias gcm='git switch $(git_main_branch)'
 alias gsw='git switch'
 
+alias gistc='gh gist create'
 alias gist_diff='isgit && (git diff | gist -p -t diff | xargs open)'
 alias atom_diff='git diff | tmpin atom'
 
@@ -109,6 +110,7 @@ alias serve="python -m SimpleHTTPServer 8000"
 
 alias be='bundle exec'
 alias gdr="gd --name-only | grep -e '\\.rb$' | xargs bundle exec rubocop" # git diff rubocop
+alias gdmr="gd --name-only origin/$(git_main_branch)... | grep -e '\\.rb$' | xargs bundle exec rubocop" # git diff main rubocop"
 alias gsr="git status -s | cut -c4- | grep -e '\\.rb$' | xargs bundle exec rubocop" # git status rubocop
 
 alias mlt='tail -f /usr/local/var/log/mongodb/mongo.log'
@@ -116,20 +118,20 @@ alias mlt='tail -f /usr/local/var/log/mongodb/mongo.log'
 function pushd() {
   if [[ -n $ZSH_NAME ]]; then
     # assume zsh
-    builtin pushd "$@" > /dev/null
+    builtin pushd "$@" > /dev/null || exit $?
   else
     # assume bash
-    command pushd "$@" > /dev/null
+    command pushd "$@" > /dev/null || exit $?
   fi
 }
 
 function popd() {
   if [[ -n $ZSH_NAME ]]; then
     # assume zsh
-    builtin popd "$@" > /dev/null
+    builtin popd "$@" > /dev/null || exit $?
   else
     # assume bash
-    command popd "$@" > /dev/null
+    command popd "$@" > /dev/null || exit $?
   fi
 }
 
