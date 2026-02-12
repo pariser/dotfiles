@@ -26,6 +26,7 @@ DOTFILES = %w(
   profile
   bashrc
   gitconfig
+  gitconfig.github
   gitignore
   screenrc
   vimrc
